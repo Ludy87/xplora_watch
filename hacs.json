@@ -1,0 +1,8 @@
+{
+  "name": "Xplora Watch",
+  "domains": ["sensor"],
+  "country": "DE",
+  "render_readme": "True",
+  "homeassistant": "0.99.9",
+  "iot_class": "Cloud Polling"
+}
