@@ -46,3 +46,21 @@ xplora_watch:
 ```
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`
+
+## Supported Countries
+
+<!-- START ./countries.md -->
+| country name | country code |
+|--------------|--------------|
+| United Kingdom | 44 |
+| Spain | 34 |
+| Germany | 49 |
+| Norway | 47 |
+| Sweden | 46 |
+| Finland | 358 |
+| France | 33 |
+| Italy | 39 |
+| Switzerland | 41 |
+| Austria | 43 |
+
+<!-- END ./countries.md -->
