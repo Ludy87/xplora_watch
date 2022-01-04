@@ -7,6 +7,7 @@ Home Assistant Sensorenfür die Xplora® Watch
 ![GitHub Release Date](https://img.shields.io/github/release-date/Ludy87/xplora_watch)
 [![GitHub](https://img.shields.io/github/license/Ludy87/xplora_watch)](LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/issues)
+[![Validate](https://github.com/Ludy87/xplora_watch/actions/workflows/validate.yaml/badge.svg)](https://github.com/Ludy87/xplora_watch/actions/workflows/validate.yaml)
 
 ## Features
   - Battery-Sensor
