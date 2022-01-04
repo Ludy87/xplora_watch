@@ -1,0 +1,52 @@
+name: Dynamic Template
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        env:
+          PHONENUMBER: ${{ secrets.PHONENUMBER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python ./.github/actions/update_readme.py
+      - name: "💾 Github Repository Metadata"
+        uses: varunsridharan/action-repository-meta@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      - name: "💫 Dynamic Template Render"
+        uses: varunsridharan/action-dynamic-readme@main
+        with:
+          GLOBAL_TEMPLATE_REPOSITORY: Ludy87/yml_test
+          files: |
+            README.md
+          confirm_and_push: false # Important if use "Require a pull request before merging" rule
+        env:
+          PHONENUMBER: ${{ secrets.PHONENUMBER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file_pattern: README.md
+          commit_message: Update generated README
+          branch: main
+          commit_user_name: readme-scribe 🤖
+          commit_user_email: actions@github.com
+          commit_author: readme-scribe 🤖 <actions@github.com>
