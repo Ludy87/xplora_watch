@@ -13,9 +13,8 @@ Home Assistant Sensorenfür die Xplora® Watch
   - Battery-Sensor
   - Watch-Xcoin-Sensor
 
-## Installation
-
 ---
+## Installation
 
 ### MANUAL INSTALLATION
 
@@ -48,7 +47,8 @@ xplora_watch:
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`
 
-## Supported Countries
+---
+## 🏳 Supported Countries 🏳
 
 <!-- START ./countries.md -->
 | country name | country code |

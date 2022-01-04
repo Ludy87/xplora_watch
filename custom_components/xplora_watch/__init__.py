@@ -5,7 +5,7 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components import binary_sensor, device_tracker, sensor, switch
+from homeassistant.components import sensor
 from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import CONF_SCAN_INTERVAL
@@ -77,10 +77,12 @@ def _setup_controller(hass, controller_config, config):
     phoneNumber = controller_config[CONF_PHONENUMBER]
     password = controller_config[CONF_PASSWORD]
     userlang = controller_config[CONF_USERLANG]
-    _types = controller_config[CONF_TYPES]
     tz = controller_config[CONF_TIMEZONE]
+
+    _types = controller_config[CONF_TYPES]
     si = controller_config[CONF_SCAN_INTERVAL]
     timeNow = datetime.timestamp(datetime.now())
+    _LOGGER.debug("init controller")
     controller = PXA.PyXploraApi(cc, phoneNumber, password, userlang, tz)
     position = len(hass.data[DATA_XPLORA])
 
