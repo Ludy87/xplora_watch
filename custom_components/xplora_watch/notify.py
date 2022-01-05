@@ -38,5 +38,5 @@ class XploraNotificationService(BaseNotificationService):
         self._controller = controller
 
     def send_message(self, message: str = "", **kwargs: Any) -> None:
-        _LOGGER.debug("sent message {message}")
+        _LOGGER.debug(f"sent message {message}")
         self._controller.sendText(message)
