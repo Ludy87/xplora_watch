@@ -12,6 +12,7 @@ Home Assistant Sensorenfür die Xplora® Watch
 ## Features
   - Battery-Sensor
   - Watch-Xcoin-Sensor
+  - send Message
 
 ---
 ## Installation
@@ -28,10 +29,10 @@ Home Assistant Sensorenfür die Xplora® Watch
 3. installier __Xplora-Watch Integration__ [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/releases)
 4. Restart Home Assistant
 
+---
+## Basis Configuration
 
-## Basis Konfiguration
-
-1. Füge den Sensor in die `configuration.yaml` ein
+1. Füge in die `configuration.yaml` ein
 ```yaml
 xplora_watch:
   country_code: "+49"
@@ -48,20 +49,19 @@ xplora_watch:
 3. Check `Home Assistant » Developer Tools » States`
 
 ---
+## Notify configuration
+
+1. Füge den Notification in die `configuration.yaml` ein
+```yaml
+notify:
+  - platform: xplora_watch
+    name: "XPlora"
+```
+2. Restart Home Assistant
+3. Check `Home Assistant » Developer Tools » States`
+
+---
 ## 🏳 Supported Countries 🏳
 
 <!-- START ./countries.md -->
-| country name | country code |
-|--------------|--------------|
-| United Kingdom | 44 |
-| Spain | 34 |
-| Germany | 49 |
-| Norway | 47 |
-| Sweden | 46 |
-| Finland | 358 |
-| France | 33 |
-| Italy | 39 |
-| Switzerland | 41 |
-| Austria | 43 |
-
 <!-- END ./countries.md -->

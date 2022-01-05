@@ -12,27 +12,12 @@ Home Assistant Sensorenfür die Xplora® Watch
 ## Features
   - Battery-Sensor
   - Watch-Xcoin-Sensor
-
-## Installation
+  - send Message
 
 ---
+## Basis Configuration
 
-### MANUAL INSTALLATION
-
-1. In deinem `config/custom_components` Ordner, einen Ordner mit dem Namen `xplora_watch` erstellen
-2. Downloade [last Releae](https://github.com/Ludy87/xplora_watch/releases) und speichere sie in `config/custom_components/xplora_watch` ab
-
-### INSTALLATION mit HACS
-
-1. [HACS](https://hacs.xyz/) ist installier?
-2. füge ein `Benutzerdefinierte Repositories` hinzu, als Kategorie `Integration`
-3. installier __Xplora-Watch Integration__ [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/releases)
-4. Restart Home Assistant
-
-
-## Basis Konfiguration
-
-1. Füge den Sensor in die `configuration.yaml` ein
+1. Füge in die `configuration.yaml` ein
 ```yaml
 xplora_watch:
   country_code: "+49"
@@ -44,6 +29,18 @@ xplora_watch:
     - "battery"
     - "xcoin"
   scan_interval: 300
+```
+2. Restart Home Assistant
+3. Check `Home Assistant » Developer Tools » States`
+
+---
+## Notify configuration
+
+1. Füge den Notification in die `configuration.yaml` ein
+```yaml
+notify:
+  - platform: xplora_watch
+    name: "XPlora"
 ```
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`

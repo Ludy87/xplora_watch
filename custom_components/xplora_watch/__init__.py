@@ -1,18 +1,20 @@
-""" Xplora Watch """
+""" Xplora® Watch """
 from __future__ import annotations
 
 import logging
+from datetime import datetime
 
 import voluptuous as vol
 
-from homeassistant.components import sensor
+from homeassistant.components import (sensor, binary_sensor, notify)
+from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
 import homeassistant.helpers.config_validation as cv
-from homeassistant.const import CONF_SCAN_INTERVAL
-
-from datetime import datetime
+from homeassistant.helpers.typing import ConfigType
 
 from .const import (
+    BINARY_SENSOR_STATE,
     CONF_COUNTRY_CODE,
     CONF_PHONENUMBER,
     CONF_PASSWORD,
@@ -20,20 +22,18 @@ from .const import (
     CONF_USERLANG,
     CONF_TIMEZONE,
     DATA_XPLORA,
+    DOMAIN,
     SENSOR_TYPE_BATTERY_SENSOR,
     SENSOR_TYPE_XCOIN_SENSOR,
     XPLORA_CONTROLLER,
-    DOMAIN,
 )
-
 from pyxplora_api import pyxplora_api as PXA
 
 DEFAULT_SCAN_INTERVAL = 3 *60
 
-#PLATFORMS = [switch.DOMAIN, sensor.DOMAIN, binary_sensor.DOMAIN]
-PLATFORMS = [sensor.DOMAIN]
+PLATFORMS = [sensor.DOMAIN, binary_sensor.DOMAIN, notify.DOMAIN]
 
-SENSORS = [SENSOR_TYPE_BATTERY_SENSOR, SENSOR_TYPE_XCOIN_SENSOR]
+SENSORS = [SENSOR_TYPE_BATTERY_SENSOR, SENSOR_TYPE_XCOIN_SENSOR, BINARY_SENSOR_STATE]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
-def setup(hass, config):
+def setup(hass: HomeAssistant, config: ConfigType):
     _LOGGER.debug(f"init")
     hass.data[DATA_XPLORA] = []
     hass.data[CONF_COUNTRY_CODE] = []
@@ -72,7 +72,7 @@ def setup(hass, config):
 
     return True
 
-def _setup_controller(hass, controller_config, config):
+def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType):
     cc = controller_config[CONF_COUNTRY_CODE]
     phoneNumber = controller_config[CONF_PHONENUMBER]
     password = controller_config[CONF_PASSWORD]
@@ -84,6 +84,8 @@ def _setup_controller(hass, controller_config, config):
     timeNow = datetime.timestamp(datetime.now())
     _LOGGER.debug("init controller")
     controller = PXA.PyXploraApi(cc, phoneNumber, password, userlang, tz)
+    _LOGGER.debug(f"Xplora-Api Version: {controller.version()}")
+    _LOGGER.debug(f"set Update interval: {si}")
     position = len(hass.data[DATA_XPLORA])
 
     hass.data[DATA_XPLORA].append(controller)
@@ -91,16 +93,26 @@ def _setup_controller(hass, controller_config, config):
     hass.data[CONF_PHONENUMBER].append(phoneNumber)
     hass.data[CONF_PASSWORD].append(password)
     hass.data[CONF_USERLANG].append(userlang)
-    hass.data[CONF_TYPES].append(_types)
     hass.data[CONF_TIMEZONE].append(tz)
+    hass.data[CONF_TYPES].append(_types)
     hass.data[CONF_SCAN_INTERVAL].append(si)
     hass.data["start_time"].append(timeNow)
+
     for platform in PLATFORMS:
-        discovery.load_platform(
-            hass,
-            platform,
-            DOMAIN,
-            {XPLORA_CONTROLLER: position, **controller_config},
-            config,
-        )
+        if platform != notify.DOMAIN:
+            discovery.load_platform(
+                hass,
+                platform,
+                DOMAIN,
+                {XPLORA_CONTROLLER: position, **controller_config},
+                config,
+            )
+        elif platform == notify.DOMAIN:
+            discovery.load_platform(
+                hass,
+                platform,
+                DOMAIN,
+                {XPLORA_CONTROLLER: position, **controller_config},
+                config,
+            )
     return True

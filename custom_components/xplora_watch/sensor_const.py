@@ -1,4 +1,12 @@
-from .const import ICON_BATTERY
+"""Xplora® Watch Sensor const"""
+
+ICON_BATTERY = [
+    "mdi:battery", "mdi:battery-90", "mdi:battery-80", "mdi:battery-70", "mdi:battery-60",
+    "mdi:battery-50", "mdi:battery-40", "mdi:battery-30", "mdi:battery-20", "mdi:battery-10", 
+    "mdi:battery-alert",
+    "mdi:battery-charging-100", "mdi:battery-charging-90", "mdi:battery-charging-80", "mdi:battery-charging-70", "mdi:battery-charging-60",
+    "mdi:battery-charging-50", "mdi:battery-charging-40", "mdi:battery-charging-30", "mdi:battery-charging-20", "mdi:battery-charging-10",
+]
 
 def bat(_battery, _isCharging) -> str:
     _icon = "mdi:battery-unknown"

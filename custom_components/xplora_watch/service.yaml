@@ -1,0 +1,11 @@
+send_message:
+  name: Send message
+  description: Send message to target Watch
+  fields:
+    message:
+      name: Message
+      description: The message to be sent.
+      required: true
+      example: This is a message I am sending to Watch
+      selector:
+        text:

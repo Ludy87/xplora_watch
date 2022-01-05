@@ -1,13 +1,13 @@
 {
   "domain": "xplora_watch",
   "name": "Xplora® Watch",
-  "version": "v0.0.2",
+  "version": "v0.0.3",
   "documentation": "https://github.com/Ludy87/xplora_watch",
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],
   "requirements": [
-    "pyxplora-api>=1.0.23"
-  ], 
+    "pyxplora-api==1.0.25"
+  ],
   "codeowners": ["@Ludy87"],
-  "iot_class": "cloud_polling"
+  "iot_class": ["local_polling", "local_push"]
 }

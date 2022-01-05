@@ -1,21 +1,22 @@
-"""Support for reading status from Xplora® Watch."""
+"""Reads Xplor® Watch status."""
 from __future__ import annotations
 
 import logging
 from datetime import datetime
 
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-    SensorEntityDescription
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass,
+    BinarySensorEntity,
+    BinarySensorEntityDescription
 )
-from homeassistant.const import CONF_SCAN_INTERVAL, PERCENTAGE
+from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import (
     ATTR_WATCH,
+    BINARY_SENSOR_STATE,
     CONF_COUNTRY_CODE,
     CONF_PASSWORD,
     CONF_PHONENUMBER,
@@ -23,23 +24,16 @@ from .const import (
     CONF_TYPES,
     CONF_USERLANG,
     DATA_XPLORA,
-    XPLORA_CONTROLLER,
-    SENSOR_TYPE_BATTERY_SENSOR,
-    SENSOR_TYPE_XCOIN_SENSOR,
+    XPLORA_CONTROLLER
 )
-from .sensor_const import bat
 from pyxplora_api import pyxplora_api as PXA
 
 _LOGGER = logging.getLogger(__name__)
 
-SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
-    SensorEntityDescription(
-        key=SENSOR_TYPE_BATTERY_SENSOR,
-        device_class=SensorDeviceClass.BATTERY,
-    ),
-    SensorEntityDescription(
-        key=SENSOR_TYPE_XCOIN_SENSOR,
-        icon="mdi:hand-coin"
+BINARY_SENSOR_TYPES: tuple[BinarySensorEntityDescription, ...] = (
+    BinarySensorEntityDescription(
+        key=BINARY_SENSOR_STATE,
+        device_class=BinarySensorDeviceClass.CONNECTIVITY,
     ),
 )
 
@@ -65,22 +59,22 @@ def setup_platform(
 
     _LOGGER.debug(f"Sensor: {_types}")
     add_entities([
-        XploraSensor(
+        XploraBinarySensor(
             hass,
             description,
             controller,
             scan_interval,
             start_time,
             _types,
-            _conf) for description in SENSOR_TYPES
+            _conf) for description in BINARY_SENSOR_TYPES
         ], True)
 
-class XploraSensor(SensorEntity):
+class XploraBinarySensor(BinarySensorEntity):
 
     def __init__(
         self,
         hass: HomeAssistant,
-        description: SensorEntityDescription,
+        description: BinarySensorEntity,
         controller: PXA.XploraApi,
         scan_interval,
         start_time,
@@ -99,40 +93,23 @@ class XploraSensor(SensorEntity):
     def __update_timer(self) -> int:
         return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
 
-    def __isTypes(self, sensor_type: str) -> bool:
+    def __isOnline(self) -> bool:
         state = self._controller.getWatchOnlineStatus()
         if (state == "ONLINE"):
             self._controller.update()
-        else:
-            _LOGGER.debug(state)
-        if sensor_type in self._types and self.entity_description.key == sensor_type:
+            self._attr_icon = "mdi:lan-check"
             return True
+        self._attr_icon = "mdi:lan-disconnect"
         return False
 
-    def __default_attr(self, fun, sensor_type, unit_of_measurement):
-        self._attr_native_value = fun
-        client_name = self._controller.getWatchUserName()
-        self._attr_name = f"{client_name} {ATTR_WATCH} {sensor_type}".title()
-        self._attr_unique_id = f"{self._controller.getWatchUserID()}{self._attr_name}"
-        self._attr_unit_of_measurement = unit_of_measurement
-
     def __update(self) -> None:
-        """ https://github.com/home-assistant/core/blob/master/homeassistant/helpers/entity.py#L219 """
         _LOGGER.debug("update controller")
-
-        if self.__isTypes(SENSOR_TYPE_BATTERY_SENSOR):
-            charging = self._controller.getWatchIsCharging()
-
-            self.__default_attr(self._controller.getWatchBattery(), SENSOR_TYPE_BATTERY_SENSOR, PERCENTAGE)
-            self._attr_icon = bat(self._attr_native_value, charging)
-
-            _LOGGER.debug("Updating sensor: %s | Battery: %s | Charging %s", self._attr_name, str(self._attr_native_value), str(charging))
-        
-        elif self.__isTypes(SENSOR_TYPE_XCOIN_SENSOR):
-
-            self.__default_attr(self._controller.getWatchXcoin(), SENSOR_TYPE_XCOIN_SENSOR, "💰")
-
-            _LOGGER.debug("Updating sensor: %s | XCoins: %s", self._attr_name, str(self._attr_native_value))
+        if self.entity_description.key == BINARY_SENSOR_STATE:
+            
+            client_name = self._controller.getWatchUserName()
+            self._attr_name = f"{client_name} {ATTR_WATCH} {BINARY_SENSOR_STATE}".title()
+            self._attr_unique_id = f"{self._controller.getWatchUserID()}{self._attr_name}"
+            self._attr_is_on = self.__isOnline()
 
     def update(self) -> None:
         if self.__update_timer():
