@@ -22,7 +22,7 @@ jobs:
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           python -m pip install --upgrade pip
-          pip install pyxplora_api -U
+          pip install pyxplora_api==1.0.24 -U
           python ./.github/actions/update_readme.py
       - name: "💾 Github Repository Metadata"
         uses: varunsridharan/action-repository-meta@main
