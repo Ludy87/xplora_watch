@@ -6,7 +6,8 @@ from datetime import datetime
 
 import voluptuous as vol
 
-from homeassistant.components import (sensor, binary_sensor, notify)
+from homeassistant.components import (sensor, binary_sensor)
+from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
@@ -31,7 +32,7 @@ from pyxplora_api import pyxplora_api as PXA
 
 DEFAULT_SCAN_INTERVAL = 3 *60
 
-PLATFORMS = [sensor.DOMAIN, binary_sensor.DOMAIN, notify.DOMAIN]
+PLATFORMS = [sensor.DOMAIN, binary_sensor.DOMAIN, NOTIFY_DOMAIN]
 
 SENSORS = [SENSOR_TYPE_BATTERY_SENSOR, SENSOR_TYPE_XCOIN_SENSOR, BINARY_SENSOR_STATE]
 
@@ -99,7 +100,7 @@ def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType
     hass.data["start_time"].append(timeNow)
 
     for platform in PLATFORMS:
-        if platform != notify.DOMAIN:
+        if platform != NOTIFY_DOMAIN:
             discovery.load_platform(
                 hass,
                 platform,
@@ -107,7 +108,7 @@ def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType
                 {XPLORA_CONTROLLER: position, **controller_config},
                 config,
             )
-        elif platform == notify.DOMAIN:
+        elif platform == NOTIFY_DOMAIN:
             discovery.load_platform(
                 hass,
                 platform,
