@@ -12,6 +12,7 @@ Home Assistant Sensorenfür die Xplora® Watch
 ## Features
   - Battery-Sensor
   - Watch-Xcoin-Sensor
+  - Watch Online status
   - send Message
 
 ---
