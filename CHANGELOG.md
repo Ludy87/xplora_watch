@@ -11,5 +11,5 @@
 - `sync` to `async`
 
 ### Fixed
-- timer controll reload Entity
-- wrong diclaration (`sensors` to `types`)
+- timer control reload Entity
+- wrong declaration (`sensors` to `types`)
