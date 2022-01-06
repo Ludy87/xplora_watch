@@ -100,7 +100,7 @@ logger:
 ```
 
 ---
-## [Changelog](https://github.com/Ludy87/xplora_watch/CHANGELOG.md)
+## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
 
 <!-- START ./CHANGELOG.md -->
 # Change Log
