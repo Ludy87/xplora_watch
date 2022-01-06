@@ -33,7 +33,7 @@ send Message | Notify
 
 1. [HACS](https://hacs.xyz/) ist installier?
 2. füge ein `Benutzerdefinierte Repositories` hinzu, als Kategorie `Integration`
-3. installier __Xplora-Watch Integration__ [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/releases)
+3. installier __Xplora® Watch Integration__ [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/releases)
 4. Restart Home Assistant
 
 ---
