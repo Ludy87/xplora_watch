@@ -10,19 +10,20 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import DATA_XPLORA
 
-from pyxplora_api import pyxplora_api as PXA
+from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
 
-def get_service(
+async def async_get_service(
     hass: HomeAssistant,
     config: ConfigType,
     discovery_info: DiscoveryInfoType | None = None,
 ) -> XploraNotificationService:
     _LOGGER.debug("set Notify Controller")
-    controller = hass.data[DATA_XPLORA][0]
+    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][0]
+    await controller.update_a()
 
-    _LOGGER.debug("set Service")
+    _LOGGER.debug("set Service Notify")
     sv = XploraNotificationService()
     sv.setup(controller)
 
@@ -37,6 +38,6 @@ class XploraNotificationService(BaseNotificationService):
         _LOGGER.debug("init Setup")
         self._controller = controller
 
-    def send_message(self, message: str = "", **kwargs: Any) -> None:
+    async def async_send_message(self, message: str = "", **kwargs: Any) -> None:
         _LOGGER.debug(f"sent message {message}")
-        self._controller.sendText(message)
+        await self._controller.sendText(message)

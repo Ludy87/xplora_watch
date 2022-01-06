@@ -1,4 +1,4 @@
-"""Reads Xplor® Watch status."""
+"""Reads Xplora® Watch status."""
 from __future__ import annotations
 
 import logging
@@ -16,17 +16,20 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import (
     ATTR_WATCH,
+    BINARY_SENSOR_CHARGING,
+    BINARY_SENSOR_SAFEZONE,
     BINARY_SENSOR_STATE,
     CONF_COUNTRY_CODE,
     CONF_PASSWORD,
     CONF_PHONENUMBER,
+    CONF_START_TIME,
     CONF_TIMEZONE,
     CONF_TYPES,
     CONF_USERLANG,
     DATA_XPLORA,
     XPLORA_CONTROLLER
 )
-from pyxplora_api import pyxplora_api as PXA
+from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -35,9 +38,17 @@ BINARY_SENSOR_TYPES: tuple[BinarySensorEntityDescription, ...] = (
         key=BINARY_SENSOR_STATE,
         device_class=BinarySensorDeviceClass.CONNECTIVITY,
     ),
+    BinarySensorEntityDescription(
+        key=BINARY_SENSOR_SAFEZONE,
+        device_class=BinarySensorDeviceClass.SAFETY,
+    ),
+    BinarySensorEntityDescription(
+        key=BINARY_SENSOR_CHARGING,
+        device_class=BinarySensorDeviceClass.BATTERY_CHARGING,
+    ),
 )
 
-def setup_platform(
+async def async_setup_platform(
     hass: HomeAssistant,
     conf: ConfigType,
     add_entities: AddEntitiesCallback,
@@ -46,7 +57,7 @@ def setup_platform(
     if discovery_info is None:
         return
     scan_interval = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time = hass.data["start_time"][discovery_info[XPLORA_CONTROLLER]]
+    start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
     _conf = {
         'cc': hass.data[CONF_COUNTRY_CODE][discovery_info[XPLORA_CONTROLLER]],
         'phoneNumber': hass.data[CONF_PHONENUMBER][discovery_info[XPLORA_CONTROLLER]],
@@ -55,19 +66,21 @@ def setup_platform(
         'tz': hass.data[CONF_TIMEZONE][discovery_info[XPLORA_CONTROLLER]],
     }
     controller = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
+    await controller.update_a()
     _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
-    _LOGGER.debug(f"Sensor: {_types}")
-    add_entities([
-        XploraBinarySensor(
-            hass,
-            description,
-            controller,
-            scan_interval,
-            start_time,
-            _types,
-            _conf) for description in BINARY_SENSOR_TYPES
-        ], True)
+    for description in BINARY_SENSOR_TYPES:
+        if description.key in _types:
+            add_entities([
+                XploraBinarySensor(
+                    hass,
+                    description,
+                    controller,
+                    scan_interval,
+                    start_time,
+                    _types,
+                    _conf) #for description in BINARY_SENSOR_TYPES
+                ], True)
 
 class XploraBinarySensor(BinarySensorEntity):
 
@@ -82,36 +95,71 @@ class XploraBinarySensor(BinarySensorEntity):
         _conf
     ):
         self.entity_description = description
-        self._controller = controller
+        self._controller: PXA.PyXploraApi = controller
         self._start_time = start_time
+        self._first = True
         self._scan_interval = scan_interval
         self._types = _types
         self._conf = _conf
-        _LOGGER.debug(f"set Sensor: {self.entity_description.key}")
-        self.__update()
+        _LOGGER.debug(f"set Binary Sensor: {self.entity_description.key}")
 
     def __update_timer(self) -> int:
         return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
 
-    def __isOnline(self) -> bool:
-        state = self._controller.getWatchOnlineStatus()
+    async def __isOnline(self) -> bool:
+        await self._controller.update_a()
+        state = await self._controller.getWatchOnlineStatus_a()
         if (state == "ONLINE"):
-            self._controller.update()
             self._attr_icon = "mdi:lan-check"
             return True
         self._attr_icon = "mdi:lan-disconnect"
         return False
 
-    def __update(self) -> None:
-        _LOGGER.debug("update controller")
-        if self.entity_description.key == BINARY_SENSOR_STATE:
-            
-            client_name = self._controller.getWatchUserName()
-            self._attr_name = f"{client_name} {ATTR_WATCH} {BINARY_SENSOR_STATE}".title()
-            self._attr_unique_id = f"{self._controller.getWatchUserID()}{self._attr_name}"
-            self._attr_is_on = self.__isOnline()
+    async def __isSafezone(self) -> bool:
+        if await self._controller.getWatchIsInSafeZone_a():
+            return False
+        return True
 
-    def update(self) -> None:
-        if self.__update_timer():
+    async def __isCharging(self) -> bool:
+        await self._controller.update_a()
+        if await self._controller.getWatchIsCharging_a():
+            return True
+        return False
+
+    async def __isTypes(self, sensor_type: str) -> bool:
+        await self._controller.update_a()
+        state = await self._controller.getWatchOnlineStatus_a()
+        if (state != "ONLINE"):
+            _LOGGER.debug(state)
+        if sensor_type in self._types and self.entity_description.key == sensor_type:
+            return True
+        return False
+
+    def __default_attr(self, fun, sensor_type) -> None:
+        self._attr_native_value = fun
+        client_name = self._controller.getWatchUserName()
+        self._attr_name = f"{client_name} {ATTR_WATCH} {sensor_type}".title()
+        self._attr_unique_id = f"{self._controller.getWatchUserID()}{self._attr_name}"
+        self._attr_is_on = fun
+
+    async def __update(self) -> None:
+        if await self.__isTypes(BINARY_SENSOR_STATE):
+            self.__default_attr((await self.__isOnline()), BINARY_SENSOR_STATE)
+
+            _LOGGER.debug("Updating sensor: %s | State: %s", self._attr_name, str(self._attr_is_on))
+
+        elif await self.__isTypes(BINARY_SENSOR_SAFEZONE):
+            self.__default_attr((await self.__isSafezone()), BINARY_SENSOR_SAFEZONE)
+
+            _LOGGER.debug("Updating sensor: %s | State: %s", self._attr_name, str(self._attr_is_on))
+
+        elif await self.__isTypes(BINARY_SENSOR_CHARGING):
+            self.__default_attr((await self.__isCharging()), BINARY_SENSOR_CHARGING)
+
+            _LOGGER.debug("Updating sensor: %s | State: %s", self._attr_name, str(self._attr_is_on))
+
+    async def async_update(self) -> None:
+        if self.__update_timer() or self._first:
+            self._first = False
             self._start_time = datetime.timestamp(datetime.now())
-            self.__update()
+            await self.__update()

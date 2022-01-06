@@ -1,6 +1,6 @@
 {
   "name": "Xplora® Watch",
-  "domains": ["sensor", "notify"],
+  "domains": ["sensor", "notify", "switch"],
   "country": "DE",
   "render_readme": true,
   "homeassistant": "2021.12.8",

@@ -10,10 +10,16 @@ Home Assistant Sensorenfür die Xplora® Watch
 [![Validate](https://github.com/Ludy87/xplora_watch/actions/workflows/validate.yaml/badge.svg)](https://github.com/Ludy87/xplora_watch/actions/workflows/validate.yaml)
 
 ## Features
-  - Battery-Sensor
-  - Watch-Xcoin-Sensor
-  - Watch Online status
-  - send Message
+
+Features | Type
+---|---
+Battery | Sensor
+Watch-Xcoin | Sensor
+Watch Online state | BinarySensor
+Watch is safe | BinarySensor
+Watch charging | BinarySensor
+Watch silent(s) | Switch
+send Message | Notify
 
 ---
 ## Basis Configuration
@@ -26,9 +32,13 @@ xplora_watch:
   password: "password"
   userlang: "de-DE"
   timezone: "Europe/Berlin"
-  sensors: 
+  types: 
     - "battery"
     - "xcoin"
+    - "state"
+    - "safezone"
+    - "charging"
+    - "silents"
   scan_interval: 300
 ```
 2. Restart Home Assistant
@@ -37,7 +47,7 @@ xplora_watch:
 ---
 ## Notify configuration
 
-1. Füge den Notification in die `configuration.yaml` ein
+1. Füge die Notification in die `configuration.yaml` ein
 ```yaml
 notify:
   - platform: xplora_watch
@@ -45,3 +55,5 @@ notify:
 ```
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`
+
+## [Changelog](https://github.com/Ludy87/xplora_watch/CHANGELOG.md)

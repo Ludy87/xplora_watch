@@ -8,6 +8,7 @@ import voluptuous as vol
 
 from homeassistant.components import (sensor, binary_sensor)
 from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
+from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
@@ -15,26 +16,36 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 
 from .const import (
+    BINARY_SENSOR_CHARGING,
+    BINARY_SENSOR_SAFEZONE,
     BINARY_SENSOR_STATE,
     CONF_COUNTRY_CODE,
     CONF_PHONENUMBER,
     CONF_PASSWORD,
+    CONF_START_TIME,
     CONF_TYPES,
     CONF_USERLANG,
     CONF_TIMEZONE,
     DATA_XPLORA,
+    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     SENSOR_TYPE_BATTERY_SENSOR,
     SENSOR_TYPE_XCOIN_SENSOR,
+    SWITCH_SILENTS,
     XPLORA_CONTROLLER,
 )
-from pyxplora_api import pyxplora_api as PXA
+from pyxplora_api import pyxplora_api_async as PXA
 
-DEFAULT_SCAN_INTERVAL = 3 *60
+PLATFORMS = [sensor.DOMAIN, binary_sensor.DOMAIN, NOTIFY_DOMAIN, SWITCH_DOMAIN,]
 
-PLATFORMS = [sensor.DOMAIN, binary_sensor.DOMAIN, NOTIFY_DOMAIN]
-
-SENSORS = [SENSOR_TYPE_BATTERY_SENSOR, SENSOR_TYPE_XCOIN_SENSOR, BINARY_SENSOR_STATE]
+SENSORS = [
+    SENSOR_TYPE_BATTERY_SENSOR,
+    SENSOR_TYPE_XCOIN_SENSOR,
+    BINARY_SENSOR_STATE,
+    BINARY_SENSOR_SAFEZONE,
+    BINARY_SENSOR_CHARGING,
+    SWITCH_SILENTS,
+]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,7 +57,7 @@ CONTROLLER_SCHEMA = vol.Schema(
         vol.Required(CONF_USERLANG): cv.string,
         vol.Required(CONF_TIMEZONE): cv.time_zone,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
-        vol.Optional(CONF_TYPES, default=SENSORS): cv.ensure_list,
+        vol.Required(CONF_TYPES, default=SENSORS): cv.ensure_list,
     }
 )
 
@@ -55,8 +66,8 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
-def setup(hass: HomeAssistant, config: ConfigType):
-    _LOGGER.debug(f"init")
+async def async_setup(hass: HomeAssistant, config: ConfigType):
+    _LOGGER.debug(f"init Xplora® Watch")
     hass.data[DATA_XPLORA] = []
     hass.data[CONF_COUNTRY_CODE] = []
     hass.data[CONF_PHONENUMBER] = []
@@ -65,15 +76,15 @@ def setup(hass: HomeAssistant, config: ConfigType):
     hass.data[CONF_TIMEZONE] = []
     hass.data[CONF_TYPES] = []
     hass.data[CONF_SCAN_INTERVAL] = []
-    hass.data["start_time"] = []
+    hass.data[CONF_START_TIME] = []
 
     success = False
     for controller_config in config[DOMAIN]:
-        success = success or _setup_controller(hass, controller_config, config)
+        success = success or await _setup_controller(hass, controller_config, config)
 
     return True
 
-def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType):
+async def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType):
     cc = controller_config[CONF_COUNTRY_CODE]
     phoneNumber = controller_config[CONF_PHONENUMBER]
     password = controller_config[CONF_PASSWORD]
@@ -81,10 +92,13 @@ def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType
     tz = controller_config[CONF_TIMEZONE]
 
     _types = controller_config[CONF_TYPES]
+    _LOGGER.debug(f"Entity-Types: {_types}")
     si = controller_config[CONF_SCAN_INTERVAL]
     timeNow = datetime.timestamp(datetime.now())
-    _LOGGER.debug("init controller")
+
+    _LOGGER.debug("init API-Controller")
     controller = PXA.PyXploraApi(cc, phoneNumber, password, userlang, tz)
+    await controller.update_a()
     _LOGGER.debug(f"Xplora-Api Version: {controller.version()}")
     _LOGGER.debug(f"set Update interval: {si}")
     position = len(hass.data[DATA_XPLORA])
@@ -97,23 +111,14 @@ def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType
     hass.data[CONF_TIMEZONE].append(tz)
     hass.data[CONF_TYPES].append(_types)
     hass.data[CONF_SCAN_INTERVAL].append(si)
-    hass.data["start_time"].append(timeNow)
+    hass.data[CONF_START_TIME].append(timeNow)
 
     for platform in PLATFORMS:
-        if platform != NOTIFY_DOMAIN:
-            discovery.load_platform(
-                hass,
-                platform,
-                DOMAIN,
-                {XPLORA_CONTROLLER: position, **controller_config},
-                config,
-            )
-        elif platform == NOTIFY_DOMAIN:
-            discovery.load_platform(
-                hass,
-                platform,
-                DOMAIN,
-                {XPLORA_CONTROLLER: position, **controller_config},
-                config,
-            )
+        discovery.load_platform(
+            hass,
+            platform,
+            DOMAIN,
+            {XPLORA_CONTROLLER: position, **controller_config},
+            config,
+        )
     return True
