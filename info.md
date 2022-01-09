@@ -19,6 +19,7 @@ Watch Online state | BinarySensor
 Watch is safe | BinarySensor
 Watch charging | BinarySensor
 Watch silent(s) | Switch
+Watch alarm(s) | Switch
 send Message | Notify
 
 ---
@@ -39,6 +40,7 @@ xplora_watch:
     - "safezone"
     - "charging"
     - "silents"
+    - "alarms"
   scan_interval: 300
 ```
 2. Restart Home Assistant

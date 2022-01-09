@@ -20,6 +20,7 @@ BINARY_SENSOR_SAFEZONE = "safezone"
 BINARY_SENSOR_CHARGING = "charging"
 
 SWITCH_SILENTS = "silents"
+SWITCH_ALARMS = "alarms"
 
 CONF_TYPES = "types"
 

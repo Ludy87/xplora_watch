@@ -106,6 +106,7 @@ class XploraBinarySensor(BinarySensorEntity):
         return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
 
     async def __isOnline(self) -> bool:
+        await self._controller.init_async()
         self._attr_icon = "mdi:lan-check"
         if (await self._controller.askWatchLocate_async() == True) or (await self._controller.trackWatchInterval_async() != -1):
             return True

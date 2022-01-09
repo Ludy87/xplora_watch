@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
+from .entity import XploraSwitchEntity
 
 from homeassistant.components.switch import (
     SwitchDeviceClass,
@@ -17,6 +18,7 @@ from .const import (
     CONF_START_TIME,
     CONF_TYPES,
     DATA_XPLORA,
+    SWITCH_ALARMS,
     SWITCH_SILENTS,
     XPLORA_CONTROLLER,
 )
@@ -29,7 +31,7 @@ async def async_setup_platform(
     config: ConfigType,
     add_entities: AddEntitiesCallback,
     discovery_info: DiscoveryInfoType | None = None
-):
+) -> None:
     if discovery_info is None:
         return
     entities = []
@@ -41,22 +43,27 @@ async def async_setup_platform(
         for silent in await controller.schoolSilentMode_async():
             name = f'{await controller.getWatchUserName_async()} Watch Silent {silent["start"]}-{silent["end"]}'
             entities.append(SilentSwitch(hass, silent, controller, scan_interval, start_time, name))
+    if SWITCH_ALARMS in _types:
+        for alarm in await controller.getWatchAlarm_async():
+            name = f'{await controller.getWatchUserName_async()} Watch Alarm {alarm["start"]}'
+            entities.append(AlarmSwitch(hass, alarm, controller, scan_interval, start_time, name))
 
-        add_entities(entities)
+    add_entities(entities)
 
-class SilentSwitch(SwitchEntity):
+class SilentSwitch(XploraSwitchEntity, SwitchEntity):
 
     def __init__(self, hass, silent: list, controller: PXA.PyXploraApi, scan_interval, start_time, name) -> None:
-        _LOGGER.debug("init switch")
+        _LOGGER.debug("init switch silent")
         self._hass = hass
         self._silent = silent
         self._controller: PXA.PyXploraApi = controller
         self._start_time = start_time
         self._first = True
         self._scan_interval = scan_interval
-        self._state = self.__state(self._silent["status"])
+        self._attr_is_on = self.__state(self._silent["status"])
         self._name = name
         self._attr_device_class = SwitchDeviceClass.SWITCH
+        super().__init__(self._silent, name)
 
     def __update_timer(self) -> int:
         return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
@@ -66,31 +73,15 @@ class SilentSwitch(SwitchEntity):
             return False
         return True
 
-    @property
-    def unique_id(self) -> str:
-        """Return the unique ID of the device."""
-        return self._silent["id"]
-
-    @property
-    def name(self):
-        """Return the name of the device."""
-        return self._name
-
-    @property
-    def is_on(self):
-        """Return true if the switch is on."""
-        _LOGGER.debug(f"is_on Set State {self._state}")
-        return self._state
-
-    async def async_turn_on(self, **kwargs):
+    async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
         if (await self._controller.setEnableSilentTime_async(self._silent["id"])):
-            self._state = True
+            self._attr_is_on = True
 
-    async def async_turn_off(self, **kwargs):
+    async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
         if (await self._controller.setDisableSilentTime_async(self._silent["id"])):
-            self._state = False
+            self._attr_is_on = False
 
     async def async_update(self) -> None:
         if self.__update_timer() or self._first:
@@ -99,5 +90,46 @@ class SilentSwitch(SwitchEntity):
             silents = await self._controller.schoolSilentMode_async()
             for silent in silents:
                 if silent['id'] == self._silent['id']:
-                    self._state = self.__state(silent['status'])
+                    self._attr_is_on = self.__state(silent['status'])
 
+class AlarmSwitch(XploraSwitchEntity, SwitchEntity):
+
+    def __init__(self, hass, alarm: list, controller: PXA.PyXploraApi, scan_interval, start_time, name) -> None:
+        _LOGGER.debug("init switch alarm")
+        self._hass = hass
+        self._alarm = alarm
+        self._controller: PXA.PyXploraApi = controller
+        self._start_time = start_time
+        self._first = True
+        self._scan_interval = scan_interval
+        self._attr_is_on = self.__state(self._alarm["status"])
+        self._name = name
+        self._attr_device_class = SwitchDeviceClass.SWITCH
+        super().__init__(self._alarm, name)
+
+    def __update_timer(self) -> int:
+        return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
+
+    def __state(self, status) -> bool:
+        if status == "DISABLE":
+            return False
+        return True
+
+    async def async_turn_on(self, **kwargs) -> None:
+        """Turn the switch on."""
+        if (await self._controller.setEnableAlarmTime_async(self._alarm["id"])):
+            self._attr_is_on = True
+
+    async def async_turn_off(self, **kwargs) -> None:
+        """Turn the switch off."""
+        if (await self._controller.setDisableAlarmTime_async(self._alarm["id"])):
+            self._attr_is_on = False
+
+    async def async_update(self) -> None:
+        if self.__update_timer() or self._first:
+            self._first = False
+            self._start_time = datetime.timestamp(datetime.now())
+            alarms = await self._controller.getWatchAlarm_async()
+            for alarm in alarms:
+                if alarm['id'] == self._alarm['id']:
+                    self._attr_is_on = self.__state(alarm['status'])

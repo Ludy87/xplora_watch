@@ -5,5 +5,5 @@
   "render_readme": true,
   "homeassistant": "2021.12.8",
   "iot_class": ["Local Polling", "Cloud Push"],
-  "hacs": "1.18.0"
+  "hacs": "1.19.2"
 }
