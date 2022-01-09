@@ -107,6 +107,16 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.8] - 2022-01-08
+
+### Added
+
+### Changed
+
+### Fixed
+- frozen state
+
+---
 ## [v0.0.7] - 2022-01-06
 
 ### Added
