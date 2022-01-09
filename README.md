@@ -109,6 +109,17 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.9] - 2022-01-08
+
+### Added
+- Watch alarm(s) - `Switch`
+
+### Changed
+
+### Fixed
+
+---
+
 ## [v0.0.8] - 2022-01-08
 
 ### Added
