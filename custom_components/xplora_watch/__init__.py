@@ -98,8 +98,8 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
 
     _LOGGER.debug("init API-Controller")
     controller = PXA.PyXploraApi(cc, phoneNumber, password, userlang, tz)
-    await controller.update_a()
-    _LOGGER.debug(f"Xplora-Api Version: {controller.version()}")
+    await controller.init_async()
+    _LOGGER.debug(f"Xplora® Api Version: {controller.version()}")
     _LOGGER.debug(f"set Update interval: {si}")
     position = len(hass.data[DATA_XPLORA])
 

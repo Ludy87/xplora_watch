@@ -21,8 +21,6 @@ async def async_get_service(
 ) -> XploraNotificationService:
     _LOGGER.debug("set Notify Controller")
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][0]
-    await controller.update_a()
-
     _LOGGER.debug("set Service Notify")
     sv = XploraNotificationService()
     sv.setup(controller)
