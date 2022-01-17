@@ -138,5 +138,5 @@ class WatchScanner:
             battery=await self._api.getWatchBattery_async(),
             attributes=attr,
             icon="mdi:watch",
-            picture=f"https://api.myxplora.com/file?id={self._api.getWatchUserIcon_async()}",
+            #picture=f"https://api.myxplora.com/file?id={self._api.getWatchUserIcon_async()}",
         )
