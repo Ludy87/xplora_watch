@@ -42,6 +42,7 @@ async def async_setup_scanner(
     """Validate the configuration and return a Xplora® scanner."""
     if discovery_info is None:
         return False
+    _LOGGER.debug(f"set Tracker")
 
     api: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
@@ -51,6 +52,7 @@ async def async_setup_scanner(
     if DEVICE_TRACKER_WATCH not in _types:
         return False
 
+    _LOGGER.debug(f"set WatchScanner")
     scanner = WatchScanner(
         hass,
         async_see,
@@ -85,6 +87,7 @@ class WatchScanner:
 
     async def async_init(self) -> bool:
         """Further initialize connection to Xplora® API."""
+        _LOGGER.debug(f"set async_init")
         await self._api.init_async()
         username = await self._api.getWatchUserName_async()
         if username is None:
