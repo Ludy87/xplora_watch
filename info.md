@@ -15,12 +15,13 @@ Features | Type
 ---|---
 Battery | Sensor
 Watch-Xcoin | Sensor
-Watch Online state | BinarySensor
-Watch is safe | BinarySensor
-Watch charging | BinarySensor
+Watch Online state | Binary Sensor
+Watch is safe | Binary Sensor
+Watch charging | Binary Sensor
 Watch silent(s) | Switch
 Watch alarm(s) | Switch
-send Message | Notify
+Send Message | Notify
+Watch Tracking | Device Tracker
 
 ---
 ## Basis Configuration
