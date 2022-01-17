@@ -43,14 +43,14 @@ async def async_setup_scanner(
     if discovery_info is None:
         return False
     _LOGGER.debug(f"set Tracker")
-
-    api: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    scan_interval = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
     _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
     if DEVICE_TRACKER_WATCH not in _types:
         return False
+
+    api: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
+    scan_interval = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
+    start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
 
     _LOGGER.debug(f"set WatchScanner")
     scanner = WatchScanner(
@@ -141,5 +141,5 @@ class WatchScanner:
             battery=await self._api.getWatchBattery_async(),
             attributes=attr,
             icon="mdi:watch",
-            #picture=f"https://api.myxplora.com/file?id={self._api.getWatchUserIcon_async()}",
+            picture=self._api.getWatchUserIcon_async(),
         )
