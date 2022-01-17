@@ -41,7 +41,9 @@ xplora_watch:
     - "charging"
     - "silents"
     - "alarms"
+    - "dt_watch"
   scan_interval: 300
+  tracker_scan_interval: 60
 ```
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`
