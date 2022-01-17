@@ -42,19 +42,18 @@ async def async_setup_platform(
     if SWITCH_SILENTS in _types:
         for silent in await controller.schoolSilentMode_async():
             name = f'{await controller.getWatchUserName_async()} Watch Silent {silent["start"]}-{silent["end"]}'
-            entities.append(SilentSwitch(hass, silent, controller, scan_interval, start_time, name))
+            entities.append(SilentSwitch(silent, controller, scan_interval, start_time, name))
     if SWITCH_ALARMS in _types:
         for alarm in await controller.getWatchAlarm_async():
             name = f'{await controller.getWatchUserName_async()} Watch Alarm {alarm["start"]}'
-            entities.append(AlarmSwitch(hass, alarm, controller, scan_interval, start_time, name))
+            entities.append(AlarmSwitch(alarm, controller, scan_interval, start_time, name))
 
     add_entities(entities)
 
 class SilentSwitch(XploraSwitchEntity, SwitchEntity):
 
-    def __init__(self, hass, silent: list, controller: PXA.PyXploraApi, scan_interval, start_time, name) -> None:
+    def __init__(self, silent: list, controller: PXA.PyXploraApi, scan_interval, start_time, name) -> None:
         _LOGGER.debug("init switch silent")
-        self._hass = hass
         self._silent = silent
         self._controller: PXA.PyXploraApi = controller
         self._start_time = start_time
@@ -94,9 +93,8 @@ class SilentSwitch(XploraSwitchEntity, SwitchEntity):
 
 class AlarmSwitch(XploraSwitchEntity, SwitchEntity):
 
-    def __init__(self, hass, alarm: list, controller: PXA.PyXploraApi, scan_interval, start_time, name) -> None:
+    def __init__(self, alarm: list, controller: PXA.PyXploraApi, scan_interval, start_time, name) -> None:
         _LOGGER.debug("init switch alarm")
-        self._hass = hass
         self._alarm = alarm
         self._controller: PXA.PyXploraApi = controller
         self._start_time = start_time

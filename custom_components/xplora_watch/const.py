@@ -2,7 +2,7 @@ DOMAIN = "xplora_watch"
 
 ATTR_WATCH = "watch"
 
-CONF_SCAN_INTERVAL = "scan_interval"
+#CONF_SCAN_INTERVAL = "scan_interval"
 CONF_COUNTRY_CODE = "country_code"
 CONF_PHONENUMBER = "phonenumber"
 CONF_PASSWORD = "password"
@@ -22,8 +22,26 @@ BINARY_SENSOR_CHARGING = "charging"
 SWITCH_SILENTS = "silents"
 SWITCH_ALARMS = "alarms"
 
+DEVICE_TRACKER_WATCH = "dt_watch"
+
 CONF_TYPES = "types"
+CONF_TRACKER_SCAN_INTERVAL = "tracker_scan_interval"
 
 DATA_XPLORA = "xplora"
 
-DEFAULT_SCAN_INTERVAL = 3 *60
+DEFAULT_SCAN_INTERVAL = 3 * 60
+TRACKER_UPDATE = 60
+
+MANUFACTURER = "Xplora® Watch"
+
+DEVICE_TRACKER_LAT = "latitude"
+DEVICE_TRACKER_LNG = "longitude"
+DEVICE_TRACKER_RAD = "radius"
+DEVICE_TRACKER_COUNTRY = "country"
+DEVICE_TRACKER_COUNTRY_ABBR = "countryAbbr"
+DEVICE_TRACKER_PROVINCE = "province"
+DEVICE_TRACKER_CITY = "city"
+DEVICE_TRACKER_ADDR = "addr"
+DEVICE_TRACKER_POI = "poi"
+DEVICE_TRACKER_ISINSAFEZONE = "isinsafezone"
+DEVICE_TRACKER_SAFEZONELABEL = "savezonelabel"

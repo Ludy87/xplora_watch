@@ -37,5 +37,9 @@ class XploraNotificationService(BaseNotificationService):
         self._controller = controller
 
     async def async_send_message(self, message: str = "", **kwargs: Any) -> None:
-        _LOGGER.debug(f"sent message {message}")
-        await self._controller.sendText(message)
+        msg = message.strip()
+        _LOGGER.debug(f"sent message {msg}")
+        if len(msg):
+            await self._controller.sendText(msg)
+        else:
+            _LOGGER.warning(f"Your message is empty!")

@@ -16,13 +16,8 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import (
     ATTR_WATCH,
-    CONF_COUNTRY_CODE,
-    CONF_PASSWORD,
-    CONF_PHONENUMBER,
     CONF_START_TIME,
-    CONF_TIMEZONE,
     CONF_TYPES,
-    CONF_USERLANG,
     DATA_XPLORA,
     XPLORA_CONTROLLER,
     SENSOR_TYPE_BATTERY_SENSOR,
@@ -49,18 +44,11 @@ async def async_setup_platform(
     conf: ConfigType,
     add_entities: AddEntitiesCallback,
     discovery_info: DiscoveryInfoType | None = None
-):
+) -> None:
     if discovery_info is None:
         return
     scan_interval = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
-    _conf = {
-        'cc': hass.data[CONF_COUNTRY_CODE][discovery_info[XPLORA_CONTROLLER]],
-        'phoneNumber': hass.data[CONF_PHONENUMBER][discovery_info[XPLORA_CONTROLLER]],
-        'password': hass.data[CONF_PASSWORD][discovery_info[XPLORA_CONTROLLER]],
-        'userlang': hass.data[CONF_USERLANG][discovery_info[XPLORA_CONTROLLER]],
-        'tz': hass.data[CONF_TIMEZONE][discovery_info[XPLORA_CONTROLLER]],
-    }
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
@@ -68,34 +56,28 @@ async def async_setup_platform(
         if description.key in _types:
             add_entities([
                 XploraSensor(
-                    hass,
                     description,
                     controller,
                     scan_interval,
                     start_time,
-                    _types,
-                    _conf) #for description in SENSOR_TYPES
+                    _types) #for description in SENSOR_TYPES
                 ], True)
 
 class XploraSensor(SensorEntity):
     def __init__(
         self,
-        hass: HomeAssistant,
         description: SensorEntityDescription,
         controller: PXA.XploraApi,
         scan_interval,
         start_time,
-        _types: str,
-        _conf
-    ):
+        _types: str
+    ) -> None:
         self.entity_description = description
         self._controller: PXA.PyXploraApi = controller
         self._start_time = start_time
         self._first = True
         self._scan_interval = scan_interval
         self._types = _types
-        self._conf = _conf
-        self.hass = hass
         _LOGGER.debug(f"set Sensor: {self.entity_description.key}")
 
     def __update_timer(self) -> int:

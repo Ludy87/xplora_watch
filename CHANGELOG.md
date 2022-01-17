@@ -1,5 +1,15 @@
 # Change Log
 
+## [v0.0.10] - 2022-01-18
+
+### Added
+- Track Watch - `Device_Tracker`
+
+### Changed
+
+### Fixed
+
+---
 ## [v0.0.9] - 2022-01-08
 
 ### Added
