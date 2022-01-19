@@ -56,7 +56,7 @@ async def async_setup_scanner(
     scan_interval = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
 
-    if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]]:
+    if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
         i = 1
         for safeZone in await api.getSafeZones_async():
             if safeZone:
