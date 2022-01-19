@@ -16,7 +16,11 @@ from .const import (
     ATTR_TRACKER_ADDR,
     ATTR_TRACKER_POI,
     ATTR_TRACKER_ISINSAFEZONE,
+    ATTR_TRACKER_SAFEZONEADRESS,
+    ATTR_TRACKER_SAFEZONEGROUPNAME,
     ATTR_TRACKER_SAFEZONELABEL,
+    ATTR_TRACKER_SAFEZONENAME,
+    CONF_SAFEZONES,
     CONF_START_TIME,
     CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
@@ -26,6 +30,7 @@ from .const import (
 )
 from pyxplora_api import pyxplora_api_async as PXA
 
+from homeassistant.components.device_tracker.const import SOURCE_TYPE_GPS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -50,6 +55,30 @@ async def async_setup_scanner(
     api: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
+
+    if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]]:
+        i = 1
+        for safeZone in await api.getSafeZones_async():
+            if safeZone:
+                lat = safeZone.get("lat")
+                lng = safeZone.get("lng")
+                rad = safeZone.get("rad")
+                attr = {}
+                if safeZone.get("name", None):
+                    attr[ATTR_TRACKER_SAFEZONENAME] = safeZone.get("name")
+                if safeZone.get("address", None):
+                    attr[ATTR_TRACKER_SAFEZONEADRESS] = safeZone.get("address")
+                if safeZone.get("groupName", None):
+                    attr[ATTR_TRACKER_SAFEZONEGROUPNAME] = safeZone.get("groupName")
+                await async_see(
+                    source_type=SOURCE_TYPE_GPS,
+                    dev_id=slugify("Safezone " + str(i)),
+                    gps=(lat, lng),
+                    gps_accuracy=rad,
+                    attributes=attr,
+                    icon="mdi:crosshairs-gps",
+                )
+                i += 1
 
     _LOGGER.debug(f"set WatchScanner")
     scanner = WatchScanner(
@@ -140,5 +169,5 @@ class WatchScanner:
             battery=await self._api.getWatchBattery_async(),
             attributes=attr,
             icon="mdi:watch",
-            picture=self._api.getWatchUserIcon_async(),
+            picture=(await self._api.getWatchUserIcon_async()),
         )

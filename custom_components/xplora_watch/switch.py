@@ -57,7 +57,7 @@ class SilentSwitch(XploraSwitchEntity, SwitchEntity):
         self._controller: PXA.PyXploraApi = controller
         self._first = True
         self._silent = silent
-        self._is_on = self.__state(self._silent["status"])
+        self._attr_is_on = self.__state(self._silent["status"])
         self._start_time = start_time
         self._scan_interval = scan_interval
         super().__init__(self._silent, name)
@@ -73,12 +73,12 @@ class SilentSwitch(XploraSwitchEntity, SwitchEntity):
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
         if (await self._controller.setEnableSilentTime_async(self._silent["id"])):
-            self._is_on = True
+            self._attr_is_on = True
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
         if (await self._controller.setDisableSilentTime_async(self._silent["id"])):
-            self._is_on = False
+            self._attr_is_on = False
 
     async def async_update(self) -> None:
         if self.__update_timer() or self._first:
@@ -87,7 +87,7 @@ class SilentSwitch(XploraSwitchEntity, SwitchEntity):
             silents = await self._controller.schoolSilentMode_async()
             for silent in silents:
                 if silent['id'] == self._silent['id']:
-                    self._is_on = self.__state(silent['status'])
+                    self._attr_is_on = self.__state(silent['status'])
 
 class AlarmSwitch(XploraSwitchEntity, SwitchEntity):
 
@@ -96,7 +96,7 @@ class AlarmSwitch(XploraSwitchEntity, SwitchEntity):
         self._alarm = alarm
         self._controller: PXA.PyXploraApi = controller
         self._first = True
-        self._is_on = self.__state(self._alarm["status"])
+        self._attr_is_on = self.__state(self._alarm["status"])
         self._scan_interval = scan_interval
         self._start_time = start_time
         super().__init__(self._alarm, name)
@@ -112,12 +112,12 @@ class AlarmSwitch(XploraSwitchEntity, SwitchEntity):
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
         if (await self._controller.setEnableAlarmTime_async(self._alarm["id"])):
-            self._is_on = True
+            self._attr_is_on = True
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
         if (await self._controller.setDisableAlarmTime_async(self._alarm["id"])):
-            self._is_on = False
+            self._attr_is_on = False
 
     async def async_update(self) -> None:
         if self.__update_timer() or self._first:
@@ -126,4 +126,4 @@ class AlarmSwitch(XploraSwitchEntity, SwitchEntity):
             alarms = await self._controller.getWatchAlarm_async()
             for alarm in alarms:
                 if alarm['id'] == self._alarm['id']:
-                    self._is_on = self.__state(alarm['status'])
+                    self._attr_is_on = self.__state(alarm['status'])

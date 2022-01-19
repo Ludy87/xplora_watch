@@ -23,6 +23,7 @@ from .const import (
     CONF_COUNTRY_CODE,
     CONF_PHONENUMBER,
     CONF_PASSWORD,
+    CONF_SAFEZONES,
     CONF_START_TIME,
     CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
@@ -65,6 +66,8 @@ CONTROLLER_SCHEMA = vol.Schema(
         vol.Required(CONF_TYPES, default=SENSORS): cv.ensure_list,
         vol.Required(CONF_USERLANG): cv.string,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
+        vol.Optional(CONF_SAFEZONES, default="hidden"): cv.string,
+        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
         vol.Optional(CONF_TRACKER_SCAN_INTERVAL, default=TRACKER_UPDATE): cv.time_period,
     }
 )
@@ -79,6 +82,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     hass.data[CONF_COUNTRY_CODE] = []
     hass.data[CONF_PASSWORD] = []
     hass.data[CONF_PHONENUMBER] = []
+    hass.data[CONF_SAFEZONES] = []
     hass.data[CONF_SCAN_INTERVAL] = []
     hass.data[CONF_START_TIME] = []
     hass.data[CONF_TIMEZONE] = []
@@ -116,6 +120,7 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     hass.data[CONF_COUNTRY_CODE].append(countryCode)
     hass.data[CONF_PASSWORD].append(password)
     hass.data[CONF_PHONENUMBER].append(phoneNumber)
+    hass.data[CONF_SAFEZONES].append(controller_config[CONF_SAFEZONES])
     hass.data[CONF_SCAN_INTERVAL].append(scanInterval)
     hass.data[CONF_START_TIME].append(timeNow)
     hass.data[CONF_TIMEZONE].append(timeZone)

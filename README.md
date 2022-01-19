@@ -24,6 +24,7 @@ Watch silent(s) | Switch
 Watch alarm(s) | Switch
 Send Message | Notify
 Watch Tracking | Device Tracker
+Watch Show Safezone | Device Tracker
 
 ---
 ## Installation
@@ -51,7 +52,7 @@ xplora_watch:
   password: "password"
   userlang: "de-DE"
   timezone: "Europe/Berlin"
-  types: 
+  types:
     - "battery"
     - "xcoin"
     - "state"
@@ -60,6 +61,7 @@ xplora_watch:
     - "silents"
     - "alarms"
     - "dt_watch"
+  safezones: "show"
   scan_interval: 300
   tracker_scan_interval: 60
 ```

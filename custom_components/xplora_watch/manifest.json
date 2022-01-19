@@ -6,7 +6,7 @@
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],
   "requirements": [
-    "pyxplora-api==1.0.61"
+    "pyxplora-api==1.0.62"
   ],
   "codeowners": ["@Ludy87"],
   "iot_class": ["local_polling", "local_push"]
