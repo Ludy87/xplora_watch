@@ -1,45 +1,43 @@
 """Const for Xplora® Watch."""
 DOMAIN = "xplora_watch"
-
-ATTR_WATCH = "watch"
-
-CONF_COUNTRY_CODE = "country_code"
-CONF_PHONENUMBER = "phonenumber"
-CONF_PASSWORD = "password"
-CONF_USERLANG = "userlang"
-CONF_TIMEZONE = "timezone"
-CONF_START_TIME = "start_time"
-
 XPLORA_CONTROLLER = "controller"
 
-SENSOR_TYPE_BATTERY_SENSOR = "battery"
-SENSOR_TYPE_XCOIN_SENSOR = "xcoin"
-
-BINARY_SENSOR_STATE = "state"
-BINARY_SENSOR_SAFEZONE = "safezone"
-BINARY_SENSOR_CHARGING = "charging"
-
-SWITCH_SILENTS = "silents"
-SWITCH_ALARMS = "alarms"
-
-DEVICE_TRACKER_WATCH = "dt_watch"
-
+CONF_COUNTRY_CODE = "country_code"
+CONF_PASSWORD = "password"
+CONF_PHONENUMBER = "phonenumber"
+CONF_START_TIME = "start_time"
+CONF_TIMEZONE = "timezone"
 CONF_TYPES = "types"
 CONF_TRACKER_SCAN_INTERVAL = "tracker_scan_interval"
+CONF_USERLANG = "userlang"
+
+SENSOR_BATTERY = "battery"
+SENSOR_XCOIN = "xcoin"
+
+BINARY_SENSOR_CHARGING = "charging"
+BINARY_SENSOR_SAFEZONE = "safezone"
+BINARY_SENSOR_STATE = "state"
+
+SWITCH_ALARMS = "alarms"
+SWITCH_SILENTS = "silents"
+
+DEVICE_TRACKER_WATCH = "dt_watch"
 
 DATA_XPLORA = "xplora"
 
 DEFAULT_SCAN_INTERVAL = 3 * 60
 TRACKER_UPDATE = 60
 
-DEVICE_TRACKER_LAT = "latitude"
-DEVICE_TRACKER_LNG = "longitude"
-DEVICE_TRACKER_RAD = "radius"
-DEVICE_TRACKER_COUNTRY = "country"
-DEVICE_TRACKER_COUNTRY_ABBR = "countryAbbr"
-DEVICE_TRACKER_PROVINCE = "province"
-DEVICE_TRACKER_CITY = "city"
-DEVICE_TRACKER_ADDR = "addr"
-DEVICE_TRACKER_POI = "poi"
-DEVICE_TRACKER_ISINSAFEZONE = "isinsafezone"
-DEVICE_TRACKER_SAFEZONELABEL = "savezonelabel"
+ATTR_WATCH = "watch"
+
+ATTR_TRACKER_ADDR = "addr"
+ATTR_TRACKER_CITY = "city"
+ATTR_TRACKER_COUNTRY = "country"
+ATTR_TRACKER_COUNTRY_ABBR = "countryAbbr"
+ATTR_TRACKER_ISINSAFEZONE = "isinsafezone"
+ATTR_TRACKER_LAT = "latitude"
+ATTR_TRACKER_LNG = "longitude"
+ATTR_TRACKER_POI = "poi"
+ATTR_TRACKER_PROVINCE = "province"
+ATTR_TRACKER_RAD = "radius"
+ATTR_TRACKER_SAFEZONELABEL = "savezonelabel"

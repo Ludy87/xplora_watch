@@ -19,9 +19,9 @@ from .const import (
     CONF_START_TIME,
     CONF_TYPES,
     DATA_XPLORA,
+    SENSOR_BATTERY,
+    SENSOR_XCOIN,
     XPLORA_CONTROLLER,
-    SENSOR_TYPE_BATTERY_SENSOR,
-    SENSOR_TYPE_XCOIN_SENSOR,
 )
 from .sensor_const import bat
 from pyxplora_api import pyxplora_api_async as PXA
@@ -30,11 +30,11 @@ _LOGGER = logging.getLogger(__name__)
 
 SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
-        key=SENSOR_TYPE_BATTERY_SENSOR,
+        key=SENSOR_BATTERY,
         device_class=SensorDeviceClass.BATTERY,
     ),
     SensorEntityDescription(
-        key=SENSOR_TYPE_XCOIN_SENSOR,
+        key=SENSOR_XCOIN,
         icon="mdi:hand-coin"
     ),
 )
@@ -47,9 +47,9 @@ async def async_setup_platform(
 ) -> None:
     if discovery_info is None:
         return
+    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
-    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
     for description in SENSOR_TYPES:
@@ -74,9 +74,9 @@ class XploraSensor(SensorEntity):
     ) -> None:
         self.entity_description = description
         self._controller: PXA.PyXploraApi = controller
-        self._start_time = start_time
         self._first = True
         self._scan_interval = scan_interval
+        self._start_time = start_time
         self._types = _types
         _LOGGER.debug(f"set Sensor: {self.entity_description.key}")
 
@@ -98,17 +98,17 @@ class XploraSensor(SensorEntity):
     async def __update(self) -> None:
         """ https://github.com/home-assistant/core/blob/master/homeassistant/helpers/entity.py#L219 """
         
-        if await self.__isTypes(SENSOR_TYPE_BATTERY_SENSOR):
+        if await self.__isTypes(SENSOR_BATTERY):
             charging = await self._controller.getWatchIsCharging_async()
 
-            await self.__default_attr((await self._controller.getWatchBattery_async()), SENSOR_TYPE_BATTERY_SENSOR, PERCENTAGE)
+            await self.__default_attr((await self._controller.getWatchBattery_async()), SENSOR_BATTERY, PERCENTAGE)
             self._attr_icon = bat(self._attr_native_value, charging)
 
             _LOGGER.debug("Updating sensor: %s | Battery: %s | Charging %s", self._attr_name, str(self._attr_native_value), str(charging))
 
-        elif await self.__isTypes(SENSOR_TYPE_XCOIN_SENSOR):
+        elif await self.__isTypes(SENSOR_XCOIN):
 
-            await self.__default_attr(await self._controller.getWatchXcoin_async(), SENSOR_TYPE_XCOIN_SENSOR, "💰")
+            await self.__default_attr(await self._controller.getWatchXcoin_async(), SENSOR_XCOIN, "💰")
 
             _LOGGER.debug("Updating sensor: %s | XCoins: %s", self._attr_name, str(self._attr_native_value))
 

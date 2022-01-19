@@ -6,23 +6,23 @@ import logging
 from datetime import datetime
 
 from .const import (
+    ATTR_TRACKER_LAT,
+    ATTR_TRACKER_LNG,
+    ATTR_TRACKER_RAD,
+    ATTR_TRACKER_COUNTRY,
+    ATTR_TRACKER_COUNTRY_ABBR,
+    ATTR_TRACKER_PROVINCE,
+    ATTR_TRACKER_CITY,
+    ATTR_TRACKER_ADDR,
+    ATTR_TRACKER_POI,
+    ATTR_TRACKER_ISINSAFEZONE,
+    ATTR_TRACKER_SAFEZONELABEL,
     CONF_START_TIME,
     CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
     DATA_XPLORA,
     DEVICE_TRACKER_WATCH,
     XPLORA_CONTROLLER,
-    DEVICE_TRACKER_LAT,
-    DEVICE_TRACKER_LNG,
-    DEVICE_TRACKER_RAD,
-    DEVICE_TRACKER_COUNTRY,
-    DEVICE_TRACKER_COUNTRY_ABBR,
-    DEVICE_TRACKER_PROVINCE,
-    DEVICE_TRACKER_CITY,
-    DEVICE_TRACKER_ADDR,
-    DEVICE_TRACKER_POI,
-    DEVICE_TRACKER_ISINSAFEZONE,
-    DEVICE_TRACKER_SAFEZONELABEL,
 )
 from pyxplora_api import pyxplora_api_async as PXA
 
@@ -43,9 +43,8 @@ async def async_setup_scanner(
     if discovery_info is None:
         return False
     _LOGGER.debug(f"set Tracker")
-    _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
-    if DEVICE_TRACKER_WATCH not in _types:
+    if DEVICE_TRACKER_WATCH not in hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]:
         return False
 
     api: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
@@ -73,14 +72,14 @@ class WatchScanner:
         start_time,
     ) -> None:
         """Initialize."""
+        self.connected = False
+        self._api: PXA.PyXploraApi = api
+        self._async_see = async_see
+        self._first = True
         self._hass = hass
         self._scan_interval = scan_interval
-        self._async_see = async_see
-        self._api: PXA.PyXploraApi = api
-        self.connected = False
-        self._watch_location = None
         self._start_time = start_time
-        self._first = True
+        self._watch_location = None
 
     def __update_timer(self) -> int:
         return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
@@ -112,27 +111,27 @@ class WatchScanner:
         device_info = self._watch_location
         attr = {}
         if device_info.get("lat", None):
-            attr[DEVICE_TRACKER_LAT] = device_info["lat"]
+            attr[ATTR_TRACKER_LAT] = device_info["lat"]
         if device_info.get("lng", None):
-            attr[DEVICE_TRACKER_LNG] = device_info["lng"]
+            attr[ATTR_TRACKER_LNG] = device_info["lng"]
         if device_info.get("rad", None):
-            attr[DEVICE_TRACKER_RAD] = device_info["rad"]
+            attr[ATTR_TRACKER_RAD] = device_info["rad"]
         if device_info.get("country", None):
-            attr[DEVICE_TRACKER_COUNTRY] = device_info["country"]
+            attr[ATTR_TRACKER_COUNTRY] = device_info["country"]
         if device_info.get("countryAbbr", None):
-            attr[DEVICE_TRACKER_COUNTRY_ABBR] = device_info["countryAbbr"]
+            attr[ATTR_TRACKER_COUNTRY_ABBR] = device_info["countryAbbr"]
         if device_info.get("province", None):
-            attr[DEVICE_TRACKER_PROVINCE] = device_info["province"]
+            attr[ATTR_TRACKER_PROVINCE] = device_info["province"]
         if device_info.get("city", None):
-            attr[DEVICE_TRACKER_CITY] = device_info["city"]
+            attr[ATTR_TRACKER_CITY] = device_info["city"]
         if device_info.get("addr", None):
-            attr[DEVICE_TRACKER_ADDR] = device_info["addr"]
+            attr[ATTR_TRACKER_ADDR] = device_info["addr"]
         if device_info.get("poi", None):
-            attr[DEVICE_TRACKER_POI] = device_info["poi"]
+            attr[ATTR_TRACKER_POI] = device_info["poi"]
         if device_info.get("isInSafeZone", None):
-            attr[DEVICE_TRACKER_ISINSAFEZONE] = device_info["isInSafeZone"]
+            attr[ATTR_TRACKER_ISINSAFEZONE] = device_info["isInSafeZone"]
         if device_info.get("safeZoneLabel", None):
-            attr[DEVICE_TRACKER_SAFEZONELABEL] = device_info["safeZoneLabel"]
+            attr[ATTR_TRACKER_SAFEZONELABEL] = device_info["safeZoneLabel"]
         await self._async_see(
             source_type=await self._api.getWatchLocateType_async(),
             dev_id=slugify(await self._api.getWatchUserName_async() + " Watch Tracker"),
