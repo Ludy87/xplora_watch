@@ -17,13 +17,14 @@ Features | Type
 ---|---
 Battery | Sensor
 Watch-Xcoin | Sensor
-Watch Online state | BinarySensor
-Watch is safe | BinarySensor
-Watch charging | BinarySensor
+Watch Online state | Binary Sensor
+Watch is safe | Binary Sensor
+Watch charging | Binary Sensor
 Watch silent(s) | Switch
 Watch alarm(s) | Switch
-send Message | Notify
+Send Message | Notify
 Watch Tracking | Device Tracker
+Watch Show Safezone | Device Tracker
 
 ---
 ## Installation
@@ -51,7 +52,7 @@ xplora_watch:
   password: "password"
   userlang: "de-DE"
   timezone: "Europe/Berlin"
-  types: 
+  types:
     - "battery"
     - "xcoin"
     - "state"
@@ -60,6 +61,7 @@ xplora_watch:
     - "silents"
     - "alarms"
     - "dt_watch"
+  safezones: "show"
   scan_interval: 300
   tracker_scan_interval: 60
 ```
@@ -146,8 +148,8 @@ logger:
 ## [v0.0.7] - 2022-01-06
 
 ### Added
-- Watch is safe - `BinarySensor`
-- Watch charging - `BinarySensor`
+- Watch is safe - `Binary_Sensor`
+- Watch charging - `Binary_Sensor`
 - Watch silent(s) - `Switch`
 
 ### Changed
