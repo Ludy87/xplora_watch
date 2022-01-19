@@ -30,16 +30,16 @@ _LOGGER = logging.getLogger(__name__)
 
 BINARY_SENSOR_TYPES: tuple[BinarySensorEntityDescription, ...] = (
     BinarySensorEntityDescription(
-        key=BINARY_SENSOR_STATE,
-        device_class=BinarySensorDeviceClass.CONNECTIVITY,
+        key=BINARY_SENSOR_CHARGING,
+        device_class=BinarySensorDeviceClass.BATTERY_CHARGING,
     ),
     BinarySensorEntityDescription(
         key=BINARY_SENSOR_SAFEZONE,
         device_class=BinarySensorDeviceClass.SAFETY,
     ),
     BinarySensorEntityDescription(
-        key=BINARY_SENSOR_CHARGING,
-        device_class=BinarySensorDeviceClass.BATTERY_CHARGING,
+        key=BINARY_SENSOR_STATE,
+        device_class=BinarySensorDeviceClass.CONNECTIVITY,
     ),
 )
 
@@ -51,9 +51,9 @@ async def async_setup_platform(
 ) -> None:
     if discovery_info is None:
         return
+    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
-    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
     for description in BINARY_SENSOR_TYPES:
@@ -79,9 +79,9 @@ class XploraBinarySensor(BinarySensorEntity):
     ) -> None:
         self.entity_description = description
         self._controller: PXA.PyXploraApi = controller
-        self._start_time = start_time
         self._first = True
         self._scan_interval = scan_interval
+        self._start_time = start_time
         self._types = _types
         _LOGGER.debug(f"set Binary Sensor: {self.entity_description.key}")
 
