@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: main
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -28,7 +30,6 @@ jobs:
         uses: varunsridharan/action-repository-meta@main
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-
       - name: "💫 Dynamic Template Render"
         uses: varunsridharan/action-dynamic-readme@main
         with:
