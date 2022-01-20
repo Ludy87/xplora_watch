@@ -65,7 +65,6 @@ CONTROLLER_SCHEMA = vol.Schema(
         vol.Required(CONF_TIMEZONE): cv.time_zone,
         vol.Required(CONF_TYPES, default=SENSORS): cv.ensure_list,
         vol.Required(CONF_USERLANG): cv.string,
-        vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
         vol.Optional(CONF_SAFEZONES, default="hidden"): cv.string,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
         vol.Optional(CONF_TRACKER_SCAN_INTERVAL, default=TRACKER_UPDATE): cv.time_period,

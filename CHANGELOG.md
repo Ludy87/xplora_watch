@@ -1,5 +1,11 @@
 # Change Log
 
+## [v0.0.12] - 2022-01-20
+
+### Added
+- Watch Tracker Name
+
+---
 ## [v0.0.11] - 2022-01-19
 
 ### Added
@@ -8,10 +14,6 @@
 
 ### Changed
 - variable
-
-### Fixed
-- timer control reload Entity
-- wrong declaration (`sensors` to `types`)
 
 ---
 ## [v0.0.10] - 2022-01-18

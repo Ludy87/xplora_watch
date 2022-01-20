@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime
-from .entity import XploraSwitchEntity
 
 from homeassistant.components.switch import (
     SwitchEntity
@@ -21,6 +20,7 @@ from .const import (
     SWITCH_SILENTS,
     XPLORA_CONTROLLER,
 )
+from .entity import XploraSwitchEntity
 from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)

@@ -75,6 +75,7 @@ async def async_setup_scanner(
                     dev_id=slugify("Safezone " + str(i)),
                     gps=(lat, lng),
                     gps_accuracy=rad,
+                    host_name=safeZone.get("name"),
                     attributes=attr,
                     icon="mdi:crosshairs-gps",
                 )
@@ -167,6 +168,7 @@ class WatchScanner:
             gps=(device_info.get("lat"), device_info.get("lng")),
             gps_accuracy=device_info.get("rad"),
             battery=await self._api.getWatchBattery_async(),
+            host_name=f"{await self._api.getWatchUserName_async()} Watch Tracker",
             attributes=attr,
             icon="mdi:watch",
             picture=(await self._api.getWatchUserIcon_async()),
