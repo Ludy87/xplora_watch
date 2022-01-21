@@ -1,6 +1,6 @@
 # Xplora® Watch
 
-Home Assistant Sensoren für die Xplora® Watch
+Home Assistant Sensoren for Xplora® Watch
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/releases)
@@ -17,13 +17,14 @@ Features | Type
 ---|---
 Battery | Sensor
 Watch-Xcoin | Sensor
-Watch Online state | BinarySensor
-Watch is safe | BinarySensor
-Watch charging | BinarySensor
+Watch Online state | Binary Sensor
+Watch is safe | Binary Sensor
+Watch charging | Binary Sensor
 Watch silent(s) | Switch
 Watch alarm(s) | Switch
-send Message | Notify
+Send Message | Notify
 Watch Tracking | Device Tracker
+Watch Show Safezone | Device Tracker
 
 ---
 ## Installation
@@ -51,7 +52,7 @@ xplora_watch:
   password: "password"
   userlang: "de-DE"
   timezone: "Europe/Berlin"
-  types: 
+  types:
     - "battery"
     - "xcoin"
     - "state"
@@ -60,6 +61,7 @@ xplora_watch:
     - "silents"
     - "alarms"
     - "dt_watch"
+  safezones: "show"
   scan_interval: 300
   tracker_scan_interval: 60
 ```
@@ -94,7 +96,6 @@ notify:
 | Italy | 39 |
 | Switzerland | 41 |
 | Austria | 43 |
-
 <!-- END ./countries.md -->
 
 ---
@@ -112,14 +113,26 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.12] - 2022-01-20
+
+### Added
+- Watch Tracker Name
+
+---
+## [v0.0.11] - 2022-01-19
+
+### Added
+- Watch Safezone GPS - `DeviceTracker`
+- Profil image Watch Tracker
+
+### Changed
+- variable
+
+---
 ## [v0.0.10] - 2022-01-18
 
 ### Added
-- Track Watch - `Device_Tracker`
-
-### Changed
-
-### Fixed
+- Track Watch - `DeviceTracker`
 
 ---
 ## [v0.0.9] - 2022-01-08
@@ -127,17 +140,9 @@ logger:
 ### Added
 - Watch alarm(s) - `Switch`
 
-### Changed
-
-### Fixed
-
 ---
 
 ## [v0.0.8] - 2022-01-08
-
-### Added
-
-### Changed
 
 ### Fixed
 - frozen state
@@ -156,5 +161,4 @@ logger:
 ### Fixed
 - timer control reload Entity
 - wrong declaration (`sensors` to `types`)
-
 <!-- END ./CHANGELOG.md -->

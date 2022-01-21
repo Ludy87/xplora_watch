@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          ref: main
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -28,7 +30,6 @@ jobs:
         uses: varunsridharan/action-repository-meta@main
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
-
       - name: "💫 Dynamic Template Render"
         uses: varunsridharan/action-dynamic-readme@main
         with:
@@ -42,7 +43,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
       - uses: stefanzweifel/git-auto-commit-action@v4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           file_pattern: README.md
           commit_message: Update generated README
@@ -64,4 +65,4 @@ jobs:
           name: v${{ github.event.head_commit.message }}
           draft: false
           prerelease: false
-          token: "${{ secrets.GITHUB_TOKEN }}"
+          token: "${{ secrets.TOKEN }}"
