@@ -124,7 +124,6 @@ class WatchScanner(XploraUpdateTime):
 
     async def _async_update(self, now=None) -> None:
         """Update info from Xplora® API."""
-        _LOGGER.warning(f"Treacker Timer {self._scan_interval} _> {self._start_time}")
         if self._update_timer() or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
