@@ -96,6 +96,7 @@ notify:
 | Italy | 39 |
 | Switzerland | 41 |
 | Austria | 43 |
+
 <!-- END ./countries.md -->
 
 ---
@@ -170,4 +171,5 @@ logger:
 ### Fixed
 - timer control reload Entity
 - wrong declaration (`sensors` to `types`)
+
 <!-- END ./CHANGELOG.md -->
