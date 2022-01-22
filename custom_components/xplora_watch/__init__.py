@@ -24,7 +24,6 @@ from .const import (
     CONF_PHONENUMBER,
     CONF_PASSWORD,
     CONF_SAFEZONES,
-    CONF_START_TIME,
     CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
     CONF_USERLANG,
@@ -83,7 +82,6 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     hass.data[CONF_PHONENUMBER] = []
     hass.data[CONF_SAFEZONES] = []
     hass.data[CONF_SCAN_INTERVAL] = []
-    hass.data[CONF_START_TIME] = []
     hass.data[CONF_TIMEZONE] = []
     hass.data[CONF_TRACKER_SCAN_INTERVAL] = []
     hass.data[CONF_TYPES] = []
@@ -106,7 +104,7 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     _types = controller_config[CONF_TYPES]
     _LOGGER.debug(f"Entity-Types: {_types}")
     scanInterval = controller_config[CONF_SCAN_INTERVAL]
-    tsi = controller_config[CONF_TRACKER_SCAN_INTERVAL]
+    trackerScanInterval = controller_config[CONF_TRACKER_SCAN_INTERVAL]
     timeNow = datetime.timestamp(datetime.now())
 
     _LOGGER.debug("init API-Controller")
@@ -114,6 +112,7 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     await controller.init_async()
     _LOGGER.debug(f"Xplora® Api Version: {controller.version()}")
     _LOGGER.debug(f"set Update interval: {scanInterval}")
+    _LOGGER.debug(f"set Update interval Tracker: {trackerScanInterval}")
     position = len(hass.data[DATA_XPLORA])
 
     hass.data[CONF_COUNTRY_CODE].append(countryCode)
@@ -121,9 +120,8 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     hass.data[CONF_PHONENUMBER].append(phoneNumber)
     hass.data[CONF_SAFEZONES].append(controller_config[CONF_SAFEZONES])
     hass.data[CONF_SCAN_INTERVAL].append(scanInterval)
-    hass.data[CONF_START_TIME].append(timeNow)
     hass.data[CONF_TIMEZONE].append(timeZone)
-    hass.data[CONF_TRACKER_SCAN_INTERVAL].append(tsi)
+    hass.data[CONF_TRACKER_SCAN_INTERVAL].append(trackerScanInterval)
     hass.data[CONF_TYPES].append(_types)
     hass.data[CONF_USERLANG].append(userlang)
     hass.data[DATA_XPLORA].append(controller)
