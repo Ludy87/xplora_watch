@@ -1,12 +1,29 @@
 """Entity Xplora® Watch."""
 from __future__ import annotations
 
+import logging
+
+from datetime import datetime
 from typing import Any
 
-class XploraSwitchEntity:
-    def __init__(self, switch, name) -> None:
+from .helper import XploraUpdateTime
+from pyxplora_api import pyxplora_api_async as PXA
+
+_LOGGER = logging.getLogger(__name__)
+
+class XploraSwitchEntity(XploraUpdateTime):
+    def __init__(self, switch, controller, scan_interval, start_time, name, func_name) -> None:
+        super().__init__(scan_interval, start_time)
+        _LOGGER.debug(f"init switch {func_name} {name}")
+        self._controller: PXA.PyXploraApi = controller
         self._switch = switch
         self._name = name
+        self._attr_is_on = self._state(self._switch["status"])
+
+    def _state(self, status) -> bool:
+        if status == "DISABLE":
+            return False
+        return True
 
     @property
     def unique_id(self) -> str:
