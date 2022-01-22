@@ -1,5 +1,14 @@
 # Change Log
 
+## [v0.0.13] - 2022-01-21
+
+### Changed
+- cleanup
+
+### Fixed
+- frozen state
+
+---
 ## [v0.0.12] - 2022-01-20
 
 ### Added

@@ -45,8 +45,8 @@ xplora_watch:
     - "alarms"
     - "dt_watch"
   safezones: "show"
-  scan_interval: 300
-  tracker_scan_interval: 60
+  scan_interval: 180 # default sec
+  tracker_scan_interval: 60 # default sec
 ```
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`
