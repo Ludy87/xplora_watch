@@ -96,7 +96,6 @@ notify:
 | Italy | 39 |
 | Switzerland | 41 |
 | Austria | 43 |
-
 <!-- END ./countries.md -->
 
 ---
