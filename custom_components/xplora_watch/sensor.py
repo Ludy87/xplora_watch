@@ -16,13 +16,13 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import (
     ATTR_WATCH,
-    CONF_START_TIME,
     CONF_TYPES,
     DATA_XPLORA,
     SENSOR_BATTERY,
     SENSOR_XCOIN,
     XPLORA_CONTROLLER,
 )
+from .helper import XploraUpdateTime
 from .sensor_const import bat
 from pyxplora_api import pyxplora_api_async as PXA
 
@@ -49,7 +49,7 @@ async def async_setup_platform(
         return
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
+    start_time = datetime.timestamp(datetime.now())
     _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
     for description in SENSOR_TYPES:
@@ -60,10 +60,10 @@ async def async_setup_platform(
                     controller,
                     scan_interval,
                     start_time,
-                    _types) #for description in SENSOR_TYPES
+                    _types)
                 ], True)
 
-class XploraSensor(SensorEntity):
+class XploraSensor(SensorEntity, XploraUpdateTime):
     def __init__(
         self,
         description: SensorEntityDescription,
@@ -72,16 +72,11 @@ class XploraSensor(SensorEntity):
         start_time,
         _types: str
     ) -> None:
+        super().__init__(scan_interval, start_time)
         self.entity_description = description
         self._controller: PXA.PyXploraApi = controller
-        self._first = True
-        self._scan_interval = scan_interval
-        self._start_time = start_time
         self._types = _types
         _LOGGER.debug(f"set Sensor: {self.entity_description.key}")
-
-    def __update_timer(self) -> int:
-        return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
 
     async def __isTypes(self, sensor_type: str) -> bool:
         if sensor_type in self._types and self.entity_description.key == sensor_type:
@@ -113,7 +108,7 @@ class XploraSensor(SensorEntity):
             _LOGGER.debug("Updating sensor: %s | XCoins: %s", self._attr_name, str(self._attr_native_value))
 
     async def async_update(self) -> None:
-        if self.__update_timer() or self._first:
+        if self._update_timer() or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
             await self.__update()

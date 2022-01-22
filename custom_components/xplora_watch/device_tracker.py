@@ -21,13 +21,13 @@ from .const import (
     ATTR_TRACKER_SAFEZONELABEL,
     ATTR_TRACKER_SAFEZONENAME,
     CONF_SAFEZONES,
-    CONF_START_TIME,
     CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
     DATA_XPLORA,
     DEVICE_TRACKER_WATCH,
     XPLORA_CONTROLLER,
 )
+from .helper import XploraUpdateTime
 from pyxplora_api import pyxplora_api_async as PXA
 
 from homeassistant.components.device_tracker.const import SOURCE_TYPE_GPS
@@ -54,7 +54,7 @@ async def async_setup_scanner(
 
     api: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
+    start_time = datetime.timestamp(datetime.now())
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
         i = 1
@@ -92,7 +92,7 @@ async def async_setup_scanner(
 
     return await scanner.async_init()
 
-class WatchScanner:
+class WatchScanner(XploraUpdateTime):
     def __init__(
         self,
         hass,
@@ -102,17 +102,12 @@ class WatchScanner:
         start_time,
     ) -> None:
         """Initialize."""
+        super().__init__(scan_interval, start_time)
         self.connected = False
         self._api: PXA.PyXploraApi = api
         self._async_see = async_see
-        self._first = True
         self._hass = hass
-        self._scan_interval = scan_interval
-        self._start_time = start_time
         self._watch_location = None
-
-    def __update_timer(self) -> int:
-        return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
 
     async def async_init(self) -> bool:
         """Further initialize connection to Xplora® API."""
@@ -129,11 +124,12 @@ class WatchScanner:
 
     async def _async_update(self, now=None) -> None:
         """Update info from Xplora® API."""
-        if self.__update_timer() or self._first:
+        _LOGGER.warning(f"Treacker Timer {self._scan_interval} _> {self._start_time}")
+        if self._update_timer() or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
             _LOGGER.debug("Updating device data")
-            self._watch_location = await self._api.getWatchLastLocation_async()
+            self._watch_location = await self._api.getWatchLastLocation_async(True)
             self._hass.async_create_task(self.import_device_data())
 
     async def import_device_data(self) -> None:
@@ -163,7 +159,7 @@ class WatchScanner:
         if device_info.get("safeZoneLabel", None):
             attr[ATTR_TRACKER_SAFEZONELABEL] = device_info["safeZoneLabel"]
         await self._async_see(
-            source_type=await self._api.getWatchLocateType_async(),
+            source_type=device_info.get("locateTypec", await self._api.getWatchLocateType_async()),
             dev_id=slugify(await self._api.getWatchUserName_async() + " Watch Tracker"),
             gps=(device_info.get("lat"), device_info.get("lng")),
             gps_accuracy=device_info.get("rad"),

@@ -19,11 +19,11 @@ from .const import (
     BINARY_SENSOR_CHARGING,
     BINARY_SENSOR_SAFEZONE,
     BINARY_SENSOR_STATE,
-    CONF_START_TIME,
     CONF_TYPES,
     DATA_XPLORA,
     XPLORA_CONTROLLER
 )
+from .helper import XploraUpdateTime
 from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ async def async_setup_platform(
         return
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time = hass.data[CONF_START_TIME][discovery_info[XPLORA_CONTROLLER]]
+    start_time = datetime.timestamp(datetime.now())
     _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
     for description in BINARY_SENSOR_TYPES:
@@ -67,7 +67,7 @@ async def async_setup_platform(
                     _types)
                 ], True)
 
-class XploraBinarySensor(BinarySensorEntity):
+class XploraBinarySensor(BinarySensorEntity, XploraUpdateTime):
 
     def __init__(
         self,
@@ -77,16 +77,11 @@ class XploraBinarySensor(BinarySensorEntity):
         start_time,
         _types: str
     ) -> None:
+        super().__init__(scan_interval, start_time)
         self.entity_description = description
         self._controller: PXA.PyXploraApi = controller
-        self._first = True
-        self._scan_interval = scan_interval
-        self._start_time = start_time
         self._types = _types
         _LOGGER.debug(f"set Binary Sensor: {self.entity_description.key}")
-
-    def __update_timer(self) -> int:
-        return (int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds())
 
     async def __isOnline(self) -> bool:
         await self._controller.init_async()
@@ -138,7 +133,7 @@ class XploraBinarySensor(BinarySensorEntity):
             _LOGGER.debug("Updating sensor: %s | State: %s", self._attr_name, str(self._attr_is_on))
 
     async def async_update(self) -> None:
-        if self.__update_timer() or self._first:
+        if self._update_timer() or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
             await self.__update()
