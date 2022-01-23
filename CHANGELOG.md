@@ -1,5 +1,15 @@
 # Change Log
 
+## [v0.0.14] - 2022-01-23
+
+### Changed
+- cleanup
+
+### Added
+- Icon Silent/Alarm
+
+---
+
 ## [v0.0.13] - 2022-01-21
 
 ### Changed

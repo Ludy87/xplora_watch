@@ -55,6 +55,10 @@ class SilentSwitch(XploraSwitchEntity, SwitchEntity):
         super().__init__(silent, controller, scan_interval, start_time, name, "silent")
         self._silent = silent
 
+    @property
+    def icon(self) -> str:
+        return "mdi:school"
+
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
         if (await self._controller.setEnableSilentTime_async(self._silent["id"])):
@@ -79,6 +83,10 @@ class AlarmSwitch(XploraSwitchEntity, SwitchEntity):
     def __init__(self, alarm: list, controller: PXA.PyXploraApi, scan_interval, start_time, name) -> None:
         super().__init__(alarm, controller, scan_interval, start_time, name, "alarm")
         self._alarm = alarm
+
+    @property
+    def icon(self) -> str:
+        return "mdi:alarm"
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
