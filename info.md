@@ -66,4 +66,6 @@ notify:
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`
 
+![notify image](./images/notify.png)
+
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
