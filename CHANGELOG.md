@@ -1,6 +1,6 @@
 # Change Log
 
-## [v0.0.15-Beta + v0.0.15-Beta] - 2022-02-09
+## [v0.0.15-Beta + v0.0.16-Beta] - 2022-02-09
 
 ### Fixed
 - Notify send error
