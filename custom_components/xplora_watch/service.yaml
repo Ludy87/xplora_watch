@@ -9,3 +9,10 @@ send_message:
       example: This is a message I am sending to Watch
       selector:
         text:
+    target:
+      name: Target
+      description:
+        An array of targets to send the notification to.
+      example: 1234567890
+      selector:
+        object:

@@ -8,7 +8,7 @@ from homeassistant.components.notify import BaseNotificationService
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
-from .const import DATA_XPLORA
+from .const import CONF_CHILD_PHONENUMBER, DATA_XPLORA
 
 from pyxplora_api import pyxplora_api_async as PXA
 
@@ -21,6 +21,8 @@ async def async_get_service(
 ) -> XploraNotificationService:
     _LOGGER.debug("set Notify Controller")
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][0]
+    child_no = hass.data[CONF_CHILD_PHONENUMBER][0]
+
     _LOGGER.debug("set Service Notify")
     sv = XploraNotificationService()
     sv.setup(controller)
@@ -38,8 +40,14 @@ class XploraNotificationService(BaseNotificationService):
 
     async def async_send_message(self, message: str = "", **kwargs: Any) -> None:
         msg = message.strip()
+        _LOGGER.warning(kwargs['target'])
         _LOGGER.debug(f"sent message {msg}")
         if len(msg):
-            await self._controller.sendText(msg)
+            ids = await self._controller.getWatchUserID_async(kwargs['target'])
+            if not ids:
+                _LOGGER.warning(f"Dont find child phonenumber!")
+                return
+            for id in ids:
+                _LOGGER.debug(await self._controller.sendText(msg, id))
         else:
             _LOGGER.warning(f"Your message is empty!")
