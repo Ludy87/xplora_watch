@@ -2,6 +2,7 @@
 DOMAIN = "xplora_watch"
 XPLORA_CONTROLLER = "controller"
 
+CONF_CHILD_PHONENUMBER = "child_phonenumber"
 CONF_COUNTRY_CODE = "country_code"
 CONF_PASSWORD = "password"
 CONF_PHONENUMBER = "phonenumber"

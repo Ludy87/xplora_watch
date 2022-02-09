@@ -21,6 +21,7 @@ from .const import (
     BINARY_SENSOR_CHARGING,
     BINARY_SENSOR_SAFEZONE,
     BINARY_SENSOR_STATE,
+    CONF_CHILD_PHONENUMBER,
     CONF_COUNTRY_CODE,
     CONF_PHONENUMBER,
     CONF_PASSWORD,
@@ -68,6 +69,7 @@ CONTROLLER_SCHEMA = vol.Schema(
         vol.Optional(CONF_SAFEZONES, default="hidden"): cv.string,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
         vol.Optional(CONF_TRACKER_SCAN_INTERVAL, default=TRACKER_UPDATE): cv.time_period,
+        vol.Optional(CONF_CHILD_PHONENUMBER, default=[]): cv.ensure_list,
     }
 )
 
@@ -78,6 +80,7 @@ CONFIG_SCHEMA = vol.Schema(
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     _LOGGER.debug(f"init Xplora® Watch")
+    hass.data[CONF_CHILD_PHONENUMBER] = []
     hass.data[CONF_COUNTRY_CODE] = []
     hass.data[CONF_PASSWORD] = []
     hass.data[CONF_PHONENUMBER] = []
@@ -96,6 +99,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     return success
 
 async def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType) -> bool:
+    childPhoneNumber = controller_config[CONF_CHILD_PHONENUMBER]
     countryCode = controller_config[CONF_COUNTRY_CODE]
     phoneNumber = controller_config[CONF_PHONENUMBER]
     password = controller_config[CONF_PASSWORD]
@@ -106,16 +110,18 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     _LOGGER.debug(f"Entity-Types: {_types}")
     scanInterval = controller_config[CONF_SCAN_INTERVAL]
     trackerScanInterval = controller_config[CONF_TRACKER_SCAN_INTERVAL]
-    timeNow = datetime.timestamp(datetime.now())
 
     _LOGGER.debug("init API-Controller")
     controller = PXA.PyXploraApi(countryCode, phoneNumber, password, userlang, timeZone)
     await controller.init_async()
+    childPhoneNumber = await controller.getWatchUserID_async(childPhoneNumber)
+
     _LOGGER.debug(f"Xplora® Api Version: {controller.version()}")
     _LOGGER.debug(f"set Update interval: {scanInterval}")
     _LOGGER.debug(f"set Update interval Tracker: {trackerScanInterval}")
     position = len(hass.data[DATA_XPLORA])
 
+    hass.data[CONF_CHILD_PHONENUMBER].append(childPhoneNumber)
     hass.data[CONF_COUNTRY_CODE].append(countryCode)
     hass.data[CONF_PASSWORD].append(password)
     hass.data[CONF_PHONENUMBER].append(phoneNumber)

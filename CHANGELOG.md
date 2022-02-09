@@ -1,5 +1,14 @@
 # Change Log
 
+## [v0.0.15-Beta] - 2022-02-09
+
+### Changed
+- hacs & homeassistant version
+
+### Added
+- multi watch profil
+
+---
 ## [v0.0.14] - 2022-01-23
 
 ### Changed
@@ -9,7 +18,6 @@
 - Icon Silent/Alarm
 
 ---
-
 ## [v0.0.13] - 2022-01-21
 
 ### Changed

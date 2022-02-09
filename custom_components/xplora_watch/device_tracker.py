@@ -20,6 +20,7 @@ from .const import (
     ATTR_TRACKER_SAFEZONEGROUPNAME,
     ATTR_TRACKER_SAFEZONELABEL,
     ATTR_TRACKER_SAFEZONENAME,
+    CONF_CHILD_PHONENUMBER,
     CONF_SAFEZONES,
     CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
@@ -53,33 +54,39 @@ async def async_setup_scanner(
         return False
 
     api: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
+    child_no = hass.data[CONF_CHILD_PHONENUMBER][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time = datetime.timestamp(datetime.now())
+    _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
+
+    if not DEVICE_TRACKER_WATCH in _types:
+        return False
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
-        i = 1
-        for safeZone in await api.getSafeZones_async():
-            if safeZone:
-                lat = safeZone.get("lat")
-                lng = safeZone.get("lng")
-                rad = safeZone.get("rad")
-                attr = {}
-                if safeZone.get("name", None):
-                    attr[ATTR_TRACKER_SAFEZONENAME] = safeZone.get("name")
-                if safeZone.get("address", None):
-                    attr[ATTR_TRACKER_SAFEZONEADRESS] = safeZone.get("address")
-                if safeZone.get("groupName", None):
-                    attr[ATTR_TRACKER_SAFEZONEGROUPNAME] = safeZone.get("groupName")
-                await async_see(
-                    source_type=SOURCE_TYPE_GPS,
-                    dev_id=slugify("Safezone " + str(i)),
-                    gps=(lat, lng),
-                    gps_accuracy=rad,
-                    host_name=safeZone.get("name"),
-                    attributes=attr,
-                    icon="mdi:crosshairs-gps",
-                )
-                i += 1
+        for id in child_no:
+            i = 1
+            for safeZone in await api.getSafeZones_async(id):
+                if safeZone:
+                    lat = safeZone.get("lat")
+                    lng = safeZone.get("lng")
+                    rad = safeZone.get("rad")
+                    attr = {}
+                    if safeZone.get("name", None):
+                        attr[ATTR_TRACKER_SAFEZONENAME] = safeZone.get("name")
+                    if safeZone.get("address", None):
+                        attr[ATTR_TRACKER_SAFEZONEADRESS] = safeZone.get("address")
+                    if safeZone.get("groupName", None):
+                        attr[ATTR_TRACKER_SAFEZONEGROUPNAME] = safeZone.get("groupName")
+                    await async_see(
+                        source_type=SOURCE_TYPE_GPS,
+                        dev_id=slugify("Safezone " + str(i) + " " + id),
+                        gps=(lat, lng),
+                        gps_accuracy=rad,
+                        host_name=safeZone.get("name") + " " + id,
+                        attributes=attr,
+                        icon="mdi:crosshairs-gps",
+                    )
+                    i += 1
 
     _LOGGER.debug(f"set WatchScanner")
     scanner = WatchScanner(
@@ -88,6 +95,7 @@ async def async_setup_scanner(
         api,
         scan_interval,
         start_time,
+        child_no,
     )
 
     return await scanner.async_init()
@@ -100,11 +108,13 @@ class WatchScanner(XploraUpdateTime):
         api,
         scan_interval,
         start_time,
+        child_no,
     ) -> None:
         """Initialize."""
         super().__init__(scan_interval, start_time)
         self.connected = False
         self._api: PXA.PyXploraApi = api
+        self._child_no = child_no
         self._async_see = async_see
         self._hass = hass
         self._watch_location = None
@@ -113,10 +123,11 @@ class WatchScanner(XploraUpdateTime):
         """Further initialize connection to Xplora® API."""
         _LOGGER.debug(f"set async_init")
         await self._api.init_async()
-        username = await self._api.getWatchUserName_async()
-        if username is None:
-            _LOGGER.error("Can not connect to Xplora® API")
-            return False
+        for id in self._child_no:
+            username = await self._api.getWatchUserName_async(id)
+            if username is None:
+                _LOGGER.error("Can not connect to Xplora® API")
+                return False
 
         await self._async_update()
         async_track_time_interval(self._hass, self._async_update, self._scan_interval)
@@ -128,10 +139,11 @@ class WatchScanner(XploraUpdateTime):
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
             _LOGGER.debug("Updating device data")
-            self._watch_location = await self._api.getWatchLastLocation_async(True)
-            self._hass.async_create_task(self.import_device_data())
+            for id in self._child_no:
+                self._watch_location = await self._api.getWatchLastLocation_async(True, watchID=id)
+                self._hass.async_create_task(self.import_device_data(id))
 
-    async def import_device_data(self) -> None:
+    async def import_device_data(self, id) -> None:
         """Import device data from Xplora® API."""
         device_info = self._watch_location
         attr = {}
@@ -158,13 +170,13 @@ class WatchScanner(XploraUpdateTime):
         if device_info.get("safeZoneLabel", None):
             attr[ATTR_TRACKER_SAFEZONELABEL] = device_info["safeZoneLabel"]
         await self._async_see(
-            source_type=device_info.get("locateTypec", await self._api.getWatchLocateType_async()),
-            dev_id=slugify(await self._api.getWatchUserName_async() + " Watch Tracker"),
+            source_type=device_info.get("locateTypec", await self._api.getWatchLocateType_async(id)),
+            dev_id=slugify(await self._api.getWatchUserName_async(id) + " Watch Tracker " + id),
             gps=(device_info.get("lat"), device_info.get("lng")),
             gps_accuracy=device_info.get("rad"),
-            battery=await self._api.getWatchBattery_async(),
-            host_name=f"{await self._api.getWatchUserName_async()} Watch Tracker",
+            battery=await self._api.getWatchBattery_async(id),
+            host_name=f"{await self._api.getWatchUserName_async(id)} Watch Tracker {id}",
             attributes=attr,
             icon="mdi:watch",
-            picture=(await self._api.getWatchUserIcon_async()),
+            picture=(await self._api.getWatchUserIcon_async(id)),
         )

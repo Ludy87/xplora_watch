@@ -52,6 +52,9 @@ xplora_watch:
   password: "password"
   userlang: "de-DE"
   timezone: "Europe/Berlin"
+  child_phonenumber:
+    - "9876543210"
+    - "5678901234"
   types:
     - "battery"
     - "xcoin"
