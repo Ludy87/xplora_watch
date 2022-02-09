@@ -83,6 +83,8 @@ notify:
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`
 
+![notify image](./images/notify.png)
+
 ---
 ## 🏳 Supported Countries 🏳
 
