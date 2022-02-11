@@ -119,8 +119,21 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.17] - 2022-02-11
+
+### Fixed
+- state error
+- two init notify
+- device tracker init error - no def
+
+### Changed
+- var name api -> controller
+- obsolet import remove
+
+---
 ## [v0.0.15-Beta + v0.0.16-Beta] - 2022-02-09
 
+<details>
 ### Fixed
 - Notify send error
 
@@ -129,63 +142,79 @@ logger:
 
 ### Added
 - multi watch profil
+</details>
 
 ---
 ## [v0.0.14] - 2022-01-23
 
+<details>
 ### Changed
 - cleanup
 
 ### Added
 - Icon Silent/Alarm
+</details>
 
 ---
 ## [v0.0.13] - 2022-01-21
 
+<details>
 ### Changed
 - cleanup
 
 ### Fixed
 - frozen state
+</details>
 
 ---
 ## [v0.0.12] - 2022-01-20
 
+<details>
 ### Added
 - Watch Tracker Name
+</details>
 
 ---
 ## [v0.0.11] - 2022-01-19
 
+<details>
 ### Added
 - Watch Safezone GPS - `DeviceTracker`
 - Profil image Watch Tracker
 
 ### Changed
 - variable
+</details>
 
 ---
 ## [v0.0.10] - 2022-01-18
 
+<details>
 ### Added
 - Track Watch - `DeviceTracker`
+</details>
 
 ---
 ## [v0.0.9] - 2022-01-08
 
+<details>
 ### Added
 - Watch alarm(s) - `Switch`
+</details>
 
 ---
 
 ## [v0.0.8] - 2022-01-08
 
+<details>
 ### Fixed
 - frozen state
+</details>
 
 ---
 ## [v0.0.7] - 2022-01-06
 
+<details>
 ### Added
 - Watch is safe - `BinarySensor`
 - Watch charging - `BinarySensor`
@@ -197,5 +226,5 @@ logger:
 ### Fixed
 - timer control reload Entity
 - wrong declaration (`sensors` to `types`)
-
+</details>
 <!-- END ./CHANGELOG.md -->
