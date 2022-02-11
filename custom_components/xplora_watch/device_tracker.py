@@ -53,19 +53,15 @@ async def async_setup_scanner(
     if DEVICE_TRACKER_WATCH not in hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]:
         return False
 
-    api: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
+    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     child_no = hass.data[CONF_CHILD_PHONENUMBER][discovery_info[XPLORA_CONTROLLER]]
     scan_interval = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time = datetime.timestamp(datetime.now())
-    _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
-
-    if not DEVICE_TRACKER_WATCH in _types:
-        return False
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
         for id in child_no:
             i = 1
-            for safeZone in await api.getSafeZones_async(id):
+            for safeZone in await controller.getSafeZones_async(id):
                 if safeZone:
                     lat = safeZone.get("lat")
                     lng = safeZone.get("lng")
@@ -92,7 +88,7 @@ async def async_setup_scanner(
     scanner = WatchScanner(
         hass,
         async_see,
-        api,
+        controller,
         scan_interval,
         start_time,
         child_no,
@@ -105,7 +101,7 @@ class WatchScanner(XploraUpdateTime):
         self,
         hass,
         async_see,
-        api,
+        controller,
         scan_interval,
         start_time,
         child_no,
@@ -113,7 +109,7 @@ class WatchScanner(XploraUpdateTime):
         """Initialize."""
         super().__init__(scan_interval, start_time)
         self.connected = False
-        self._api: PXA.PyXploraApi = api
+        self._controller: PXA.PyXploraApi = controller
         self._child_no = child_no
         self._async_see = async_see
         self._hass = hass
@@ -122,9 +118,9 @@ class WatchScanner(XploraUpdateTime):
     async def async_init(self) -> bool:
         """Further initialize connection to Xplora® API."""
         _LOGGER.debug(f"set async_init")
-        await self._api.init_async()
+        await self._controller.init_async()
         for id in self._child_no:
-            username = await self._api.getWatchUserName_async(id)
+            username = await self._controller.getWatchUserName_async(id)
             if username is None:
                 _LOGGER.error("Can not connect to Xplora® API")
                 return False
@@ -140,7 +136,7 @@ class WatchScanner(XploraUpdateTime):
             self._start_time = datetime.timestamp(datetime.now())
             _LOGGER.debug("Updating device data")
             for id in self._child_no:
-                self._watch_location = await self._api.getWatchLastLocation_async(True, watchID=id)
+                self._watch_location = await self._controller.getWatchLastLocation_async(True, watchID=id)
                 self._hass.async_create_task(self.import_device_data(id))
 
     async def import_device_data(self, id) -> None:
@@ -170,13 +166,13 @@ class WatchScanner(XploraUpdateTime):
         if device_info.get("safeZoneLabel", None):
             attr[ATTR_TRACKER_SAFEZONELABEL] = device_info["safeZoneLabel"]
         await self._async_see(
-            source_type=device_info.get("locateTypec", await self._api.getWatchLocateType_async(id)),
-            dev_id=slugify(await self._api.getWatchUserName_async(id) + " Watch Tracker " + id),
+            source_type=device_info.get("locateTypec", await self._controller.getWatchLocateType_async(id)),
+            dev_id=slugify(await self._controller.getWatchUserName_async(id) + " Watch Tracker " + id),
             gps=(device_info.get("lat"), device_info.get("lng")),
             gps_accuracy=device_info.get("rad"),
-            battery=await self._api.getWatchBattery_async(id),
-            host_name=f"{await self._api.getWatchUserName_async(id)} Watch Tracker {id}",
+            battery=await self._controller.getWatchBattery_async(id),
+            host_name=f"{await self._controller.getWatchUserName_async(id)} Watch Tracker {id}",
             attributes=attr,
             icon="mdi:watch",
-            picture=(await self._api.getWatchUserIcon_async(id)),
+            picture=(await self._controller.getWatchUserIcon_async(id)),
         )

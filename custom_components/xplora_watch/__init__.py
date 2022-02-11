@@ -2,13 +2,11 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime
 
 import voluptuous as vol
 
 from homeassistant.components.binary_sensor import DOMAIN as BINARY_SENSOR_DOMAIN
 from homeassistant.components.device_tracker import DOMAIN as DEVICE_TRACKER
-from homeassistant.components.notify import DOMAIN as NOTIFY_DOMAIN
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN
 from homeassistant.components.switch import DOMAIN as SWITCH_DOMAIN
 from homeassistant.const import CONF_SCAN_INTERVAL
@@ -43,7 +41,7 @@ from .const import (
 )
 from pyxplora_api import pyxplora_api_async as PXA
 
-PLATFORMS = [BINARY_SENSOR_DOMAIN, DEVICE_TRACKER, NOTIFY_DOMAIN, SENSOR_DOMAIN, SWITCH_DOMAIN]
+PLATFORMS = [BINARY_SENSOR_DOMAIN, DEVICE_TRACKER, SENSOR_DOMAIN, SWITCH_DOMAIN]
 
 SENSORS = [
     DEVICE_TRACKER_WATCH,
@@ -132,6 +130,9 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     hass.data[CONF_TYPES].append(_types)
     hass.data[CONF_USERLANG].append(userlang)
     hass.data[DATA_XPLORA].append(controller)
+
+    if DEVICE_TRACKER_WATCH not in _types:
+        PLATFORMS.remove(DEVICE_TRACKER)
 
     for platform in PLATFORMS:
         hass.async_create_task(

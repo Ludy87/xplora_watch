@@ -4,11 +4,11 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from homeassistant.components.notify import BaseNotificationService
+from homeassistant.components.notify import BaseNotificationService, ATTR_TARGET
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
-from .const import CONF_CHILD_PHONENUMBER, DATA_XPLORA
+from .const import DATA_XPLORA, XPLORA_CONTROLLER
 
 from pyxplora_api import pyxplora_api_async as PXA
 
@@ -19,10 +19,11 @@ async def async_get_service(
     config: ConfigType,
     discovery_info: DiscoveryInfoType | None = None,
 ) -> XploraNotificationService:
+    if discovery_info is None:
+        return XploraNotificationService()
     _LOGGER.debug("set Notify Controller")
-    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][0]
-    child_no = hass.data[CONF_CHILD_PHONENUMBER][0]
-
+    _LOGGER.warning(discovery_info)
+    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     _LOGGER.debug("set Service Notify")
     sv = XploraNotificationService()
     sv.setup(controller)
@@ -40,10 +41,12 @@ class XploraNotificationService(BaseNotificationService):
 
     async def async_send_message(self, message: str = "", **kwargs: Any) -> None:
         msg = message.strip()
-        _LOGGER.warning(kwargs['target'])
-        _LOGGER.debug(f"sent message {msg}")
+        target = kwargs[ATTR_TARGET]
+        _LOGGER.debug(f"sent message {msg} to {target}")
+        if not target:
+            _LOGGER.warning("No child phonenumber!")
         if len(msg):
-            ids = await self._controller.getWatchUserID_async(kwargs['target'])
+            ids = await self._controller.getWatchUserID_async(kwargs[ATTR_TARGET])
             if not ids:
                 _LOGGER.warning(f"Dont find child phonenumber!")
                 return

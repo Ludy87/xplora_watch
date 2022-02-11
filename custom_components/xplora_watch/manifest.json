@@ -1,7 +1,7 @@
 {
   "domain": "xplora_watch",
   "name": "Xplora® Watch",
-  "version": "v0.0.16-Beta",
+  "version": "v0.0.17",
   "documentation": "https://github.com/Ludy87/xplora_watch/tree/main",
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],

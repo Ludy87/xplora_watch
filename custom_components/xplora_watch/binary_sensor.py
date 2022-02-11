@@ -93,7 +93,7 @@ class XploraBinarySensor(BinarySensorEntity, XploraUpdateTime):
         self._attr_icon = "mdi:lan-check"
         if (await self._controller.askWatchLocate_async(id) == True) or (await self._controller.trackWatchInterval_async(id) != -1):
             return True
-        state = await self._controller.getWatchOnlineStatus_async()
+        state = await self._controller.getWatchOnlineStatus_async(id)
         if (state == "ONLINE"):
             return True
         self._attr_icon = "mdi:lan-disconnect"
