@@ -19,11 +19,9 @@ async def async_get_service(
     config: ConfigType,
     discovery_info: DiscoveryInfoType | None = None,
 ) -> XploraNotificationService:
-    if discovery_info is None:
-        return XploraNotificationService()
     _LOGGER.debug("set Notify Controller")
-    _LOGGER.warning(discovery_info)
-    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
+    _LOGGER.debug(discovery_info)
+    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][0]
     _LOGGER.debug("set Service Notify")
     sv = XploraNotificationService()
     sv.setup(controller)
