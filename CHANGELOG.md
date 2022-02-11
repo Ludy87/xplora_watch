@@ -15,6 +15,7 @@
 ## [v0.0.15-Beta + v0.0.16-Beta] - 2022-02-09
 
 <details>
+
 ### Fixed
 - Notify send error
 
@@ -29,6 +30,7 @@
 ## [v0.0.14] - 2022-01-23
 
 <details>
+
 ### Changed
 - cleanup
 
@@ -40,6 +42,7 @@
 ## [v0.0.13] - 2022-01-21
 
 <details>
+
 ### Changed
 - cleanup
 
@@ -51,6 +54,7 @@
 ## [v0.0.12] - 2022-01-20
 
 <details>
+
 ### Added
 - Watch Tracker Name
 </details>
@@ -59,6 +63,7 @@
 ## [v0.0.11] - 2022-01-19
 
 <details>
+
 ### Added
 - Watch Safezone GPS - `DeviceTracker`
 - Profil image Watch Tracker
@@ -71,6 +76,7 @@
 ## [v0.0.10] - 2022-01-18
 
 <details>
+
 ### Added
 - Track Watch - `DeviceTracker`
 </details>
@@ -79,6 +85,7 @@
 ## [v0.0.9] - 2022-01-08
 
 <details>
+
 ### Added
 - Watch alarm(s) - `Switch`
 </details>
@@ -88,6 +95,7 @@
 ## [v0.0.8] - 2022-01-08
 
 <details>
+
 ### Fixed
 - frozen state
 </details>
@@ -96,6 +104,7 @@
 ## [v0.0.7] - 2022-01-06
 
 <details>
+
 ### Added
 - Watch is safe - `BinarySensor`
 - Watch charging - `BinarySensor`
