@@ -12,6 +12,8 @@
 
 ## [v0.0.17] - 2022-02-11
 
+<details>
+
 ### Fixed
 - state error
 - two init notify
@@ -20,6 +22,7 @@
 ### Changed
 - var name api -> controller
 - obsolet import remove
+</details>
 
 ---
 ## [v0.0.15-Beta + v0.0.16-Beta] - 2022-02-09
