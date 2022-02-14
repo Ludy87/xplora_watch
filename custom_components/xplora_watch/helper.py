@@ -3,8 +3,6 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from homeassistant.core import HomeAssistant
-
 class XploraUpdateTime:
     def __init__(self, scan_interval, start_time) -> None:
         self._first = True
@@ -17,14 +15,6 @@ class XploraUpdateTime:
 
 class XploraDevice(XploraUpdateTime):
     """Representation of a Xplora® device."""
-
-    hass: HomeAssistant
-
     def __init__(self, scan_interval, start_time) -> None:
-        """Set up the MySensors device."""
+        """Set up the Xplora® device."""
         super().__init__(scan_interval, start_time)
-
-    @property
-    def unique_id(self) -> str:
-        """Return a unique ID for use in home assistant."""
-        return "{self.gateway_id}-{self.node_id}-{self.child_id}-{self.value_type}"

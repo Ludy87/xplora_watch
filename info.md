@@ -68,4 +68,16 @@ notify:
 
 ![notify image](./images/notify.png)
 
+---
+## Tracking Setting
+
+1. define if wrong status (`not_home`|`home`)
+```yaml
+zone:
+  - name: Home
+    latitude: '' # your lat
+    longitude: '' # your lng
+```
+
+---
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
