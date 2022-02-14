@@ -5,17 +5,22 @@ from collections.abc import Awaitable, Callable
 import logging
 from datetime import datetime
 
+from math import radians, cos
+import numpy as np
+import itertools
+
 from .const import (
-    ATTR_TRACKER_LAT,
-    ATTR_TRACKER_LNG,
-    ATTR_TRACKER_RAD,
+    ATTR_TRACKER_ADDR,
+    ATTR_TRACKER_CITY,
     ATTR_TRACKER_COUNTRY,
     ATTR_TRACKER_COUNTRY_ABBR,
-    ATTR_TRACKER_PROVINCE,
-    ATTR_TRACKER_CITY,
-    ATTR_TRACKER_ADDR,
-    ATTR_TRACKER_POI,
+    ATTR_TRACKER_DISTOHOME,
     ATTR_TRACKER_ISINSAFEZONE,
+    ATTR_TRACKER_LAT,
+    ATTR_TRACKER_LNG,
+    ATTR_TRACKER_POI,
+    ATTR_TRACKER_PROVINCE,
+    ATTR_TRACKER_RAD,
     ATTR_TRACKER_SAFEZONEADRESS,
     ATTR_TRACKER_SAFEZONEGROUPNAME,
     ATTR_TRACKER_SAFEZONELABEL,
@@ -28,10 +33,10 @@ from .const import (
     DEVICE_TRACKER_WATCH,
     XPLORA_CONTROLLER,
 )
-from .helper import XploraUpdateTime
+from .helper import XploraDevice
 from pyxplora_api import pyxplora_api_async as PXA
 
-from homeassistant.components.device_tracker.const import SOURCE_TYPE_GPS
+from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -93,10 +98,9 @@ async def async_setup_scanner(
         start_time,
         child_no,
     )
-
     return await scanner.async_init()
 
-class WatchScanner(XploraUpdateTime):
+class WatchScanner(XploraDevice):
     def __init__(
         self,
         hass,
@@ -139,6 +143,19 @@ class WatchScanner(XploraUpdateTime):
                 self._watch_location = await self._controller.getWatchLastLocation_async(True, watchID=id)
                 self._hass.async_create_task(self.import_device_data(id))
 
+    def get_location(self):
+        home_zone = self._hass.states.get('zone.home').attributes
+        lots = np.array(list(itertools.repeat((home_zone["latitude"], home_zone["longitude"]), 100000)))
+        return lots
+
+    def get_shortest_in(self, needle, haystack):
+        dlat = np.radians(haystack[:,0]) - radians(needle[0])
+        dlon = np.radians(haystack[:,1]) - radians(needle[1])
+        a = np.square(np.sin(dlat/2.0)) + cos(radians(needle[0])) * np.cos(np.radians(haystack[:,0])) * np.square(np.sin(dlon/2.0))
+        great_circle_distance = 2 * np.arcsin(np.minimum(np.sqrt(a), np.repeat(1, len(a))))
+        d = 3956.0 * great_circle_distance
+        return np.min(d)
+
     async def import_device_data(self, id) -> None:
         """Import device data from Xplora® API."""
         device_info = self._watch_location
@@ -165,8 +182,16 @@ class WatchScanner(XploraUpdateTime):
             attr[ATTR_TRACKER_ISINSAFEZONE] = device_info["isInSafeZone"]
         if device_info.get("safeZoneLabel", None):
             attr[ATTR_TRACKER_SAFEZONELABEL] = device_info["safeZoneLabel"]
+
+        distanceToHome = self.get_shortest_in((float(device_info.get("lat")), float(device_info.get("lng"))), self.get_location())
+        attr[ATTR_TRACKER_DISTOHOME] = distanceToHome
+        if distanceToHome > attr[ATTR_TRACKER_RAD]:
+            source_type = SOURCE_TYPE_GPS
+        else:
+            source_type = device_info.get("locateTypec", await self._controller.getWatchLocateType_async(id))
+
         await self._async_see(
-            source_type=device_info.get("locateTypec", await self._controller.getWatchLocateType_async(id)),
+            source_type=source_type,
             dev_id=slugify(await self._controller.getWatchUserName_async(id) + " Watch Tracker " + id),
             gps=(device_info.get("lat"), device_info.get("lng")),
             gps_accuracy=device_info.get("rad"),
