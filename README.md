@@ -130,6 +130,16 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.18] - 2022-02-14
+
+### Fixed
+- Device Tracker state `not_home` | `home` #12
+
+### Changed
+- obsolet import remove
+
+---
+
 ## [v0.0.17] - 2022-02-11
 
 ### Fixed
