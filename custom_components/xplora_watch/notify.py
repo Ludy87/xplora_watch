@@ -8,7 +8,7 @@ from homeassistant.components.notify import BaseNotificationService, ATTR_TARGET
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
-from .const import DATA_XPLORA, XPLORA_CONTROLLER
+from .const import DATA_XPLORA
 
 from pyxplora_api import pyxplora_api_async as PXA
 
@@ -20,7 +20,6 @@ async def async_get_service(
     discovery_info: DiscoveryInfoType | None = None,
 ) -> XploraNotificationService:
     _LOGGER.debug("set Notify Controller")
-    _LOGGER.debug(discovery_info)
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][0]
     _LOGGER.debug("set Service Notify")
     sv = XploraNotificationService()
