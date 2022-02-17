@@ -133,16 +133,25 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.20] - 2022-02-17
+
+### Changed
+- Api-Lib-Version
+
+---
+
 ## [v0.0.18 + v0.0.19] - 2022-02-14
+
+<details>
 
 ### Fixed
 - Device Tracker state `not_home` | `home` #12
 
 ### Changed
 - obsolet import remove
+</details>
 
 ---
-
 ## [v0.0.17] - 2022-02-11
 
 <details>
