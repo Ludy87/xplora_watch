@@ -135,17 +135,21 @@ class WatchScanner(XploraDevice):
 
     async def _async_update(self, now=None) -> None:
         """Update info from Xplora® API."""
-        if self._update_timer() or self._first:
+        xts_state = 'on'
+        xts = self._hass.states.get('input_boolean.xplora_tracker_switch')
+        if xts:
+            xts_state = xts.state
+        if (self._update_timer() and xts_state == 'on') or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
-            _LOGGER.debug("Updating device data")
             for id in self._child_no:
+                _LOGGER.debug("Updating device data")
                 self._watch_location = await self._controller.getWatchLastLocation_async(True, watchID=id)
                 self._hass.async_create_task(self.import_device_data(id))
 
     def get_location(self):
         home_zone = self._hass.states.get('zone.home').attributes
-        lots = np.array(list(itertools.repeat((home_zone["latitude"], home_zone["longitude"]), 100000)))
+        lots = np.array(list(itertools.repeat((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), 100000)))
         return lots
 
     def get_shortest_in(self, needle, haystack):
@@ -166,23 +170,24 @@ class WatchScanner(XploraDevice):
             attr[ATTR_TRACKER_LNG] = device_info["lng"]
         if device_info.get("rad", None):
             attr[ATTR_TRACKER_RAD] = device_info["rad"]
-        if device_info.get("country", None):
-            attr[ATTR_TRACKER_COUNTRY] = device_info["country"]
-        if device_info.get("countryAbbr", None):
-            attr[ATTR_TRACKER_COUNTRY_ABBR] = device_info["countryAbbr"]
-        if device_info.get("province", None):
-            attr[ATTR_TRACKER_PROVINCE] = device_info["province"]
-        if device_info.get("city", None):
-            attr[ATTR_TRACKER_CITY] = device_info["city"]
-        if device_info.get("addr", None):
-            attr[ATTR_TRACKER_ADDR] = device_info["addr"]
-        if device_info.get("poi", None):
-            attr[ATTR_TRACKER_POI] = device_info["poi"]
-        if device_info.get("isInSafeZone", None):
-            attr[ATTR_TRACKER_ISINSAFEZONE] = device_info["isInSafeZone"]
-        if device_info.get("safeZoneLabel", None):
-            attr[ATTR_TRACKER_SAFEZONELABEL] = device_info["safeZoneLabel"]
+        if device_info.get(ATTR_TRACKER_COUNTRY, None):
+            attr[ATTR_TRACKER_COUNTRY] = device_info[ATTR_TRACKER_COUNTRY]
+        if device_info.get(ATTR_TRACKER_COUNTRY_ABBR, None):
+            attr[ATTR_TRACKER_COUNTRY_ABBR] = device_info[ATTR_TRACKER_COUNTRY_ABBR]
+        if device_info.get(ATTR_TRACKER_PROVINCE, None):
+            attr[ATTR_TRACKER_PROVINCE] = device_info[ATTR_TRACKER_PROVINCE]
+        if device_info.get(ATTR_TRACKER_CITY, None):
+            attr[ATTR_TRACKER_CITY] = device_info[ATTR_TRACKER_CITY]
+        if device_info.get(ATTR_TRACKER_ADDR, None):
+            attr[ATTR_TRACKER_ADDR] = device_info[ATTR_TRACKER_ADDR]
+        if device_info.get(ATTR_TRACKER_POI, None):
+            attr[ATTR_TRACKER_POI] = device_info[ATTR_TRACKER_POI]
+        if device_info.get(ATTR_TRACKER_ISINSAFEZONE, None):
+            attr[ATTR_TRACKER_ISINSAFEZONE] = device_info[ATTR_TRACKER_ISINSAFEZONE]
+        if device_info.get(ATTR_TRACKER_SAFEZONELABEL, None):
+            attr[ATTR_TRACKER_SAFEZONELABEL] = device_info[ATTR_TRACKER_SAFEZONELABEL]
 
+        attr['last Track'] = datetime.now()
         distanceToHome = self.get_shortest_in((float(device_info.get("lat")), float(device_info.get("lng"))), self.get_location())
         attr[ATTR_TRACKER_DISTOHOME] = distanceToHome
         if distanceToHome > attr[ATTR_TRACKER_RAD]:

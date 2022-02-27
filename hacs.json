@@ -3,7 +3,7 @@
   "domains": ["sensor", "binary_sensor", "notify", "switch", "device_tracker"],
   "country": "DE",
   "render_readme": true,
-  "homeassistant": "2022.2.8",
+  "homeassistant": "2022.2.9",
   "iot_class": ["Local Polling", "Cloud Push"],
-  "hacs": "1.22.0"
+  "hacs": "1.23.0"
 }
