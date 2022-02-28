@@ -114,9 +114,6 @@ zone:
 | Austria | 43 |
 
 <!-- END ./countries.md -->
-| country name | country code |
-|--------------|--------------|
-| Denmark | 45 |
 
 ---
 # Debug
