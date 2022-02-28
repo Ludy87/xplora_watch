@@ -131,6 +131,12 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.22] - 2022-02-28
+
+### Changed
+- distance calculation (Meter)
+
+---
 ## [v0.0.21] - 2022-02-27
 
 ### Changed
