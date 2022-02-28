@@ -133,13 +133,27 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.21] - 2022-02-27
+
+### Changed
+- var name
+
+### Added
+- Device Track last Time
+- toggle switch Device Track [#15](https://github.com/Ludy87/xplora_watch/issues/15)
+
+**Place add helper toggle with Name `Xplora Tracker Switch` Entity-ID `input_boolean.xplora_tracker_switch`**
+
+---
 ## [v0.0.20] - 2022-02-17
+
+<details>
 
 ### Changed
 - Api-Lib-Version
+</details>
 
 ---
-
 ## [v0.0.18 + v0.0.19] - 2022-02-14
 
 <details>
