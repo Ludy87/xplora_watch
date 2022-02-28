@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 
 from math import radians, cos
-import numpy as np
+import geopy.distance
 import itertools
 
 from .const import (
@@ -147,18 +147,9 @@ class WatchScanner(XploraDevice):
                 self._watch_location = await self._controller.getWatchLastLocation_async(True, watchID=id)
                 self._hass.async_create_task(self.import_device_data(id))
 
-    def get_location(self):
+    def get_location_distance(self, watch_c):
         home_zone = self._hass.states.get('zone.home').attributes
-        lots = np.array(list(itertools.repeat((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), 100000)))
-        return lots
-
-    def get_shortest_in(self, needle, haystack):
-        dlat = np.radians(haystack[:,0]) - radians(needle[0])
-        dlon = np.radians(haystack[:,1]) - radians(needle[1])
-        a = np.square(np.sin(dlat/2.0)) + cos(radians(needle[0])) * np.cos(np.radians(haystack[:,0])) * np.square(np.sin(dlon/2.0))
-        great_circle_distance = 2 * np.arcsin(np.minimum(np.sqrt(a), np.repeat(1, len(a))))
-        d = 3956.0 * great_circle_distance
-        return np.min(d)
+        return int(geopy.distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
 
     async def import_device_data(self, id) -> None:
         """Import device data from Xplora® API."""
@@ -188,7 +179,7 @@ class WatchScanner(XploraDevice):
             attr[ATTR_TRACKER_SAFEZONELABEL] = device_info[ATTR_TRACKER_SAFEZONELABEL]
 
         attr['last Track'] = datetime.now()
-        distanceToHome = self.get_shortest_in((float(device_info.get("lat")), float(device_info.get("lng"))), self.get_location())
+        distanceToHome = self.get_location_distance((float(device_info.get("lat")), float(device_info.get("lng"))))
         attr[ATTR_TRACKER_DISTOHOME] = distanceToHome
         if distanceToHome > attr[ATTR_TRACKER_RAD]:
             source_type = SOURCE_TYPE_GPS
