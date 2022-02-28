@@ -16,3 +16,10 @@ send_message:
       example: 1234567890
       selector:
         object:
+
+toggle:
+  name: Xplora Tracker Switch
+  description: Toggle an input boolean
+  target:
+    entity:
+      domain: input_boolean
