@@ -142,7 +142,7 @@ logger:
 - Device Track last Time
 - toggle switch Device Track [#15](https://github.com/Ludy87/xplora_watch/issues/15)
 
-**Place add helper toggle with Name `Xplora Tracker Switch` Entity-ID `input_boolean.xplora_tracker_switch`**
+**Please add helper toggle with Name `Xplora Tracker Switch` Entity-ID `input_boolean.xplora_tracker_switch`**
 
 ---
 ## [v0.0.20] - 2022-02-17
