@@ -12,5 +12,6 @@ controller = PXA.PyXploraApi(country_code, phonenumber, password, userlang, time
 with open("countries.md", "w") as text_file:
     text_file.write("| country name | country code |\n")
     text_file.write("|--------------|--------------|\n")
+    text_file.write("| Denmark | 45 |\n")
     for country in controller.handler.countries()["countries"]:
         text_file.write(f"| {country['name']} | {country['code']} |\n")
