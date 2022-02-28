@@ -102,6 +102,7 @@ zone:
 <!-- START ./countries.md -->
 | country name | country code |
 |--------------|--------------|
+| Denmark | 45 |
 | United Kingdom | 44 |
 | Spain | 34 |
 | Germany | 49 |
