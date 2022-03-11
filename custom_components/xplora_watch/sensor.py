@@ -12,6 +12,7 @@ from homeassistant.components.sensor import (
 from homeassistant.const import CONF_SCAN_INTERVAL, PERCENTAGE
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import (
@@ -40,6 +41,7 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     ),
 )
 
+
 async def async_setup_platform(
     hass: HomeAssistant,
     conf: ConfigType,
@@ -63,10 +65,10 @@ async def async_setup_platform(
                     scan_interval,
                     start_time,
                     _types,
-                    child_no)
-                ], True)
+                    child_no)], True)
 
-class XploraSensor(SensorEntity, XploraUpdateTime):
+
+class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
     def __init__(
         self,
         description: SensorEntityDescription,
@@ -97,7 +99,6 @@ class XploraSensor(SensorEntity, XploraUpdateTime):
 
     async def __update(self, id) -> None:
         """ https://github.com/home-assistant/core/blob/master/homeassistant/helpers/entity.py#L219 """
-        
         if await self.__isTypes(SENSOR_BATTERY):
             charging = await self._controller.getWatchIsCharging_async(id)
 

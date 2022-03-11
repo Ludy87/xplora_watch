@@ -14,6 +14,7 @@ from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_get_service(
     hass: HomeAssistant,
     config: ConfigType,
@@ -26,6 +27,7 @@ async def async_get_service(
     sv.setup(controller)
 
     return sv
+
 
 class XploraNotificationService(BaseNotificationService):
 
@@ -45,9 +47,9 @@ class XploraNotificationService(BaseNotificationService):
         if len(msg):
             ids = await self._controller.getWatchUserID_async(kwargs[ATTR_TARGET])
             if not ids:
-                _LOGGER.warning(f"Dont find child phonenumber!")
+                _LOGGER.warning("Dont find child phonenumber!")
                 return
             for id in ids:
                 _LOGGER.debug(await self._controller.sendText(msg, id))
         else:
-            _LOGGER.warning(f"Your message is empty!")
+            _LOGGER.warning("Your message is empty!")

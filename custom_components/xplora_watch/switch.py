@@ -1,7 +1,6 @@
 """Support for reading status from Xplora® Watch."""
 from __future__ import annotations
 
-import logging
 from datetime import datetime
 
 from homeassistant.components.switch import (
@@ -10,6 +9,7 @@ from homeassistant.components.switch import (
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import (
@@ -23,7 +23,6 @@ from .const import (
 from .entity import XploraSwitchEntity
 from pyxplora_api import pyxplora_api_async as PXA
 
-_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_platform(
     hass: HomeAssistant,
@@ -52,7 +51,8 @@ async def async_setup_platform(
 
         add_entities(entities)
 
-class SilentSwitch(XploraSwitchEntity, SwitchEntity):
+
+class SilentSwitch(XploraSwitchEntity, SwitchEntity, RestoreEntity):
 
     def __init__(self, silent: list, controller: PXA.PyXploraApi, scan_interval, start_time, name, id) -> None:
         super().__init__(silent, controller, scan_interval, start_time, name, "silent")
@@ -82,7 +82,8 @@ class SilentSwitch(XploraSwitchEntity, SwitchEntity):
                 if silent['id'] == self._silent['id']:
                     self._attr_is_on = self._state(silent['status'])
 
-class AlarmSwitch(XploraSwitchEntity, SwitchEntity):
+
+class AlarmSwitch(XploraSwitchEntity, SwitchEntity, RestoreEntity):
 
     def __init__(self, alarm: list, controller: PXA.PyXploraApi, scan_interval, start_time, name, id) -> None:
         super().__init__(alarm, controller, scan_interval, start_time, name, "alarm")

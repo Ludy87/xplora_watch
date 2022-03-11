@@ -5,9 +5,7 @@ from collections.abc import Awaitable, Callable
 import logging
 from datetime import datetime
 
-from math import radians, cos
 import geopy.distance
-import itertools
 
 from .const import (
     ATTR_TRACKER_ADDR,
@@ -39,10 +37,12 @@ from pyxplora_api import pyxplora_api_async as PXA
 from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.util import slugify
 
 _LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_scanner(
     hass: HomeAssistant,
@@ -53,10 +53,10 @@ async def async_setup_scanner(
     """Validate the configuration and return a Xplora® scanner."""
     if discovery_info is None:
         return False
-    _LOGGER.debug(f"set Tracker")
 
     if DEVICE_TRACKER_WATCH not in hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]:
         return False
+    _LOGGER.debug("set Tracker")
 
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
     child_no = hass.data[CONF_CHILD_PHONENUMBER][discovery_info[XPLORA_CONTROLLER]]
@@ -64,6 +64,7 @@ async def async_setup_scanner(
     start_time = datetime.timestamp(datetime.now())
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
+        _LOGGER.debug("show safezone")
         for id in child_no:
             i = 1
             for safeZone in await controller.getSafeZones_async(id):
@@ -89,7 +90,7 @@ async def async_setup_scanner(
                     )
                     i += 1
 
-    _LOGGER.debug(f"set WatchScanner")
+    _LOGGER.debug("set WatchScanner")
     scanner = WatchScanner(
         hass,
         async_see,
@@ -100,7 +101,8 @@ async def async_setup_scanner(
     )
     return await scanner.async_init()
 
-class WatchScanner(XploraDevice):
+
+class WatchScanner(XploraDevice, RestoreEntity):
     def __init__(
         self,
         hass,
@@ -121,7 +123,7 @@ class WatchScanner(XploraDevice):
 
     async def async_init(self) -> bool:
         """Further initialize connection to Xplora® API."""
-        _LOGGER.debug(f"set async_init")
+        _LOGGER.debug("set async_init")
         await self._controller.init_async()
         for id in self._child_no:
             username = await self._controller.getWatchUserName_async(id)
@@ -143,7 +145,7 @@ class WatchScanner(XploraDevice):
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
             for id in self._child_no:
-                _LOGGER.debug("Updating device data")
+                _LOGGER.debug(f"Updating device data {id}")
                 self._watch_location = await self._controller.getWatchLastLocation_async(True, watchID=id)
                 self._hass.async_create_task(self.import_device_data(id))
 
@@ -180,7 +182,7 @@ class WatchScanner(XploraDevice):
 
         attr['last Track'] = datetime.now()
         distanceToHome = self.get_location_distance((float(device_info.get("lat")), float(device_info.get("lng"))))
-        attr[ATTR_TRACKER_DISTOHOME] = distanceToHome
+        attr[ATTR_TRACKER_DISTOHOME] = "{} m".format(distanceToHome)
         if distanceToHome > attr[ATTR_TRACKER_RAD]:
             source_type = SOURCE_TYPE_GPS
         else:

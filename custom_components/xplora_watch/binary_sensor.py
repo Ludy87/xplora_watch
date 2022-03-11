@@ -12,6 +12,7 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import (
@@ -44,6 +45,7 @@ BINARY_SENSOR_TYPES: tuple[BinarySensorEntityDescription, ...] = (
     ),
 )
 
+
 async def async_setup_platform(
     hass: HomeAssistant,
     conf: ConfigType,
@@ -67,10 +69,10 @@ async def async_setup_platform(
                     scan_interval,
                     start_time,
                     _types,
-                    child_no)
-                ], True)
+                    child_no)], True)
 
-class XploraBinarySensor(BinarySensorEntity, XploraUpdateTime):
+
+class XploraBinarySensor(XploraUpdateTime, BinarySensorEntity, RestoreEntity):
 
     def __init__(
         self,
@@ -91,7 +93,8 @@ class XploraBinarySensor(BinarySensorEntity, XploraUpdateTime):
     async def __isOnline(self, id) -> bool:
         await self._controller.init_async()
         self._attr_icon = "mdi:lan-check"
-        if (await self._controller.askWatchLocate_async(id) == True) or (await self._controller.trackWatchInterval_async(id) != -1):
+        if (await self._controller.askWatchLocate_async(id) is True) or (
+           await self._controller.trackWatchInterval_async(id) != -1):
             return True
         state = await self._controller.getWatchOnlineStatus_async(id)
         if (state == "ONLINE"):

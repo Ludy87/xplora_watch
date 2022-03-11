@@ -5,10 +5,14 @@ import logging
 
 from typing import Any
 
+from homeassistant.helpers.entity import DeviceInfo
+
+from .const import DOMAIN
 from .helper import XploraUpdateTime
 from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
+
 
 class XploraSwitchEntity(XploraUpdateTime):
     def __init__(self, switch, controller, scan_interval, start_time, name, func_name) -> None:
@@ -18,6 +22,7 @@ class XploraSwitchEntity(XploraUpdateTime):
         self._switch = switch
         self._name = name
         self._attr_is_on = self._state(self._switch["status"])
+        self._manufacturer = "Xplora® Watch"
 
     def _state(self, status) -> bool:
         if status == "DISABLE":
@@ -44,3 +49,12 @@ class XploraSwitchEntity(XploraUpdateTime):
             if weekRepeat[day] == "1":
                 weekDays.append(days[day])
         return { "Day(s)": ', '.join(weekDays) }
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return the device information."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._switch["id"])},
+            manufacturer=self._manufacturer,
+            name=self._name,
+        )

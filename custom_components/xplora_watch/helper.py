@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
+
 class XploraUpdateTime:
     def __init__(self, scan_interval, start_time) -> None:
         self._first = True

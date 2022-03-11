@@ -76,8 +76,9 @@ CONFIG_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
+
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    _LOGGER.debug(f"init Xplora® Watch")
+    _LOGGER.debug("init Xplora® Watch")
     hass.data[CONF_CHILD_PHONENUMBER] = []
     hass.data[CONF_COUNTRY_CODE] = []
     hass.data[CONF_PASSWORD] = []
@@ -95,6 +96,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         success = success or await _setup_controller(hass, controller_config, config)
 
     return success
+
 
 async def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType) -> bool:
     childPhoneNumber = controller_config[CONF_CHILD_PHONENUMBER]
@@ -115,7 +117,7 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     childPhoneNumber = await controller.getWatchUserID_async(childPhoneNumber)
 
     _LOGGER.debug(f"Xplora® Api Version: {controller.version()}")
-    _LOGGER.debug(f"set Update interval: {scanInterval}")
+    _LOGGER.debug(f"set Update interval Sensors: {scanInterval}")
     _LOGGER.debug(f"set Update interval Tracker: {trackerScanInterval}")
     position = len(hass.data[DATA_XPLORA])
 
