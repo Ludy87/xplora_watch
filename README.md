@@ -131,10 +131,25 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.23] - 2022-03-11
+
+### Added
+- Lint with flake8
+
+### Changed
+- Entities
+- Api-Lib-Version
+- obsolet import removed
+
+---
+
 ## [v0.0.22] - 2022-02-28
+
+<details>
 
 ### Changed
 - distance calculation (Meter)
+</details>
 
 ---
 ## [v0.0.21] - 2022-02-27
@@ -169,7 +184,7 @@ logger:
 - Device Tracker state `not_home` | `home` #12
 
 ### Changed
-- obsolet import remove
+- obsolet import removed
 </details>
 
 ---
@@ -184,7 +199,7 @@ logger:
 
 ### Changed
 - var name api -> controller
-- obsolet import remove
+- obsolet import removed
 </details>
 
 ---
