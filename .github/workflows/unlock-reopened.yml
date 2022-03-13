@@ -1,0 +1,15 @@
+name: Unlock reopened issue
+
+on:
+  issues:
+    types: [ reopened ]
+
+jobs:
+  unlock:
+    name: Unlock Reopened
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: OSDKDev/unlock-issues@v1.1
+      with:
+        repo-token: "${{ secrets.TOKEN }}"
