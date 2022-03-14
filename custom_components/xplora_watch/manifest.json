@@ -1,12 +1,12 @@
 {
   "domain": "xplora_watch",
   "name": "Xplora® Watch",
-  "version": "v0.0.23",
+  "version": "v0.0.24",
   "documentation": "https://github.com/Ludy87/xplora_watch/tree/main",
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],
   "requirements": [
-    "pyxplora_api==1.0.72",
+    "pyxplora_api==1.0.74",
     "geopy==2.2.0"
   ],
   "codeowners": ["@Ludy87"],
