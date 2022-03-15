@@ -1,20 +1,16 @@
 """Support for reading status from Xplora® Watch."""
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from homeassistant.components.switch import (
-    SwitchEntity
-)
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import (
-    CONF_CHILD_PHONENUMBER,
     CONF_TYPES,
+    CONF_WATCHUSER_ID,
     DATA_XPLORA,
     SWITCH_ALARMS,
     SWITCH_SILENTS,
@@ -34,10 +30,10 @@ async def async_setup_platform(
         return
     entities = []
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    child_no = hass.data[CONF_CHILD_PHONENUMBER][discovery_info[XPLORA_CONTROLLER]]
-    scan_interval = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time = datetime.timestamp(datetime.now())
-    _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
+    child_no: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    scan_interval: timedelta = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
+    start_time: float = datetime.timestamp(datetime.now())
+    _types: list = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
     for id in child_no:
         if SWITCH_SILENTS in _types:
@@ -49,10 +45,10 @@ async def async_setup_platform(
                 name = f'{await controller.getWatchUserName_async(id)} Watch Alarm {alarm["start"]} {id}'
                 entities.append(AlarmSwitch(alarm, controller, scan_interval, start_time, name, id))
 
-        add_entities(entities)
+    add_entities(entities)
 
 
-class SilentSwitch(XploraSwitchEntity, SwitchEntity, RestoreEntity):
+class SilentSwitch(XploraSwitchEntity):
 
     def __init__(self, silent: list, controller: PXA.PyXploraApi, scan_interval, start_time, name, id) -> None:
         super().__init__(silent, controller, scan_interval, start_time, name, "silent")
@@ -83,7 +79,7 @@ class SilentSwitch(XploraSwitchEntity, SwitchEntity, RestoreEntity):
                     self._attr_is_on = self._state(silent['status'])
 
 
-class AlarmSwitch(XploraSwitchEntity, SwitchEntity, RestoreEntity):
+class AlarmSwitch(XploraSwitchEntity):
 
     def __init__(self, alarm: list, controller: PXA.PyXploraApi, scan_interval, start_time, name, id) -> None:
         super().__init__(alarm, controller, scan_interval, start_time, name, "alarm")

@@ -11,6 +11,7 @@ CONF_TIMEZONE = "timezone"
 CONF_TRACKER_SCAN_INTERVAL = "tracker_scan_interval"
 CONF_TYPES = "types"
 CONF_USERLANG = "userlang"
+CONF_WATCHUSER_ID = "watch_id"
 
 SENSOR_BATTERY = "battery"
 SENSOR_XCOIN = "xcoin"

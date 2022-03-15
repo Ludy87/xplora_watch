@@ -28,6 +28,7 @@ from .const import (
     CONF_TYPES,
     CONF_USERLANG,
     CONF_TIMEZONE,
+    CONF_WATCHUSER_ID,
     DATA_XPLORA,
     DEFAULT_SCAN_INTERVAL,
     DEVICE_TRACKER_WATCH,
@@ -79,7 +80,6 @@ CONFIG_SCHEMA = vol.Schema(
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     _LOGGER.debug("init Xplora® Watch")
-    hass.data[CONF_CHILD_PHONENUMBER] = []
     hass.data[CONF_COUNTRY_CODE] = []
     hass.data[CONF_PASSWORD] = []
     hass.data[CONF_PHONENUMBER] = []
@@ -89,6 +89,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     hass.data[CONF_TRACKER_SCAN_INTERVAL] = []
     hass.data[CONF_TYPES] = []
     hass.data[CONF_USERLANG] = []
+    hass.data[CONF_WATCHUSER_ID] = []
     hass.data[DATA_XPLORA] = []
 
     success = False
@@ -99,29 +100,28 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 
 async def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType) -> bool:
-    childPhoneNumber = controller_config[CONF_CHILD_PHONENUMBER]
-    countryCode = controller_config[CONF_COUNTRY_CODE]
-    phoneNumber = controller_config[CONF_PHONENUMBER]
-    password = controller_config[CONF_PASSWORD]
-    userlang = controller_config[CONF_USERLANG]
-    timeZone = controller_config[CONF_TIMEZONE]
+    childPhoneNumber: list = controller_config[CONF_CHILD_PHONENUMBER]
+    countryCode: str = controller_config[CONF_COUNTRY_CODE]
+    phoneNumber: str = controller_config[CONF_PHONENUMBER]
+    password: str = controller_config[CONF_PASSWORD]
+    userlang: str = controller_config[CONF_USERLANG]
+    timeZone: str = controller_config[CONF_TIMEZONE]
 
     _types = controller_config[CONF_TYPES]
-    _LOGGER.debug(f"Entity-Types: {_types}")
+    _LOGGER.debug(f"set Entity-Types: {_types}")
     scanInterval = controller_config[CONF_SCAN_INTERVAL]
     trackerScanInterval = controller_config[CONF_TRACKER_SCAN_INTERVAL]
 
-    _LOGGER.debug("init API-Controller")
+    _LOGGER.debug("init API-Controller from Library")
     controller = PXA.PyXploraApi(countryCode, phoneNumber, password, userlang, timeZone)
+    _LOGGER.debug(f"Xplora® Api-Library Version: {controller.version()}")
     await controller.init_async()
-    childPhoneNumber = await controller.getWatchUserID_async(childPhoneNumber)
+    watchUserID = await controller.getWatchUserID_async(childPhoneNumber)
 
-    _LOGGER.debug(f"Xplora® Api Version: {controller.version()}")
     _LOGGER.debug(f"set Update interval Sensors: {scanInterval}")
     _LOGGER.debug(f"set Update interval Tracker: {trackerScanInterval}")
     position = len(hass.data[DATA_XPLORA])
 
-    hass.data[CONF_CHILD_PHONENUMBER].append(childPhoneNumber)
     hass.data[CONF_COUNTRY_CODE].append(countryCode)
     hass.data[CONF_PASSWORD].append(password)
     hass.data[CONF_PHONENUMBER].append(phoneNumber)
@@ -131,6 +131,7 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     hass.data[CONF_TRACKER_SCAN_INTERVAL].append(trackerScanInterval)
     hass.data[CONF_TYPES].append(_types)
     hass.data[CONF_USERLANG].append(userlang)
+    hass.data[CONF_WATCHUSER_ID].append(watchUserID)
     hass.data[DATA_XPLORA].append(controller)
 
     if DEVICE_TRACKER_WATCH not in _types:
