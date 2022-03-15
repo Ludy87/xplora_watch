@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
@@ -20,8 +20,8 @@ from .const import (
     BINARY_SENSOR_CHARGING,
     BINARY_SENSOR_SAFEZONE,
     BINARY_SENSOR_STATE,
-    CONF_CHILD_PHONENUMBER,
     CONF_TYPES,
+    CONF_WATCHUSER_ID,
     DATA_XPLORA,
     XPLORA_CONTROLLER
 )
@@ -55,10 +55,10 @@ async def async_setup_platform(
     if discovery_info is None:
         return
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    child_no = hass.data[CONF_CHILD_PHONENUMBER][discovery_info[XPLORA_CONTROLLER]]
-    scan_interval = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time = datetime.timestamp(datetime.now())
-    _types = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
+    child_no: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    scan_interval: timedelta = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
+    start_time: float = datetime.timestamp(datetime.now())
+    _types: list = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
     for description in BINARY_SENSOR_TYPES:
         if description.key in _types:

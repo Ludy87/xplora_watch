@@ -5,16 +5,17 @@ import logging
 
 from typing import Any
 
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.restore_state import RestoreEntity
 
-from .const import DOMAIN
 from .helper import XploraUpdateTime
 from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class XploraSwitchEntity(XploraUpdateTime):
+class XploraSwitchEntity(XploraUpdateTime, SwitchEntity, RestoreEntity):
     def __init__(self, switch, controller, scan_interval, start_time, name, func_name) -> None:
         super().__init__(scan_interval, start_time)
         _LOGGER.debug(f"init switch {func_name} {name}")
@@ -50,11 +51,3 @@ class XploraSwitchEntity(XploraUpdateTime):
                 weekDays.append(days[day])
         return { "Day(s)": ', '.join(weekDays) }
 
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return the device information."""
-        return DeviceInfo(
-            identifiers={(DOMAIN, self._switch["id"])},
-            manufacturer=self._manufacturer,
-            name=self._name,
-        )
