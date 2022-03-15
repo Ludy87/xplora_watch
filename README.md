@@ -131,7 +131,17 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.24] - 2022-03-15
+
+### Changed
+- var name
+- Api-Lib-Version
+- obsolet import removed
+
+---
 ## [v0.0.23] - 2022-03-11
+
+<details>
 
 ### Added
 - Lint with flake8
@@ -140,9 +150,9 @@ logger:
 - Entities
 - Api-Lib-Version
 - obsolet import removed
+</details>
 
 ---
-
 ## [v0.0.22] - 2022-02-28
 
 <details>
