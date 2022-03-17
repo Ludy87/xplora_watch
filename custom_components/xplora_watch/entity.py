@@ -6,39 +6,30 @@ import logging
 from typing import Any
 
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.restore_state import RestoreEntity
 
 from .helper import XploraUpdateTime
+
 from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class XploraSwitchEntity(XploraUpdateTime, SwitchEntity, RestoreEntity):
-    def __init__(self, switch, controller, scan_interval, start_time, name, func_name) -> None:
+    def __init__(self, switch, controller, scan_interval, start_time, name, func_name, icon) -> None:
         super().__init__(scan_interval, start_time)
         _LOGGER.debug(f"init switch {func_name} {name}")
         self._controller: PXA.PyXploraApi = controller
         self._switch = switch
-        self._name = name
+        self._attr_icon = icon
         self._attr_is_on = self._state(self._switch["status"])
-        self._manufacturer = "Xplora® Watch"
+        self._attr_name = name
+        self._attr_unique_id = switch["id"]
 
     def _state(self, status) -> bool:
         if status == "DISABLE":
             return False
         return True
-
-    @property
-    def unique_id(self) -> str:
-        """Return the unique ID of the device."""
-        return self._switch["id"]
-
-    @property
-    def name(self) -> str:
-        """Return the name of the device."""
-        return self._name
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:

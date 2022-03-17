@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
 from homeassistant.helpers.restore_state import RestoreEntity
 

@@ -17,6 +17,7 @@ from .const import (
     XPLORA_CONTROLLER,
 )
 from .entity import XploraSwitchEntity
+
 from pyxplora_api import pyxplora_api_async as PXA
 
 
@@ -51,13 +52,9 @@ async def async_setup_platform(
 class SilentSwitch(XploraSwitchEntity):
 
     def __init__(self, silent: list, controller: PXA.PyXploraApi, scan_interval, start_time, name, id) -> None:
-        super().__init__(silent, controller, scan_interval, start_time, name, "silent")
+        super().__init__(silent, controller, scan_interval, start_time, name, "silent", "mdi:school")
         self._silent = silent
         self._id = id
-
-    @property
-    def icon(self) -> str:
-        return "mdi:school"
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
@@ -82,13 +79,9 @@ class SilentSwitch(XploraSwitchEntity):
 class AlarmSwitch(XploraSwitchEntity):
 
     def __init__(self, alarm: list, controller: PXA.PyXploraApi, scan_interval, start_time, name, id) -> None:
-        super().__init__(alarm, controller, scan_interval, start_time, name, "alarm")
+        super().__init__(alarm, controller, scan_interval, start_time, name, "alarm", "mdi:alarm")
         self._alarm = alarm
         self._id = id
-
-    @property
-    def icon(self) -> str:
-        return "mdi:alarm"
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""

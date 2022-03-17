@@ -1,11 +1,22 @@
 # Change Log
 
+## [v0.0.25] - 2022-03-15
+
+### Added
+- OpenCage Geocoding API
+
+### Changed
+
+---
 ## [v0.0.24] - 2022-03-15
+
+<details>
 
 ### Changed
 - var name
 - Api-Lib-Version
 - obsolet import removed
+</details>
 
 ---
 ## [v0.0.23] - 2022-03-11

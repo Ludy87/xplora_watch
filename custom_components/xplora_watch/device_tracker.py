@@ -1,11 +1,19 @@
 """Support for Xplora® Watch tracking."""
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
 import logging
+
+from collections.abc import Awaitable, Callable
 from datetime import datetime, timedelta
 
-import geopy.distance
+from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+from homeassistant.util import slugify
+
+from geopy import distance
+from opencage.geocoder import OpenCageGeocode
 
 from .const import (
     ATTR_TRACKER_ADDR,
@@ -23,6 +31,7 @@ from .const import (
     ATTR_TRACKER_SAFEZONEGROUPNAME,
     ATTR_TRACKER_SAFEZONELABEL,
     ATTR_TRACKER_SAFEZONENAME,
+    CONF_OPENCAGE_APIKEY,
     CONF_SAFEZONES,
     CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
@@ -32,13 +41,8 @@ from .const import (
     XPLORA_CONTROLLER,
 )
 from .helper import XploraDevice
-from pyxplora_api import pyxplora_api_async as PXA
 
-from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.util import slugify
+from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -150,7 +154,7 @@ class WatchScanner(XploraDevice):
 
     def get_location_distance(self, watch_c):
         home_zone = self._hass.states.get('zone.home').attributes
-        return int(geopy.distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
+        return int(distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
 
     async def import_device_data(self, id) -> None:
         """Import device data from Xplora® API."""
@@ -171,7 +175,14 @@ class WatchScanner(XploraDevice):
         if watch_location_info.get(ATTR_TRACKER_CITY, None):
             attr[ATTR_TRACKER_CITY] = watch_location_info[ATTR_TRACKER_CITY]
         if watch_location_info.get(ATTR_TRACKER_ADDR, None):
-            attr[ATTR_TRACKER_ADDR] = watch_location_info[ATTR_TRACKER_ADDR]
+            opencage = self._hass.data[CONF_OPENCAGE_APIKEY]
+            if '' in opencage:
+                attr[ATTR_TRACKER_ADDR] = watch_location_info[ATTR_TRACKER_ADDR]
+            else:
+                async with OpenCageGeocode(opencage) as geocoder:
+                    results: dict = (await geocoder.reverse_geocode_async(watch_location_info.get("lat"),
+                                                                          watch_location_info.get("lng")))[0]
+                    attr[ATTR_TRACKER_ADDR] = results.get('formatted')
         if watch_location_info.get(ATTR_TRACKER_POI, None):
             attr[ATTR_TRACKER_POI] = watch_location_info[ATTR_TRACKER_POI]
         if watch_location_info.get(ATTR_TRACKER_ISINSAFEZONE, None):
@@ -180,7 +191,8 @@ class WatchScanner(XploraDevice):
             attr[ATTR_TRACKER_SAFEZONELABEL] = watch_location_info[ATTR_TRACKER_SAFEZONELABEL]
 
         attr['last Track'] = datetime.now()
-        distanceToHome = self.get_location_distance((float(watch_location_info.get("lat")), float(watch_location_info.get("lng"))))
+        distanceToHome = self.get_location_distance((float(watch_location_info.get("lat")),
+                                                     float(watch_location_info.get("lng"))))
         attr[ATTR_TRACKER_DISTOHOME] = "{} m".format(distanceToHome)
         if distanceToHome > attr[ATTR_TRACKER_RAD]:
             source_type = SOURCE_TYPE_GPS

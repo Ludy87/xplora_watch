@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+
 from typing import Any
 
 from homeassistant.components.notify import BaseNotificationService, ATTR_TARGET
