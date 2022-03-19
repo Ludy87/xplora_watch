@@ -36,9 +36,11 @@ xplora_watch:
   userlang: "de-DE"
   timezone: "Europe/Berlin"
   opencage: API_KEY # optional
-  child_phonenumber: # optional
+  child_phonenumber: # optional & ignored if 'watch_id' is set
     - "9876543210"
     - "5678901234"
+  watch_id: # optional
+    - 012328123d123f5e775e5e3346739732
   types:
     - "battery"
     - "xcoin"
