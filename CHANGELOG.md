@@ -5,6 +5,12 @@
 ### Added
 - OpenCage Geocoding API
 
+### Fixed
+- #11
+
+### Changed
+- `child_no` to `watch_ids`
+
 ---
 ## [v0.0.24] - 2022-03-15
 
