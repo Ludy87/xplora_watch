@@ -35,9 +35,12 @@ xplora_watch:
   password: "password"
   userlang: "de-DE"
   timezone: "Europe/Berlin"
-  child_phonenumber:
+  opencage: API_KEY # optional
+  child_phonenumber: # optional & ignored if 'watch_id' is set
     - "9876543210"
     - "5678901234"
+  watch_id: # optional
+    - 012328123d123f5e775e5e3346739732
   types:
     - "battery"
     - "xcoin"
@@ -47,9 +50,9 @@ xplora_watch:
     - "silents"
     - "alarms"
     - "dt_watch"
-  safezones: "show"
-  scan_interval: 180 # default sec
-  tracker_scan_interval: 60 # default sec
+  safezones: "show" # optional
+  scan_interval: 180 # default sec - optional
+  tracker_scan_interval: 60 # default sec - optional
 ```
 2. Restart Home Assistant
 3. Check `Home Assistant » Developer Tools » States`

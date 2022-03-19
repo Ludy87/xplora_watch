@@ -1,13 +1,14 @@
 {
   "domain": "xplora_watch",
   "name": "Xplora® Watch",
-  "version": "v0.0.24",
+  "version": "v0.0.25",
   "documentation": "https://github.com/Ludy87/xplora_watch/tree/main",
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],
   "requirements": [
-    "pyxplora_api==1.0.74",
-    "geopy==2.2.0"
+    "pyxplora_api==1.0.75",
+    "geopy==2.2.0",
+    "opencage==2.0.0"
   ],
   "codeowners": ["@Ludy87"],
   "iot_class": "local_polling"

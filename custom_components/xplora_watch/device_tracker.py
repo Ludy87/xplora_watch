@@ -1,11 +1,19 @@
 """Support for Xplora® Watch tracking."""
 from __future__ import annotations
 
-from collections.abc import Awaitable, Callable
 import logging
+
+from collections.abc import Awaitable, Callable
 from datetime import datetime, timedelta
 
-import geopy.distance
+from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+from homeassistant.util import slugify
+
+from geopy import distance
+from opencage.geocoder import OpenCageGeocode
 
 from .const import (
     ATTR_TRACKER_ADDR,
@@ -23,6 +31,7 @@ from .const import (
     ATTR_TRACKER_SAFEZONEGROUPNAME,
     ATTR_TRACKER_SAFEZONELABEL,
     ATTR_TRACKER_SAFEZONENAME,
+    CONF_OPENCAGE_APIKEY,
     CONF_SAFEZONES,
     CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
@@ -32,13 +41,8 @@ from .const import (
     XPLORA_CONTROLLER,
 )
 from .helper import XploraDevice
-from pyxplora_api import pyxplora_api_async as PXA
 
-from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.util import slugify
+from pyxplora_api import pyxplora_api_async as PXA
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -58,13 +62,13 @@ async def async_setup_scanner(
     _LOGGER.debug("set Tracker")
 
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    child_no: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    watch_ids: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
     scan_interval: timedelta = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time: float = datetime.timestamp(datetime.now())
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
         _LOGGER.debug("show safezone")
-        for id in child_no:
+        for id in watch_ids:
             i = 1
             for safeZone in await controller.getSafeZones_async(id):
                 if safeZone:
@@ -96,7 +100,7 @@ async def async_setup_scanner(
         controller,
         scan_interval,
         start_time,
-        child_no,
+        watch_ids,
     )
     return await scanner.async_init()
 
@@ -109,13 +113,13 @@ class WatchScanner(XploraDevice):
         controller,
         scan_interval,
         start_time,
-        child_no,
+        watch_ids,
     ) -> None:
         """Initialize."""
         super().__init__(scan_interval, start_time)
         self.connected = False
         self._controller: PXA.PyXploraApi = controller
-        self._child_no = child_no
+        self._watch_ids = watch_ids
         self._async_see = async_see
         self._hass: HomeAssistant = hass
         self._watch_location = None
@@ -124,7 +128,7 @@ class WatchScanner(XploraDevice):
         """Further initialize connection to Xplora® API."""
         _LOGGER.debug("set async_init")
         await self._controller.init_async()
-        for id in self._child_no:
+        for id in self._watch_ids:
             username = await self._controller.getWatchUserName_async(id)
             if username is None:
                 _LOGGER.error("Can not connect to Xplora® API")
@@ -143,14 +147,14 @@ class WatchScanner(XploraDevice):
         if (self._update_timer() and xts_state == 'on') or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
-            for id in self._child_no:
+            for id in self._watch_ids:
                 _LOGGER.debug(f"Updating device data {id}")
                 self._watch_location = await self._controller.getWatchLastLocation_async(True, watchID=id)
                 self._hass.async_create_task(self.import_device_data(id))
 
     def get_location_distance(self, watch_c):
         home_zone = self._hass.states.get('zone.home').attributes
-        return int(geopy.distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
+        return int(distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
 
     async def import_device_data(self, id) -> None:
         """Import device data from Xplora® API."""
@@ -171,7 +175,14 @@ class WatchScanner(XploraDevice):
         if watch_location_info.get(ATTR_TRACKER_CITY, None):
             attr[ATTR_TRACKER_CITY] = watch_location_info[ATTR_TRACKER_CITY]
         if watch_location_info.get(ATTR_TRACKER_ADDR, None):
-            attr[ATTR_TRACKER_ADDR] = watch_location_info[ATTR_TRACKER_ADDR]
+            opencage = self._hass.data[CONF_OPENCAGE_APIKEY]
+            if '' in opencage:
+                attr[ATTR_TRACKER_ADDR] = watch_location_info[ATTR_TRACKER_ADDR]
+            else:
+                async with OpenCageGeocode(opencage) as geocoder:
+                    results: dict = (await geocoder.reverse_geocode_async(watch_location_info.get("lat"),
+                                                                          watch_location_info.get("lng")))[0]
+                    attr[ATTR_TRACKER_ADDR] = results.get('formatted')
         if watch_location_info.get(ATTR_TRACKER_POI, None):
             attr[ATTR_TRACKER_POI] = watch_location_info[ATTR_TRACKER_POI]
         if watch_location_info.get(ATTR_TRACKER_ISINSAFEZONE, None):
@@ -180,7 +191,8 @@ class WatchScanner(XploraDevice):
             attr[ATTR_TRACKER_SAFEZONELABEL] = watch_location_info[ATTR_TRACKER_SAFEZONELABEL]
 
         attr['last Track'] = datetime.now()
-        distanceToHome = self.get_location_distance((float(watch_location_info.get("lat")), float(watch_location_info.get("lng"))))
+        distanceToHome = self.get_location_distance((float(watch_location_info.get("lat")),
+                                                     float(watch_location_info.get("lng"))))
         attr[ATTR_TRACKER_DISTOHOME] = "{} m".format(distanceToHome)
         if distanceToHome > attr[ATTR_TRACKER_RAD]:
             source_type = SOURCE_TYPE_GPS

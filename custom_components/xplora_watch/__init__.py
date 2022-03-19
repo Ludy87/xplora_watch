@@ -21,6 +21,7 @@ from .const import (
     BINARY_SENSOR_STATE,
     CONF_CHILD_PHONENUMBER,
     CONF_COUNTRY_CODE,
+    CONF_OPENCAGE_APIKEY,
     CONF_PHONENUMBER,
     CONF_PASSWORD,
     CONF_SAFEZONES,
@@ -45,14 +46,14 @@ from pyxplora_api import pyxplora_api_async as PXA
 PLATFORMS = [BINARY_SENSOR_DOMAIN, DEVICE_TRACKER, SENSOR_DOMAIN, SWITCH_DOMAIN]
 
 SENSORS = [
-    DEVICE_TRACKER_WATCH,
-    BINARY_SENSOR_STATE,
-    BINARY_SENSOR_SAFEZONE,
     BINARY_SENSOR_CHARGING,
+    BINARY_SENSOR_SAFEZONE,
+    BINARY_SENSOR_STATE,
+    DEVICE_TRACKER_WATCH,
     SENSOR_BATTERY,
     SENSOR_XCOIN,
-    SWITCH_SILENTS,
     SWITCH_ALARMS,
+    SWITCH_SILENTS,
 ]
 
 _LOGGER = logging.getLogger(__name__)
@@ -65,10 +66,12 @@ CONTROLLER_SCHEMA = vol.Schema(
         vol.Required(CONF_TIMEZONE): cv.time_zone,
         vol.Required(CONF_TYPES, default=SENSORS): cv.ensure_list,
         vol.Required(CONF_USERLANG): cv.string,
+        vol.Optional(CONF_CHILD_PHONENUMBER, default=[]): cv.ensure_list,
+        vol.Optional(CONF_OPENCAGE_APIKEY, default=''): cv.string,
         vol.Optional(CONF_SAFEZONES, default="hidden"): cv.string,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
         vol.Optional(CONF_TRACKER_SCAN_INTERVAL, default=TRACKER_UPDATE): cv.time_period,
-        vol.Optional(CONF_CHILD_PHONENUMBER, default=[]): cv.ensure_list,
+        vol.Optional(CONF_WATCHUSER_ID, default=[]): cv.ensure_list,
     }
 )
 
@@ -81,6 +84,7 @@ CONFIG_SCHEMA = vol.Schema(
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     _LOGGER.debug("init Xplora® Watch")
     hass.data[CONF_COUNTRY_CODE] = []
+    hass.data[CONF_OPENCAGE_APIKEY] = []
     hass.data[CONF_PASSWORD] = []
     hass.data[CONF_PHONENUMBER] = []
     hass.data[CONF_SAFEZONES] = []
@@ -102,10 +106,12 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 async def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType) -> bool:
     childPhoneNumber: list = controller_config[CONF_CHILD_PHONENUMBER]
     countryCode: str = controller_config[CONF_COUNTRY_CODE]
+    opencage_apikey: str = controller_config[CONF_OPENCAGE_APIKEY]
     phoneNumber: str = controller_config[CONF_PHONENUMBER]
     password: str = controller_config[CONF_PASSWORD]
     userlang: str = controller_config[CONF_USERLANG]
     timeZone: str = controller_config[CONF_TIMEZONE]
+    watch_id: list = controller_config[CONF_WATCHUSER_ID]
 
     _types = controller_config[CONF_TYPES]
     _LOGGER.debug(f"set Entity-Types: {_types}")
@@ -116,13 +122,16 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     controller = PXA.PyXploraApi(countryCode, phoneNumber, password, userlang, timeZone)
     _LOGGER.debug(f"Xplora® Api-Library Version: {controller.version()}")
     await controller.init_async()
-    watchUserID = await controller.getWatchUserID_async(childPhoneNumber)
+    watchUserID: list = await controller.getWatchUserID_async(childPhoneNumber)
+    if watch_id:
+        watchUserID = watch_id
 
     _LOGGER.debug(f"set Update interval Sensors: {scanInterval}")
     _LOGGER.debug(f"set Update interval Tracker: {trackerScanInterval}")
     position = len(hass.data[DATA_XPLORA])
 
     hass.data[CONF_COUNTRY_CODE].append(countryCode)
+    hass.data[CONF_OPENCAGE_APIKEY].append(opencage_apikey)
     hass.data[CONF_PASSWORD].append(password)
     hass.data[CONF_PHONENUMBER].append(phoneNumber)
     hass.data[CONF_SAFEZONES].append(controller_config[CONF_SAFEZONES])

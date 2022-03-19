@@ -17,6 +17,7 @@ from .const import (
     XPLORA_CONTROLLER,
 )
 from .entity import XploraSwitchEntity
+
 from pyxplora_api import pyxplora_api_async as PXA
 
 
@@ -28,14 +29,15 @@ async def async_setup_platform(
 ) -> None:
     if discovery_info is None:
         return
-    entities = []
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    child_no: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    watch_ids: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
     scan_interval: timedelta = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time: float = datetime.timestamp(datetime.now())
     _types: list = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
-    for id in child_no:
+    entities = []
+
+    for id in watch_ids:
         if SWITCH_SILENTS in _types:
             for silent in await controller.schoolSilentMode_async(id):
                 name = f'{await controller.getWatchUserName_async(id)} Watch Silent {silent["start"]}-{silent["end"]} {id}'
@@ -51,13 +53,9 @@ async def async_setup_platform(
 class SilentSwitch(XploraSwitchEntity):
 
     def __init__(self, silent: list, controller: PXA.PyXploraApi, scan_interval, start_time, name, id) -> None:
-        super().__init__(silent, controller, scan_interval, start_time, name, "silent")
+        super().__init__(silent, controller, scan_interval, start_time, name, "silent", "mdi:school")
         self._silent = silent
         self._id = id
-
-    @property
-    def icon(self) -> str:
-        return "mdi:school"
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
@@ -82,13 +80,9 @@ class SilentSwitch(XploraSwitchEntity):
 class AlarmSwitch(XploraSwitchEntity):
 
     def __init__(self, alarm: list, controller: PXA.PyXploraApi, scan_interval, start_time, name, id) -> None:
-        super().__init__(alarm, controller, scan_interval, start_time, name, "alarm")
+        super().__init__(alarm, controller, scan_interval, start_time, name, "alarm", "mdi:alarm")
         self._alarm = alarm
         self._id = id
-
-    @property
-    def icon(self) -> str:
-        return "mdi:alarm"
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
