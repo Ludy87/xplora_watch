@@ -6,7 +6,7 @@
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],
   "requirements": [
-    "pyxplora_api==1.0.74",
+    "pyxplora_api==1.0.75",
     "geopy==2.2.0",
     "opencage==2.0.0"
   ],

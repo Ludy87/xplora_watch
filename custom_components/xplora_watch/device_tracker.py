@@ -62,13 +62,13 @@ async def async_setup_scanner(
     _LOGGER.debug("set Tracker")
 
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    child_no: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    watch_ids: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
     scan_interval: timedelta = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time: float = datetime.timestamp(datetime.now())
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
         _LOGGER.debug("show safezone")
-        for id in child_no:
+        for id in watch_ids:
             i = 1
             for safeZone in await controller.getSafeZones_async(id):
                 if safeZone:
@@ -100,7 +100,7 @@ async def async_setup_scanner(
         controller,
         scan_interval,
         start_time,
-        child_no,
+        watch_ids,
     )
     return await scanner.async_init()
 
@@ -113,13 +113,13 @@ class WatchScanner(XploraDevice):
         controller,
         scan_interval,
         start_time,
-        child_no,
+        watch_ids,
     ) -> None:
         """Initialize."""
         super().__init__(scan_interval, start_time)
         self.connected = False
         self._controller: PXA.PyXploraApi = controller
-        self._child_no = child_no
+        self._watch_ids = watch_ids
         self._async_see = async_see
         self._hass: HomeAssistant = hass
         self._watch_location = None
@@ -128,7 +128,7 @@ class WatchScanner(XploraDevice):
         """Further initialize connection to Xplora® API."""
         _LOGGER.debug("set async_init")
         await self._controller.init_async()
-        for id in self._child_no:
+        for id in self._watch_ids:
             username = await self._controller.getWatchUserName_async(id)
             if username is None:
                 _LOGGER.error("Can not connect to Xplora® API")
@@ -147,7 +147,7 @@ class WatchScanner(XploraDevice):
         if (self._update_timer() and xts_state == 'on') or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
-            for id in self._child_no:
+            for id in self._watch_ids:
                 _LOGGER.debug(f"Updating device data {id}")
                 self._watch_location = await self._controller.getWatchLastLocation_async(True, watchID=id)
                 self._hass.async_create_task(self.import_device_data(id))

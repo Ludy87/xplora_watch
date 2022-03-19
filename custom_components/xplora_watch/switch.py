@@ -29,14 +29,15 @@ async def async_setup_platform(
 ) -> None:
     if discovery_info is None:
         return
-    entities = []
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    child_no: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    watch_ids: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
     scan_interval: timedelta = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time: float = datetime.timestamp(datetime.now())
     _types: list = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
-    for id in child_no:
+    entities = []
+
+    for id in watch_ids:
         if SWITCH_SILENTS in _types:
             for silent in await controller.schoolSilentMode_async(id):
                 name = f'{await controller.getWatchUserName_async(id)} Watch Silent {silent["start"]}-{silent["end"]} {id}'
