@@ -23,7 +23,7 @@ async def async_get_service(
 ) -> XploraNotificationService:
     _LOGGER.debug("set Notify Controller")
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][0]
-    _LOGGER.debug("set Service Notify")
+    _LOGGER.debug("set Notify Service")
     sv = XploraNotificationService()
     sv.setup(controller)
 
@@ -44,11 +44,11 @@ class XploraNotificationService(BaseNotificationService):
         target = kwargs[ATTR_TARGET]
         _LOGGER.debug(f"sent message {msg} to {target}")
         if not target:
-            _LOGGER.warning("No child phonenumber!")
+            _LOGGER.warning("No waatch id!")
         if len(msg):
             ids = await self._controller.getWatchUserID_async(kwargs[ATTR_TARGET])
             if not ids:
-                _LOGGER.warning("Dont find child phonenumber!")
+                _LOGGER.warning("Dont find watch id!")
                 return
             for id in ids:
                 _LOGGER.debug(await self._controller.sendText(msg, id))
