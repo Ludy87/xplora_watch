@@ -134,7 +134,7 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
-## [v0.0.25] - 2022-03-17
+## [v0.0.25] - 2022-03-19
 
 ### Added
 - OpenCage Geocoding API
