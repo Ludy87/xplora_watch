@@ -134,7 +134,15 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v0.0.26] - 2022-03-20
+
+### Changed
+- API-Lib
+
+---
 ## [v0.0.25] - 2022-03-19
+
+<details>
 
 ### Added
 - OpenCage Geocoding API
@@ -144,6 +152,7 @@ logger:
 
 ### Changed
 - `child_no` to `watch_ids`
+</details>
 
 ---
 ## [v0.0.24] - 2022-03-15
