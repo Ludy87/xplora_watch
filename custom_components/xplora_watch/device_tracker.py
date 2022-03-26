@@ -179,7 +179,7 @@ class WatchScanner(XploraDevice):
         if watch_location_info.get(ATTR_TRACKER_CITY, None):
             attr[ATTR_TRACKER_CITY] = watch_location_info[ATTR_TRACKER_CITY]
         if watch_location_info.get(ATTR_TRACKER_ADDR, None):
-            if self._opencage is '':
+            if self._opencage == '':
                 attr[ATTR_TRACKER_ADDR] = watch_location_info[ATTR_TRACKER_ADDR]
             else:
                 _LOGGER.debug("load addr from OpenCageData")

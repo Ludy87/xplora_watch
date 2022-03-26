@@ -221,7 +221,7 @@ class OpenCageGeocodeUA:
             raise InvalidInputError(bad_value=query)
 
         data = { 'q': query, 'key': self.key }
-        data.update(params) # Add user parameters
+        data.update(params)  # Add user parameters
         return data
 
     async def getUA(self):
