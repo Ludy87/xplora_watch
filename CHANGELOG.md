@@ -1,9 +1,18 @@
 # Change Log
 
+## [v0.0.27] - 2022-03-26
+
+### Fixed
+- OpenCage: Server disconnected
+
+---
 ## [v0.0.26] - 2022-03-20
+
+<details>
 
 ### Changed
 - API-Lib
+</details>
 
 ---
 ## [v0.0.25] - 2022-03-19

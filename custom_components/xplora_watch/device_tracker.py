@@ -5,6 +5,7 @@ import logging
 
 from collections.abc import Awaitable, Callable
 from datetime import datetime, timedelta
+from .geocoder import OpenCageGeocodeUA
 
 from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
 from homeassistant.core import HomeAssistant
@@ -13,7 +14,6 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.util import slugify
 
 from geopy import distance
-from opencage.geocoder import OpenCageGeocode
 
 from .const import (
     ATTR_TRACKER_ADDR,
@@ -62,9 +62,10 @@ async def async_setup_scanner(
     _LOGGER.debug("set Tracker")
 
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    watch_ids: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    opencage: str = hass.data[CONF_OPENCAGE_APIKEY][discovery_info[XPLORA_CONTROLLER]]
     scan_interval: timedelta = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time: float = datetime.timestamp(datetime.now())
+    watch_ids: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
         _LOGGER.debug("show safezone")
@@ -101,6 +102,7 @@ async def async_setup_scanner(
         scan_interval,
         start_time,
         watch_ids,
+        opencage,
     )
     return await scanner.async_init()
 
@@ -114,6 +116,7 @@ class WatchScanner(XploraDevice):
         scan_interval,
         start_time,
         watch_ids,
+        opencage,
     ) -> None:
         """Initialize."""
         super().__init__(scan_interval, start_time)
@@ -123,6 +126,7 @@ class WatchScanner(XploraDevice):
         self._async_see = async_see
         self._hass: HomeAssistant = hass
         self._watch_location = None
+        self._opencage = opencage
 
     async def async_init(self) -> bool:
         """Further initialize connection to Xplora® API."""
@@ -175,14 +179,22 @@ class WatchScanner(XploraDevice):
         if watch_location_info.get(ATTR_TRACKER_CITY, None):
             attr[ATTR_TRACKER_CITY] = watch_location_info[ATTR_TRACKER_CITY]
         if watch_location_info.get(ATTR_TRACKER_ADDR, None):
-            opencage = self._hass.data[CONF_OPENCAGE_APIKEY]
-            if '' in opencage:
+            if self._opencage is '':
                 attr[ATTR_TRACKER_ADDR] = watch_location_info[ATTR_TRACKER_ADDR]
             else:
-                async with OpenCageGeocode(opencage) as geocoder:
-                    results: dict = (await geocoder.reverse_geocode_async(watch_location_info.get("lat"),
-                                                                          watch_location_info.get("lng")))[0]
-                    attr[ATTR_TRACKER_ADDR] = results.get('formatted')
+                _LOGGER.debug("load addr from OpenCageData")
+                async with OpenCageGeocodeUA(self._opencage) as geocoder:
+                    results: dict = await geocoder.reverse_geocode_async(
+                        watch_location_info.get("lat"), watch_location_info.get("lng"),
+                        no_annotations=1,
+                        pretty=1,
+                        no_record=1,
+                        no_dedupe=1,
+                        limit=1,
+                        abbrv=1
+                    )
+                    attr[ATTR_TRACKER_ADDR] = results[0]['formatted']
+
         if watch_location_info.get(ATTR_TRACKER_POI, None):
             attr[ATTR_TRACKER_POI] = watch_location_info[ATTR_TRACKER_POI]
         if watch_location_info.get(ATTR_TRACKER_ISINSAFEZONE, None):
