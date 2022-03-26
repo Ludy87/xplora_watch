@@ -70,6 +70,7 @@ async def async_setup_platform(
                 )
     add_entities(entities, True)
 
+
 class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
     def __init__(
         self,
