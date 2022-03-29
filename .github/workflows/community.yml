@@ -1,16 +1,15 @@
 name: Community
 
-on: 
+on:
   issues:
     types: [opened, edited, milestoned]
   pull_request_target:
     types: [opened]
 
+# .github/labeler.yml
 jobs:
-
   labeler:
     runs-on: ubuntu-latest
-
     steps:
     - name: Check Labels
       id: labeler
