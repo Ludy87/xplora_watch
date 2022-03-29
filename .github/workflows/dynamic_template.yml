@@ -46,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           file_pattern: README.md
-          commit_message: Update generated README
+          commit_message: 📝 Update generated README
           branch: main
           commit_user_name: readme-scribe 🤖
           commit_user_email: actions@github.com
