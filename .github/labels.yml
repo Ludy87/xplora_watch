@@ -10,6 +10,9 @@
 - name: Bug? False Alarm
   description: no Bug - False Alarm
   color: 80006C
+- name: check for Bug
+  description: it is checked whether there is an Bug
+  color: 1AFF00
 - name: documentation
   description: Improvements or additions to documentation
   color: 0075ca
