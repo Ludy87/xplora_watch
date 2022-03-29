@@ -1,5 +1,6 @@
 ---
 name: "Bug"
+title: "[🐛] (bug summary)"
 description: You use this when something is not doing what it's supposed to do.
 labels: "check for Bug"
 body:
