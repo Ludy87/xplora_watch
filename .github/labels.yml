@@ -4,9 +4,12 @@
 #
 # The repository labels will be automatically configured using this file and
 # the GitHub Action https://github.com/marketplace/actions/github-labeler.
-- name: bug
+- name: "Bug: Confirmed!"
   description: Something isn't working
   color: d73a4a
+- name: Bug? False Alarm
+  description: no Bug - False Alarm
+  color: 80006C
 - name: documentation
   description: Improvements or additions to documentation
   color: 0075ca
@@ -16,9 +19,6 @@
 - name: enhancement
   description: New feature or request
   color: a2eeef
-- name: good first issue
-  description: Good for newcomers
-  color: 7057ff
 - name: help wanted
   description: Extra attention is needed
   color: 008672
