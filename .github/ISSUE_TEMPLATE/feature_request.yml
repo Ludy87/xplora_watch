@@ -1,0 +1,21 @@
+name: Request a feature
+description: Request a new Xplora® Watch feature
+title: "[FR] (feature summary)"
+labels: 'feature request'
+body:
+  - type: textarea
+    attributes:
+      label: Is your feature request related to a problem? Please describe.
+      description: A clear description of the problem.
+
+  - type: textarea
+    attributes:
+      label: Describe the feature you want
+      description: A clear description of the feature and how you think it should work.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.
