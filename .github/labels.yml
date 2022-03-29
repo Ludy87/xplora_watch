@@ -19,7 +19,7 @@
 - name: duplicate
   description: This issue or pull request already exists
   color: cfd3d7
-- name: enhancement
+- name: feature request
   description: New feature or request
   color: a2eeef
 - name: help wanted
