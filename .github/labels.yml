@@ -20,7 +20,7 @@
   description: This issue or pull request already exists
   color: cfd3d7
 - name: feature request
-  description: New feature or request
+  description: Request a new Xplora® Watch feature
   color: a2eeef
 - name: help wanted
   description: Extra attention is needed
