@@ -7,7 +7,7 @@
 - name: "Bug: Confirmed!"
   description: Something isn't working
   color: d73a4a
-- name: Bug? False Alarm
+- name: "Bug: False Alarm"
   description: no Bug - False Alarm
   color: 80006C
 - name: check for Bug
