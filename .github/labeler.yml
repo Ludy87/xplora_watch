@@ -26,7 +26,7 @@ comments:
 #    - 'include' patterns will associate a label if any of these patterns match
 #    - 'exclude' patterns will ignore this label if any of these patterns match
 labels:
-  'bug':
+  'check for Bug':
     include:
       - '\bbug[s]?\b'
     exclude: []
@@ -35,7 +35,7 @@ labels:
       - '\bhelp( me)?\b'
     exclude:
       - '\b\[test(ing)?\]\b'
-  'enhancement':
+  'feature request':
     include:
       - '\bfeat\b'
     exclude: []
