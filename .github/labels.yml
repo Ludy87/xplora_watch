@@ -34,3 +34,6 @@
 - name: question
   description: Further information is requested
   color: d876e3
+- name: Configuration incorrect
+  description: Configuration implemented incorrectly
+  color: 8AFF00
