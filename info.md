@@ -27,7 +27,50 @@ Watch Show Safezone | Device Tracker
 ---
 ## Basis Configuration
 
-1. Füge in die `configuration.yaml` ein
+1. Add entry to your `configuration.yaml`
+
+### <u>Small Settings</u>
+```yaml
+xplora_watch:
+  country_code: "+49"
+  phonenumber: "123456789"
+  password: "password"
+  userlang: "de-DE"
+  timezone: "Europe/Berlin"
+  types:
+    - "battery"
+    - "xcoin"
+    - "state"
+    - "safezone"
+    - "charging"
+    - "silents"
+    - "alarms"
+    - "dt_watch"
+  safezones: "show" # optional
+  scan_interval: 180 # default sec - optional
+  tracker_scan_interval: 60 # default sec - optional
+```
+---
+### <u>Optional Settings</u>
+
+for [OpenCage Geocoding API](https://opencagedata.com/) address searching
+```yaml
+  opencage: API_KEY # optional
+```
+You have more watches and you will one watch integridad? Select this one with ```child_phonenumber``` or ```watch_id```. The safety way is ```child_phonenumber```
+
+```yaml
+  child_phonenumber: # optional & ignored if 'watch_id' is set
+    - "9876543210"
+    - "5678901234"
+```
+If ```watch_id``` is set, ```child_phonenumber``` is ignored. Errors can occur.
+```yaml
+  watch_id: # optional
+    - 012328123d123f5e775e5e3346739732
+```
+---
+### <u>Full Settings</u>
 ```yaml
 xplora_watch:
   country_code: "+49"
@@ -60,7 +103,7 @@ xplora_watch:
 ---
 ## Notify configuration
 
-1. Füge die Notification in die `configuration.yaml` ein
+1. Add entry Notification to your `configuration.yaml`
 ```yaml
 notify:
   - platform: xplora_watch
