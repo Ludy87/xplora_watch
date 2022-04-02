@@ -33,7 +33,7 @@ jobs:
       - name: "💫 Dynamic Template Render"
         uses: varunsridharan/action-dynamic-readme@main
         with:
-          GLOBAL_TEMPLATE_REPOSITORY: Ludy87/yml_test
+          GLOBAL_TEMPLATE_REPOSITORY: Ludy87/xplora_watch
           files: |
             README.md
           confirm_and_push: false # Important if use "Require a pull request before merging" rule
