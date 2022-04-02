@@ -1,0 +1,58 @@
+name: Release Version
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        env:
+          PHONENUMBER: ${{ secrets.PHONENUMBER }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyxplora_api==1.0.24 -U
+          python ./.github/actions/update_readme.py
+      - name: Get Version
+        id: version
+        shell: bash
+        run: |
+          echo "$GITHUB_CONTEXT"
+          version="$(python3 ./.github/actions/get_version.py)"
+          echo "::set-output name=version::$version"
+      - name: Is Tag exists
+        uses: mukunku/tag-exists-action@v1.0.0
+        id: checkTag
+        with: 
+          tag: ${{ steps.version.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - if: steps.checkTag.outputs.exists == 'false'
+        name: Check Tagname
+        id: check-tag
+        run: |
+          if [[ "${{ github.event.head_commit.message }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo ::set-output name=match::true
+          fi
+      - name: Build
+        if: steps.check-tag.outputs.match == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.head_commit.message }}
+          name: v${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+          token: "${{ secrets.TOKEN }}"
