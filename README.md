@@ -396,4 +396,5 @@ logger:
 - timer control reload Entity
 - wrong declaration (`sensors` to `types`)
 </details>
+
 <!-- END ./CHANGELOG.md -->
