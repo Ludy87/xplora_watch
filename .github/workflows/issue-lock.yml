@@ -20,8 +20,8 @@ jobs:
         with:
           github-token: ${{ secrets.TOKEN }}
           add-issue-labels: 'outdated'
-          issue-inactive-days: 30
-          include-any-issue-labels: 'wontfix, invalid, wait'
+          issue-inactive-days: 3
+          include-any-issue-labels: 'wontfix, invalid, wait, Configuration incorrect'
           issue-comment: >
             This issue has been automatically locked since there
             has not been any recent activity after it was closed.
