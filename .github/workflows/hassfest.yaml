@@ -9,13 +9,18 @@ on:
     - cron: "0 0 * * *"
 
 jobs:
-  validate:
-    runs-on: "ubuntu-latest"
+  validate_hacs:
+    name: "HACS Validation"
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Hassfest validation
-        uses: home-assistant/actions/hassfest@master
-      - name: HACS validation
-        uses: hacs/action@main
+      - uses: "actions/checkout@v3"
+      - name: HACS Action
+        uses: "hacs/action@main"
         with:
           category: "integration"
+  validate_hassfest:
+    name: "Hassfest Validation"
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v3"
+      - uses: home-assistant/actions/hassfest@master
