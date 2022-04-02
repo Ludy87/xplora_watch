@@ -1,5 +1,4 @@
-name: Missing Country Code
-description: Request a new Xplora® Watch feature
+name: Remove Country Code
 title: "[🏳 remove Country Code] (Country summary)"
 labels: 'R: Country Code'
 body:
