@@ -158,6 +158,7 @@ zone:
 | Italy | 39 |
 | Switzerland | 41 |
 | Austria | 43 |
+
 <!-- END ./countries.md -->
 
 ---
@@ -395,4 +396,5 @@ logger:
 - timer control reload Entity
 - wrong declaration (`sensors` to `types`)
 </details>
+
 <!-- END ./CHANGELOG.md -->
