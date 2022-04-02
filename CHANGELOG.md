@@ -1,9 +1,19 @@
 # Change Log
 
+## [v0.0.28] - 2022-04-02
+
+### Fixed
+- 🎨 better error detection
+
+---
+
 ## [v0.0.27] - 2022-03-26
+
+<details>
 
 ### Fixed
 - OpenCage: Server disconnected
+</details>
 
 ---
 ## [v0.0.26] - 2022-03-20
