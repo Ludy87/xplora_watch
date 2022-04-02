@@ -1,4 +1,5 @@
 name: Remove Country Code
+description: Remove Country Code
 title: "[🏳 remove Country Code] (Country summary)"
 labels: 'R: Country Code'
 body:
