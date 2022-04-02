@@ -40,4 +40,4 @@ class XploraSwitchEntity(XploraUpdateTime, SwitchEntity, RestoreEntity):
         for day in range(len(weekRepeat)):
             if weekRepeat[day] == "1":
                 weekDays.append(days[day])
-        return { "Day(s)": ', '.join(weekDays) }
+        return {"Day(s)": ', '.join(weekDays)}
