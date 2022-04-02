@@ -1,0 +1,26 @@
+name: Missing Country Code
+description: Request a new Xplora® Watch feature
+title: "[🏳 add Country Code] (Country summary)"
+labels: 'A: Country Code'
+body:
+  - type: input
+    attributes:
+      label: Country Name
+      description: Specify the country to add in the documentation.
+      placeholder: Germany
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Country Code
+      description: Specify the country code to add in the documentation.
+      placeholder: 49 or +49
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Correctness
+      description: My details are correct and have been checked by me.
+      options:
+        - label: I agree that everything is correct.
+          required: true

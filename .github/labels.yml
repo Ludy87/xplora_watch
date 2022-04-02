@@ -37,3 +37,9 @@
 - name: Configuration incorrect
   description: Configuration implemented incorrectly
   color: 8AFF00
+- name: "A: Country Code"
+  description: add Country Code
+  color: "0000FF"
+- name: "R: Country Code"
+  description: remove Country Code
+  color: "FF00FF"
