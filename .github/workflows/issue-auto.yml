@@ -1,7 +1,9 @@
 name: Issue Auto close
+
 on:
   issues:
     types: [opened]
+
 jobs:
   titlePrefixCheck:
     runs-on: ubuntu-latest
