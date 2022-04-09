@@ -64,7 +64,7 @@ async def async_setup_platform(
         if description.key in _types:
             _type = description.key
             for watch_id in watch_ids:
-                client_name = await controller.getWatchUserName_async(watch_id)
+                client_name = controller.getWatchUserName(watch_id)
                 entities.append(
                     XploraSensor(description, controller, scan_interval, start_time, _type, watch_id, client_name)
                 )
@@ -88,7 +88,7 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
 
         self.entity_description = description
         self._controller: PXA.PyXploraApi = controller
-        self._id = watch_id
+        self._watch_id = watch_id
         self._types = _type
         _LOGGER.debug(f"set Sensor: {self.entity_description.key}")
 
@@ -105,16 +105,16 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
         """ https://github.com/home-assistant/core/blob/master/homeassistant/helpers/entity.py#L219 """
 
         if self.__isTypes(SENSOR_BATTERY):
-            charging = await self._controller.getWatchIsCharging_async(self._id)
+            charging = await self._controller.getWatchIsCharging(self._watch_id)
 
-            self.__default_attr((await self._controller.getWatchBattery_async(self._id)), PERCENTAGE)
+            self.__default_attr((await self._controller.getWatchBattery(self._watch_id)), PERCENTAGE)
             self._attr_icon = bat(self._attr_native_value, charging)
 
             _LOGGER.debug("Updating sensor: %s | Battery: %s | Charging %s", self._attr_name, str(self._attr_native_value), str(charging))
 
         elif self.__isTypes(SENSOR_XCOIN):
 
-            self.__default_attr(await self._controller.getWatchXcoin_async(self._id), "💰")
+            self.__default_attr(self._controller.getWatchXcoin(self._watch_id), "💰")
 
             _LOGGER.debug("Updating sensor: %s | XCoins: %s", self._attr_name, str(self._attr_native_value))
 
