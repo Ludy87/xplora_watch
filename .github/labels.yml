@@ -43,3 +43,6 @@
 - name: "R: Country Code"
   description: remove Country Code
   color: "FF00FF"
+- name: "Bug: Fix!"
+  description: Fix Bug
+  color: d73a4a
