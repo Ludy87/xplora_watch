@@ -6,7 +6,7 @@ jobs:
   titlePrefixCheck:
     runs-on: ubuntu-latest
     steps:
-      - if: contains(github.event.issue.title, 'Logout') = 'true'
+      - if: contains(github.event.issue.title, 'Logout') == 'true'
         name: Close Issue
         uses: peter-evans/close-issue@v2
         with:
