@@ -142,7 +142,7 @@ zone:
 ```
 
 ---
-## 🏳 Supported Countries 🏳
+## 🏳 Supported Countries 🏳 [add Country Code](https://github.com/Ludy87/xplora_watch/issues/new?assignees=Ludy87&labels=A%3A+Country+Code&template=add_country.yml&title=%5B%F0%9F%8F%B3+add+Country+Code%5D+%28Country+summary%29)
 
 <!-- START ./countries.md -->
 | country name | country code |
@@ -169,6 +169,14 @@ logger:
   logs:
     custom_components.xplora_watch: debug
 ```
+
+---
+# Workaround for logout in the Xplora® App
+
+1. add phone number from watch to contacts (as admin)
+2. create a login profile for this phone number
+3. log into the app with the created profile to test whether it works
+4. use the login data for the integration
 
 ---
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
