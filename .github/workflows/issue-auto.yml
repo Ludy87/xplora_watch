@@ -8,7 +8,7 @@ jobs:
   titlePrefixCheck:
     runs-on: ubuntu-latest
     steps:
-      - if: contains(github.event.issue.title, 'Logout') == 'true'
+      - if: contains(github.event.issue.title, 'Logout') || contains(github.event.issue.title, 'app')
         name: Close Issue
         uses: peter-evans/close-issue@v2
         with:
@@ -19,3 +19,5 @@ jobs:
             2. create a login profile for this phone number
             3. log into the app with the created profile to test whether it works
             4. use the login data for the integration
+
+            This action was performed automatically.
