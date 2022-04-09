@@ -20,13 +20,13 @@ jobs:
         with:
           github-token: ${{ secrets.TOKEN }}
           add-issue-labels: 'outdated'
-          issue-inactive-days: 3
+          issue-inactive-days: '3'
           include-any-issue-labels: 'wontfix, invalid, wait, Configuration incorrect'
           issue-comment: >
             This issue has been automatically locked since there
             has not been any recent activity after it was closed.
             Please open a new issue for related bugs.
-          pr-inactive-days: 30
+          pr-inactive-days: '30'
           pr-comment: >
             This pull request has been automatically locked since there
             has not been any recent activity after it was closed.
