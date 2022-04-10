@@ -100,22 +100,22 @@ class XploraBinarySensor(XploraUpdateTime, BinarySensorEntity, RestoreEntity):
     async def __isOnline(self) -> bool:
         await self._controller.init()
         self._attr_icon = "mdi:lan-check"
-        if (await self._controller.askWatchLocate(self._watch_id) is True) or (
-           await self._controller.trackWatchInterval(self._watch_id) != -1):
+        if (await self._controller.askWatchLocate(watchID=self._watch_id) is True) or (
+           await self._controller.trackWatchInterval(watchID=self._watch_id) != -1):
             return True
-        state = await self._controller.getWatchOnlineStatus(self._watch_id)
+        state = await self._controller.getWatchOnlineStatus(watchID=self._watch_id)
         if (state == "ONLINE"):
             return True
         self._attr_icon = "mdi:lan-disconnect"
         return False
 
     async def __isSafezone(self) -> bool:
-        if await self._controller.getWatchIsInSafeZone(self._watch_id):
+        if await self._controller.getWatchIsInSafeZone(watchID=self._watch_id):
             return False
         return True
 
     async def __isCharging(self) -> bool:
-        if await self._controller.getWatchIsCharging(self._watch_id):
+        if await self._controller.getWatchIsCharging(watchID=self._watch_id):
             return True
         return False
 
