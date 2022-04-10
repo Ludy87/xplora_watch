@@ -73,8 +73,8 @@ async def async_setup_scanner(
             i = 1
             for safeZone in await controller.getSafeZones_async(id):
                 if safeZone:
-                    lat = safeZone.get("lat")
-                    lng = safeZone.get("lng")
+                    lat = float(safeZone.get("lat"))
+                    lng = float(safeZone.get("lng"))
                     rad = safeZone.get("rad")
                     attr = {}
                     if safeZone.get("name", None):
