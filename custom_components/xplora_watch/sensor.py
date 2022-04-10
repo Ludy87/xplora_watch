@@ -110,7 +110,10 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
             self.__default_attr((await self._controller.getWatchBattery(watchID=self._watch_id)), PERCENTAGE)
             self._attr_icon = bat(self._attr_native_value, charging)
 
-            _LOGGER.debug("Updating sensor: %s | Battery: %s | Charging %s", self._attr_name, str(self._attr_native_value), str(charging))
+            _LOGGER.debug(
+                "Updating sensor: %s | Battery: %s | Charging %s",
+                self._attr_name, str(self._attr_native_value), str(charging)
+            )
 
         elif self.__isTypes(SENSOR_XCOIN):
 

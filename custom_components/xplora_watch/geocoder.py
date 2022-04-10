@@ -62,7 +62,10 @@ class RateLimitExceededError(OpenCageGeocodeError):
 
     def __unicode__(self):
         """Convert exception to a string."""
-        return "Your rate limit has expired. It will reset to {0} on {1}".format(self.reset_to, self.reset_time.isoformat())
+        return "Your rate limit has expired. It will reset to {0} on {1}".format(
+            self.reset_to,
+            self.reset_time.isoformat()
+        )
 
     __str__ = __unicode__
 
@@ -153,7 +156,8 @@ class OpenCageGeocodeUA:
 
         :returns: Dict results
         :raises InvalidInputError: if the query string is not a unicode string
-        :raises RateLimitExceededError: if you have exceeded the number of queries you can make. Exception says when you can try again
+        :raises RateLimitExceededError: if you have exceeded the number of queries you can make.
+                                        Exception says when you can try again
         :raises UnknownError: if something goes wrong with the OpenCage API
         """
 
@@ -181,7 +185,8 @@ class OpenCageGeocodeUA:
         :param lng: Longitude
         :return: Results from OpenCageData
         :rtype: dict
-        :raises RateLimitExceededError: if you have exceeded the number of queries you can make. Exception says when you can try again
+        :raises RateLimitExceededError: if you have exceeded the number of queries you can make.
+                                        Exception says when you can try again
         :raises UnknownError: if something goes wrong with the OpenCage API
         """
         return await self.geocode_async(_query_for_reverse_geocoding(lat, lng), **kwargs)

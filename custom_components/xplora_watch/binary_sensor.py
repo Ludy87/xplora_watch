@@ -70,7 +70,9 @@ async def async_setup_platform(
             for watch_id in watch_ids:
                 client_name = controller.getWatchUserName(watch_id)
                 entities.append(
-                    XploraBinarySensor(description, controller, scan_interval, start_time, _type, watch_id, client_name)
+                    XploraBinarySensor(
+                        description, controller, scan_interval, start_time, _type, watch_id, client_name
+                    )
                 )
     add_entities(entities, True)
 
