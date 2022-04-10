@@ -105,16 +105,16 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
         """ https://github.com/home-assistant/core/blob/master/homeassistant/helpers/entity.py#L219 """
 
         if self.__isTypes(SENSOR_BATTERY):
-            charging = await self._controller.getWatchIsCharging(self._watch_id)
+            charging = await self._controller.getWatchIsCharging(watchID=self._watch_id)
 
-            self.__default_attr((await self._controller.getWatchBattery(self._watch_id)), PERCENTAGE)
+            self.__default_attr((await self._controller.getWatchBattery(watchID=self._watch_id)), PERCENTAGE)
             self._attr_icon = bat(self._attr_native_value, charging)
 
             _LOGGER.debug("Updating sensor: %s | Battery: %s | Charging %s", self._attr_name, str(self._attr_native_value), str(charging))
 
         elif self.__isTypes(SENSOR_XCOIN):
 
-            self.__default_attr(self._controller.getWatchXcoin(self._watch_id), "💰")
+            self.__default_attr(self._controller.getWatchXcoin(watchID=self._watch_id), "💰")
 
             _LOGGER.debug("Updating sensor: %s | XCoins: %s", self._attr_name, str(self._attr_native_value))
 
