@@ -111,7 +111,7 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     password: str = controller_config[CONF_PASSWORD]
     userlang: str = controller_config[CONF_USERLANG]
     timeZone: str = controller_config[CONF_TIMEZONE]
-    watch_id: list = controller_config[CONF_WATCHUSER_ID]
+    watch_ids: list = controller_config[CONF_WATCHUSER_ID]
 
     _types = controller_config[CONF_TYPES]
     _LOGGER.debug(f"set Entity-Types: {_types}")
@@ -121,18 +121,18 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     _LOGGER.debug("init API-Controller from Library")
     controller = PXA.PyXploraApi(countryCode, phoneNumber, password, userlang, timeZone)
     _LOGGER.debug(f"Xplora® Api-Library Version: {controller.version()}")
-    await controller.init_async()
-    watchUserIDs: list = await controller.getWatchUserID_async([])
-    watchUserID: list = await controller.getWatchUserID_async(childPhoneNumber)
+    await controller.init()
+    watchUserIDs: list = controller.getWatchUserID([])
+    watchUserID: list = controller.getWatchUserID(childPhoneNumber)
     _LOGGER.debug(f"Xplora® Watch IDs: {watchUserIDs}")
-    if not watchUserID and not watch_id:
+    if not watchUserID and not watch_ids:
         raise Exception(f"Your child phone number {childPhoneNumber} is wrong. Check your input! Or use `watch_id: {watchUserIDs}`")
 
-    if watch_id:
-        for id in watch_id:
-            if id not in watchUserIDs or len(id) != 32:
-                raise Exception(f"Your WatchID {id} is wrong. Found: {watchUserIDs}")
-        watchUserID = watch_id
+    if watch_ids:
+        for watch_id in watch_ids:
+            if watch_id not in watchUserIDs or len(watch_id) != 32:
+                raise Exception(f"Your WatchID {watch_id} is wrong. Found: {watchUserIDs}")
+        watchUserID = watch_ids
 
     _LOGGER.debug(f"set Update interval Sensors: {scanInterval}")
     _LOGGER.debug(f"set Update interval Tracker: {trackerScanInterval}")

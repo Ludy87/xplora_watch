@@ -69,9 +69,9 @@ async def async_setup_scanner(
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
         _LOGGER.debug("show safezone")
-        for id in watch_ids:
+        for watch_id in watch_ids:
             i = 1
-            for safeZone in await controller.getSafeZones_async(id):
+            for safeZone in await controller.getSafeZones(watch_id):
                 if safeZone:
                     lat = float(safeZone.get("lat"))
                     lng = float(safeZone.get("lng"))
@@ -85,10 +85,10 @@ async def async_setup_scanner(
                         attr[ATTR_TRACKER_SAFEZONEGROUPNAME] = safeZone.get("groupName")
                     await async_see(
                         source_type=SOURCE_TYPE_GPS,
-                        dev_id=slugify("Safezone " + str(i) + " " + id),
+                        dev_id=slugify("Safezone " + str(i) + " " + watch_id),
                         gps=(lat, lng),
                         gps_accuracy=rad,
-                        host_name=safeZone.get("name") + " " + id,
+                        host_name=safeZone.get("name") + " " + watch_id,
                         attributes=attr,
                         icon="mdi:crosshairs-gps",
                     )
@@ -131,9 +131,9 @@ class WatchScanner(XploraDevice):
     async def async_init(self) -> bool:
         """Further initialize connection to Xplora® API."""
         _LOGGER.debug("set async_init")
-        await self._controller.init_async()
-        for id in self._watch_ids:
-            username = await self._controller.getWatchUserName_async(id)
+        await self._controller.init()
+        for watch_id in self._watch_ids:
+            username = self._controller.getWatchUserName(watch_id)
             if username is None:
                 _LOGGER.error("Can not connect to Xplora® API")
                 return False
@@ -151,16 +151,16 @@ class WatchScanner(XploraDevice):
         if (self._update_timer() and xts_state == 'on') or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
-            for id in self._watch_ids:
-                _LOGGER.debug(f"Updating device data {id}")
-                self._watch_location = await self._controller.getWatchLastLocation_async(True, watchID=id)
-                self._hass.async_create_task(self.import_device_data(id))
+            for watch_id in self._watch_ids:
+                _LOGGER.debug(f"Updating device data {watch_id}")
+                self._watch_location = await self._controller.getWatchLastLocation(watchID=watch_id, withAsk=True)
+                self._hass.async_create_task(self.import_device_data(watch_id))
 
     def get_location_distance(self, watch_c):
         home_zone = self._hass.states.get('zone.home').attributes
         return int(distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
 
-    async def import_device_data(self, id) -> None:
+    async def import_device_data(self, watch_id) -> None:
         """Import device data from Xplora® API."""
         watch_location_info = self._watch_location
         attr = {}
@@ -209,16 +209,18 @@ class WatchScanner(XploraDevice):
         if distanceToHome > attr[ATTR_TRACKER_RAD]:
             source_type = SOURCE_TYPE_GPS
         else:
-            source_type = watch_location_info.get("locateTypec", await self._controller.getWatchLocateType_async(id))
+            source_type = watch_location_info.get(
+                "locateTypec", await self._controller.getWatchLocateType(watchID=watch_id)
+            )
 
         await self._async_see(
             source_type=source_type,
-            dev_id=slugify(await self._controller.getWatchUserName_async(id) + " Watch Tracker " + id),
+            dev_id=slugify(self._controller.getWatchUserName(watchID=watch_id) + " Watch Tracker " + watch_id),
             gps=(float(watch_location_info.get("lat")), float(watch_location_info.get("lng"))),
             gps_accuracy=watch_location_info.get("rad"),
-            battery=await self._controller.getWatchBattery_async(id),
-            host_name=f"{await self._controller.getWatchUserName_async(id)} Watch Tracker {id}",
+            battery=await self._controller.getWatchBattery(watchID=watch_id),
+            host_name=f"{self._controller.getWatchUserName(watchID=watch_id)} Watch Tracker {watch_id}",
             attributes=attr,
             icon="mdi:watch",
-            picture=(await self._controller.getWatchUserIcon_async(id)),
+            picture=(self._controller.getWatchUserIcon(watchID=watch_id)),
         )

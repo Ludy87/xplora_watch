@@ -46,11 +46,11 @@ class XploraNotificationService(BaseNotificationService):
         if not target:
             _LOGGER.warning("No waatch id!")
         if len(msg):
-            ids = await self._controller.getWatchUserID_async(kwargs[ATTR_TARGET])
-            if not ids:
+            watch_ids = self._controller.getWatchUserID(kwargs[ATTR_TARGET])
+            if not watch_ids:
                 _LOGGER.warning("Dont find watch id!")
                 return
-            for id in ids:
-                _LOGGER.debug(await self._controller.sendText(msg, id))
+            for watch_id in watch_ids:
+                _LOGGER.debug(self._controller.sendText(text=msg, watchID=watch_id))
         else:
             _LOGGER.warning("Your message is empty!")
