@@ -13,5 +13,6 @@ with open("countries.md", "w") as text_file:
     text_file.write("| country name | country code |\n")
     text_file.write("|--------------|--------------|\n")
     text_file.write("| Denmark | 45 |\n")
+    text_file.write("| Netherlands | 31 |\n")
     for country in controller.handler.countries()["countries"]:
         text_file.write(f"| {country['name']} | {country['code']} |\n")
