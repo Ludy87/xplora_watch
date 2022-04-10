@@ -73,8 +73,8 @@ async def async_setup_scanner(
             i = 1
             for safeZone in await controller.getSafeZones(watch_id):
                 if safeZone:
-                    lat = safeZone.get("lat")
-                    lng = safeZone.get("lng")
+                    lat = float(safeZone.get("lat"))
+                    lng = float(safeZone.get("lng"))
                     rad = safeZone.get("rad")
                     attr = {}
                     if safeZone.get("name", None):
@@ -165,9 +165,9 @@ class WatchScanner(XploraDevice):
         watch_location_info = self._watch_location
         attr = {}
         if watch_location_info.get("lat", None):
-            attr[ATTR_TRACKER_LAT] = watch_location_info["lat"]
+            attr[ATTR_TRACKER_LAT] = float(watch_location_info["lat"])
         if watch_location_info.get("lng", None):
-            attr[ATTR_TRACKER_LNG] = watch_location_info["lng"]
+            attr[ATTR_TRACKER_LNG] = float(watch_location_info["lng"])
         if watch_location_info.get("rad", None):
             attr[ATTR_TRACKER_RAD] = watch_location_info["rad"]
         if watch_location_info.get(ATTR_TRACKER_COUNTRY, None):
@@ -214,7 +214,7 @@ class WatchScanner(XploraDevice):
         await self._async_see(
             source_type=source_type,
             dev_id=slugify(self._controller.getWatchUserName(watch_id) + " Watch Tracker " + watch_id),
-            gps=(watch_location_info.get("lat"), watch_location_info.get("lng")),
+            gps=(float(watch_location_info.get("lat")), float(watch_location_info.get("lng"))),
             gps_accuracy=watch_location_info.get("rad"),
             battery=await self._controller.getWatchBattery(watch_id),
             host_name=f"{self._controller.getWatchUserName(watch_id)} Watch Tracker {watch_id}",
