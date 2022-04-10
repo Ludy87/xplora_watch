@@ -1,12 +1,24 @@
 # Change Log
 
+## [v0.0.29] - 2022-04-10
+
+### Changed
+- 🏷️ type `lat` and `lng` | `<str>` to `<float>`
+- remove `*_async` (new Lib version)
+- remove `await` without async function
+- rename `ids` to `watch_ids`
+- renmae `id` to `watch_id`
+
+---
 ## [v0.0.28] - 2022-04-02
+
+<details>
 
 ### Fixed
 - 🎨 better error detection
+</details>
 
 ---
-
 ## [v0.0.27] - 2022-03-26
 
 <details>
