@@ -51,6 +51,6 @@ class XploraNotificationService(BaseNotificationService):
                 _LOGGER.warning("Dont find watch id!")
                 return
             for watch_id in watch_ids:
-                _LOGGER.debug(self._controller.sendText(msg, watch_id))
+                _LOGGER.debug(self._controller.sendText(text=msg, watchID=watch_id))
         else:
             _LOGGER.warning("Your message is empty!")

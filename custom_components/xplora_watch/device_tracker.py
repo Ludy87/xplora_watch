@@ -209,16 +209,18 @@ class WatchScanner(XploraDevice):
         if distanceToHome > attr[ATTR_TRACKER_RAD]:
             source_type = SOURCE_TYPE_GPS
         else:
-            source_type = watch_location_info.get("locateTypec", await self._controller.getWatchLocateType(watch_id))
+            source_type = watch_location_info.get(
+                "locateTypec", await self._controller.getWatchLocateType(watchID=watch_id)
+            )
 
         await self._async_see(
             source_type=source_type,
-            dev_id=slugify(self._controller.getWatchUserName(watch_id) + " Watch Tracker " + watch_id),
+            dev_id=slugify(self._controller.getWatchUserName(watchID=watch_id) + " Watch Tracker " + watch_id),
             gps=(float(watch_location_info.get("lat")), float(watch_location_info.get("lng"))),
             gps_accuracy=watch_location_info.get("rad"),
-            battery=await self._controller.getWatchBattery(watch_id),
-            host_name=f"{self._controller.getWatchUserName(watch_id)} Watch Tracker {watch_id}",
+            battery=await self._controller.getWatchBattery(watchID=watch_id),
+            host_name=f"{self._controller.getWatchUserName(watchID=watch_id)} Watch Tracker {watch_id}",
             attributes=attr,
             icon="mdi:watch",
-            picture=(self._controller.getWatchUserIcon(watch_id)),
+            picture=(self._controller.getWatchUserIcon(watchID=watch_id)),
         )

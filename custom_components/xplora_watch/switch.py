@@ -59,19 +59,19 @@ class SilentSwitch(XploraSwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        if (await self._controller.setEnableSilentTime(self._silent["id"], self._watch_id)):
+        if (await self._controller.setEnableSilentTime(silentId=self._silent["id"], watchID=self._watch_id)):
             self._attr_is_on = True
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
-        if (await self._controller.setDisableSilentTime(self._silent["id"], self._watch_id)):
+        if (await self._controller.setDisableSilentTime(silentId=self._silent["id"], watchID=self._watch_id)):
             self._attr_is_on = False
 
     async def async_update(self) -> None:
         if self._update_timer() or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
-            silents = await self._controller.schoolSilentMode(self._watch_id)
+            silents = await self._controller.schoolSilentMode(watchID=self._watch_id)
             for silent in silents:
                 if silent['id'] == self._silent['id']:
                     self._attr_is_on = self._state(silent['status'])
@@ -86,19 +86,19 @@ class AlarmSwitch(XploraSwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        if (await self._controller.setEnableAlarmTime(self._alarm["id"], self._watch_id)):
+        if (await self._controller.setEnableAlarmTime(alarmId=self._alarm["id"], watchID=self._watch_id)):
             self._attr_is_on = True
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
-        if (await self._controller.setDisableAlarmTime(self._alarm["id"], self._watch_id)):
+        if (await self._controller.setDisableAlarmTime(alarmId=self._alarm["id"], watchID=self._watch_id)):
             self._attr_is_on = False
 
     async def async_update(self) -> None:
         if self._update_timer() or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
-            alarms = await self._controller.getWatchAlarm(self._watch_id)
+            alarms = await self._controller.getWatchAlarm(watchID=self._watch_id)
             for alarm in alarms:
                 if alarm['id'] == self._alarm['id']:
                     self._attr_is_on = self._state(alarm['status'])
