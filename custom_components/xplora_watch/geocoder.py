@@ -230,19 +230,8 @@ class OpenCageGeocodeUA:
         return data
 
     async def getUA(self):
-        url = (
-            "https://webcache.googleusercontent.com/"
-            "search?q=cache:FxxmQW9XrRcJ:https://techblog.willshouse.com/"
-            "2012/01/03/most-common-user-agents/+&cd=4&hl=de&ct=clnk&gl=us"
-        )
-        xpath = '//*[@id="post-2229"]/div[2]/textarea[2]'
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36'
-        }
-        async with self.session.get(url, headers=headers) as response:
-            xml = html.fromstring(await response.text())
-            elem = xml.xpath(xpath)[0]
-            data = json.loads(elem.text)
+        with open("./custom_components/xplora_watch/ua.json", 'r') as json_file:
+            data = json.load(json_file)
             i = randint(0, len(data) - 1)
             return data[i]['useragent']
 
