@@ -10,9 +10,6 @@ import collections
 
 from random import randint
 import requests
-import json
-
-from lxml import html
 
 try:
     import aiohttp
