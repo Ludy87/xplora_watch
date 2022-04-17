@@ -21,7 +21,7 @@ jobs:
       - name: black check
         uses: psf/black@stable
         with:
-          options: "--line-length=127"
+          options: "--line-length=127 --check --diff"
           version: "22.3.0"
       - name: Install flake8
         run: |
