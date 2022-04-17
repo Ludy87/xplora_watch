@@ -144,11 +144,11 @@ class WatchScanner(XploraDevice):
 
     async def _async_update(self, now=None) -> None:
         """Update info from Xplora® API."""
-        xts_state = 'on'
-        xts = self._hass.states.get('input_boolean.xplora_tracker_switch')
+        xts_state = "on"
+        xts = self._hass.states.get("input_boolean.xplora_tracker_switch")
         if xts:
             xts_state = xts.state
-        if (self._update_timer() and xts_state == 'on') or self._first:
+        if (self._update_timer() and xts_state == "on") or self._first:
             self._first = False
             self._start_time = datetime.timestamp(datetime.now())
             for watch_id in self._watch_ids:
@@ -157,7 +157,7 @@ class WatchScanner(XploraDevice):
                 self._hass.async_create_task(self.import_device_data(watch_id))
 
     def get_location_distance(self, watch_c):
-        home_zone = self._hass.states.get('zone.home').attributes
+        home_zone = self._hass.states.get("zone.home").attributes
         return int(distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
 
     async def import_device_data(self, watch_id) -> None:
@@ -179,21 +179,22 @@ class WatchScanner(XploraDevice):
         if watch_location_info.get(ATTR_TRACKER_CITY, None):
             attr[ATTR_TRACKER_CITY] = watch_location_info[ATTR_TRACKER_CITY]
         if watch_location_info.get(ATTR_TRACKER_ADDR, None):
-            if self._opencage == '':
+            if self._opencage == "":
                 attr[ATTR_TRACKER_ADDR] = watch_location_info[ATTR_TRACKER_ADDR]
             else:
                 _LOGGER.debug("load addr from OpenCageData")
                 async with OpenCageGeocodeUA(self._opencage) as geocoder:
                     results: dict = await geocoder.reverse_geocode_async(
-                        watch_location_info.get("lat"), watch_location_info.get("lng"),
+                        watch_location_info.get("lat"),
+                        watch_location_info.get("lng"),
                         no_annotations=1,
                         pretty=1,
                         no_record=1,
                         no_dedupe=1,
                         limit=1,
-                        abbrv=1
+                        abbrv=1,
                     )
-                    attr[ATTR_TRACKER_ADDR] = results[0]['formatted']
+                    attr[ATTR_TRACKER_ADDR] = results[0]["formatted"]
 
         if watch_location_info.get(ATTR_TRACKER_POI, None):
             attr[ATTR_TRACKER_POI] = watch_location_info[ATTR_TRACKER_POI]
@@ -202,21 +203,29 @@ class WatchScanner(XploraDevice):
         if watch_location_info.get(ATTR_TRACKER_SAFEZONELABEL, None):
             attr[ATTR_TRACKER_SAFEZONELABEL] = watch_location_info[ATTR_TRACKER_SAFEZONELABEL]
 
-        attr['last Track'] = datetime.now()
-        distanceToHome = self.get_location_distance((float(watch_location_info.get("lat")),
-                                                     float(watch_location_info.get("lng"))))
+        attr["last Track"] = datetime.now()
+        distanceToHome = self.get_location_distance(
+            (
+                float(watch_location_info.get("lat")),
+                float(watch_location_info.get("lng")),
+            )
+        )
         attr[ATTR_TRACKER_DISTOHOME] = "{} m".format(distanceToHome)
         if distanceToHome > attr[ATTR_TRACKER_RAD]:
             source_type = SOURCE_TYPE_GPS
         else:
             source_type = watch_location_info.get(
-                "locateTypec", await self._controller.getWatchLocateType(watchID=watch_id)
+                "locateTypec",
+                await self._controller.getWatchLocateType(watchID=watch_id),
             )
 
         await self._async_see(
             source_type=source_type,
             dev_id=slugify(self._controller.getWatchUserName(watchID=watch_id) + " Watch Tracker " + watch_id),
-            gps=(float(watch_location_info.get("lat")), float(watch_location_info.get("lng"))),
+            gps=(
+                float(watch_location_info.get("lat")),
+                float(watch_location_info.get("lng")),
+            ),
             gps_accuracy=watch_location_info.get("rad"),
             battery=await self._controller.getWatchBattery(watchID=watch_id),
             host_name=f"{self._controller.getWatchUserName(watchID=watch_id)} Watch Tracker {watch_id}",

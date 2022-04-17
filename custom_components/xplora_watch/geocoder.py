@@ -13,6 +13,7 @@ import requests
 
 try:
     import aiohttp
+
     aiohttp_avaiable = True
 except ImportError:
     aiohttp_avaiable = False
@@ -59,10 +60,7 @@ class RateLimitExceededError(OpenCageGeocodeError):
 
     def __unicode__(self):
         """Convert exception to a string."""
-        return "Your rate limit has expired. It will reset to {0} on {1}".format(
-            self.reset_to,
-            self.reset_time.isoformat()
-        )
+        return "Your rate limit has expired. It will reset to {0} on {1}".format(self.reset_to, self.reset_time.isoformat())
 
     __str__ = __unicode__
 
@@ -114,8 +112,8 @@ class OpenCageGeocodeUA:
         >>> geocoder.reverse_geocode(51.5104, -0.1021)
     """
 
-    url = 'https://api.opencagedata.com/geocode/v1/json'
-    key = ''
+    url = "https://api.opencagedata.com/geocode/v1/json"
+    key = ""
     session = None
 
     def __init__(self, key):
@@ -170,7 +168,7 @@ class OpenCageGeocodeUA:
         request = self._parse_request(query, kwargs)
         response = await self._opencage_async_request(request)
 
-        return floatify_latlng(response['results'])
+        return floatify_latlng(response["results"])
 
     async def reverse_geocode_async(self, lat, lng, **kwargs):
         """
@@ -189,9 +187,7 @@ class OpenCageGeocodeUA:
         return await self.geocode_async(_query_for_reverse_geocoding(lat, lng), **kwargs)
 
     async def _opencage_async_request(self, params):
-        headers = {
-            'User-Agent': await self.getUA()
-        }
+        headers = {"User-Agent": await self.getUA()}
         async with self.session.get(self.url, params=params, headers=headers) as response:
             try:
                 response_json = await response.json()
@@ -205,15 +201,15 @@ class OpenCageGeocodeUA:
             if response.status == 403:
                 raise ForbiddenError()
 
-            if (response.status == 402 or response.status == 429):
+            if response.status == 402 or response.status == 429:
                 # Rate limit exceeded
-                reset_time = datetime.utcfromtimestamp(response_json['rate']['reset'])
-                raise RateLimitExceededError(reset_to=int(response_json['rate']['limit']), reset_time=reset_time)
+                reset_time = datetime.utcfromtimestamp(response_json["rate"]["reset"])
+                raise RateLimitExceededError(reset_to=int(response_json["rate"]["limit"]), reset_time=reset_time)
 
             if response.status == 500:
                 raise UnknownError("500 status code from API")
 
-            if 'results' not in response_json:
+            if "results" not in response_json:
                 raise UnknownError("JSON from API doesn't have a 'results' key")
 
             return response_json
@@ -222,20 +218,20 @@ class OpenCageGeocodeUA:
         if not isinstance(query, str):
             raise InvalidInputError(bad_value=query)
 
-        data = { 'q': query, 'key': self.key }
+        data = {"q": query, "key": self.key}
         data.update(params)  # Add user parameters
         return data
 
     async def getUA(self):
         url = "https://raw.githubusercontent.com/Ludy87/xplora_watch/main/custom_components/xplora_watch/ua.json"
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36'
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
         }
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
                 data = await response.json(content_type=None)
                 i = randint(0, len(data) - 1)
-                return data[i]['useragent']
+                return data[i]["useragent"]
 
 
 def _query_for_reverse_geocoding(lat, lng):
@@ -274,9 +270,12 @@ def floatify_latlng(input_value):
     function will 'clean them up' to be floats.
     """
     if isinstance(input_value, collections.abc.Mapping):
-        if len(input_value) == 2 and sorted(input_value.keys()) == ['lat', 'lng']:
+        if len(input_value) == 2 and sorted(input_value.keys()) == ["lat", "lng"]:
             # This dict has only 2 keys 'lat' & 'lon'
-            return {'lat': float_if_float(input_value["lat"]), 'lng': float_if_float(input_value["lng"])}
+            return {
+                "lat": float_if_float(input_value["lat"]),
+                "lng": float_if_float(input_value["lng"]),
+            }
         else:
             return dict((key, floatify_latlng(value)) for key, value in input_value.items())
     elif isinstance(input_value, collections.abc.MutableSequence):

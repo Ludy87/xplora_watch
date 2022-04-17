@@ -31,7 +31,6 @@ async def async_get_service(
 
 
 class XploraNotificationService(BaseNotificationService):
-
     def __init__(self) -> None:
         _LOGGER.debug("init Notify Service")
 

@@ -1,6 +1,14 @@
 # Change Log
 
+## [v1.0.30] - 2022-04-17
+
+### Changed
+- 🎨 Black Code Formatter
+
+---
 ## [v0.0.29] - 2022-04-10
+
+<details>
 
 ### Changed
 - 🏷️ type `lat` and `lng` | `<str>` to `<float>`
@@ -8,6 +16,7 @@
 - remove `await` without async function
 - rename `ids` to `watch_ids`
 - renmae `id` to `watch_id`
+</details>
 
 ---
 ## [v0.0.28] - 2022-04-02

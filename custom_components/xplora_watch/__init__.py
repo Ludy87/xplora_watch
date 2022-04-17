@@ -67,7 +67,7 @@ CONTROLLER_SCHEMA = vol.Schema(
         vol.Required(CONF_TYPES, default=SENSORS): cv.ensure_list,
         vol.Required(CONF_USERLANG): cv.string,
         vol.Optional(CONF_CHILD_PHONENUMBER, default=[]): cv.ensure_list,
-        vol.Optional(CONF_OPENCAGE_APIKEY, default=''): cv.string,
+        vol.Optional(CONF_OPENCAGE_APIKEY, default=""): cv.string,
         vol.Optional(CONF_SAFEZONES, default="hidden"): cv.string,
         vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): cv.time_period,
         vol.Optional(CONF_TRACKER_SCAN_INTERVAL, default=TRACKER_UPDATE): cv.time_period,
@@ -126,7 +126,9 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     watchUserID: list = controller.getWatchUserID(childPhoneNumber)
     _LOGGER.debug(f"Xplora® Watch IDs: {watchUserIDs}")
     if not watchUserID and not watch_ids:
-        raise Exception(f"Your child phone number {childPhoneNumber} is wrong. Check your input! Or use `watch_id: {watchUserIDs}`")
+        raise Exception(
+            f"Your child phone number {childPhoneNumber} is wrong. Check your input! Or use `watch_id: {watchUserIDs}`"
+        )
 
     if watch_ids:
         for watch_id in watch_ids:

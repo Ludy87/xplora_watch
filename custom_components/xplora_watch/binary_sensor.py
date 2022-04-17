@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
-    BinarySensorEntityDescription
+    BinarySensorEntityDescription,
 )
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
@@ -24,7 +24,7 @@ from .const import (
     CONF_TYPES,
     CONF_WATCHUSER_ID,
     DATA_XPLORA,
-    XPLORA_CONTROLLER
+    XPLORA_CONTROLLER,
 )
 from .helper import XploraUpdateTime
 
@@ -52,7 +52,7 @@ async def async_setup_platform(
     hass: HomeAssistant,
     conf: ConfigType,
     add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None
+    discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
     if discovery_info is None:
         return
@@ -71,14 +71,19 @@ async def async_setup_platform(
                 client_name = controller.getWatchUserName(watch_id)
                 entities.append(
                     XploraBinarySensor(
-                        description, controller, scan_interval, start_time, _type, watch_id, client_name
+                        description,
+                        controller,
+                        scan_interval,
+                        start_time,
+                        _type,
+                        watch_id,
+                        client_name,
                     )
                 )
     add_entities(entities, True)
 
 
 class XploraBinarySensor(XploraUpdateTime, BinarySensorEntity, RestoreEntity):
-
     def __init__(
         self,
         description: BinarySensorEntity,
@@ -103,10 +108,11 @@ class XploraBinarySensor(XploraUpdateTime, BinarySensorEntity, RestoreEntity):
         await self._controller.init()
         self._attr_icon = "mdi:lan-check"
         if (await self._controller.askWatchLocate(watchID=self._watch_id) is True) or (
-           await self._controller.trackWatchInterval(watchID=self._watch_id) != -1):
+            await self._controller.trackWatchInterval(watchID=self._watch_id) != -1
+        ):
             return True
         state = await self._controller.getWatchOnlineStatus(watchID=self._watch_id)
-        if (state == "ONLINE"):
+        if state == "ONLINE":
             return True
         self._attr_icon = "mdi:lan-disconnect"
         return False
@@ -133,17 +139,29 @@ class XploraBinarySensor(XploraUpdateTime, BinarySensorEntity, RestoreEntity):
         if self.__isTypes(BINARY_SENSOR_STATE):
             self.__default_attr(await self.__isOnline())
 
-            _LOGGER.debug("Updating sensor: %s | State: %s", self._attr_name, str(self._attr_is_on))
+            _LOGGER.debug(
+                "Updating sensor: %s | State: %s",
+                self._attr_name,
+                str(self._attr_is_on),
+            )
 
         elif self.__isTypes(BINARY_SENSOR_SAFEZONE):
             self.__default_attr(await self.__isSafezone())
 
-            _LOGGER.debug("Updating sensor: %s | State: %s", self._attr_name, str(self._attr_is_on))
+            _LOGGER.debug(
+                "Updating sensor: %s | State: %s",
+                self._attr_name,
+                str(self._attr_is_on),
+            )
 
         elif self.__isTypes(BINARY_SENSOR_CHARGING):
             self.__default_attr(await self.__isCharging())
 
-            _LOGGER.debug("Updating sensor: %s | State: %s", self._attr_name, str(self._attr_is_on))
+            _LOGGER.debug(
+                "Updating sensor: %s | State: %s",
+                self._attr_name,
+                str(self._attr_is_on),
+            )
 
     async def async_update(self) -> None:
         if self._update_timer() or self._first:

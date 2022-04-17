@@ -34,10 +34,10 @@ class XploraSwitchEntity(XploraUpdateTime, SwitchEntity, RestoreEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return supported attributes."""
-        days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa']
-        weekRepeat = self._switch['weekRepeat']
+        days = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+        weekRepeat = self._switch["weekRepeat"]
         weekDays = []
         for day in range(len(weekRepeat)):
             if weekRepeat[day] == "1":
                 weekDays.append(days[day])
-        return {"Day(s)": ', '.join(weekDays)}
+        return {"Day(s)": ", ".join(weekDays)}

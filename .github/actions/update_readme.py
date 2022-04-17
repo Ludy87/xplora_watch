@@ -2,8 +2,8 @@ import os
 from pyxplora_api import pyxplora_api as PXA
 
 country_code = "+49"
-phonenumber = os.environ['PHONENUMBER']
-password = os.environ['PASSWORD']
+phonenumber = os.environ["PHONENUMBER"]
+password = os.environ["PASSWORD"]
 userlang = "de-DE"
 timezone = "Europe/Berlin"
 
