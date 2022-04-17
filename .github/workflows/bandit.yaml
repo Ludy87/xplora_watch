@@ -2,6 +2,8 @@ name: Bandit Check
 
 on:
   push:
+    paths-ignore:
+      - '.github/**'
   pull_request:
 
 jobs:
