@@ -12,5 +12,5 @@ jobs:
       - name: Bandit Check (Python security linter)
         uses: jpetrucciani/bandit-check@master
         with:
-          bandit_flags: '-s B105'
+          bandit_flags: '-s B105 -s B311'
           path: './custom_components/xplora_watch/'
