@@ -178,7 +178,9 @@ class WatchScanner(XploraDevice):
         timeout = aiohttp.ClientTimeout(total=12)
         async with aiohttp.ClientSession(timeout=timeout) as session:
             async with session.get(
-                f"https://nominatim.openstreetmap.org/reverse?lat={attr[ATTR_TRACKER_LAT]}&lon={attr[ATTR_TRACKER_LNG]}&format=json"
+                "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json".format(
+                    attr[ATTR_TRACKER_LAT], attr[ATTR_TRACKER_LNG]
+                )
             ) as response:
                 await session.close()
                 res: List[str, Any] = await response.json()
