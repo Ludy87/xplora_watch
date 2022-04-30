@@ -70,7 +70,7 @@ async def async_setup_scanner(
     opencage: str = hass.data[CONF_OPENCAGE_APIKEY][discovery_info[XPLORA_CONTROLLER]]
     scan_interval: timedelta = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time: float = datetime.timestamp(datetime.now())
-    watch_ids: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    watch_ids: List[str] = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
 
     if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
         _LOGGER.debug("show safezone")
@@ -78,8 +78,8 @@ async def async_setup_scanner(
             i = 1
             for safeZone in await controller.getSafeZones(watch_id):
                 if safeZone:
-                    lat = format(float(safeZone.get("lat", 0.0)), ".6f")
-                    lng = format(float(safeZone.get("lng", 0.0)), ".6f")
+                    lat = float(safeZone.get("lat", "0.0"))
+                    lng = float(safeZone.get("lng", "0.0"))
                     rad = safeZone.get("rad")
                     attr = {}
                     if safeZone.get("name", None):
@@ -130,7 +130,7 @@ class WatchScanner(XploraDevice):
         self._watch_ids = watch_ids
         self._async_see = async_see
         self._hass: HomeAssistant = hass
-        self._watch_location = None
+        self._watch_location: Dict[str, Any] = {}
         self._opencage = opencage
 
     async def async_init(self) -> bool:
@@ -161,40 +161,20 @@ class WatchScanner(XploraDevice):
                 self._watch_location = await self._controller.getWatchLastLocation(watchID=watch_id, withAsk=True)
                 self._hass.async_create_task(self.import_device_data(watch_id))
 
-    def get_location_distance(self, watch_c) -> int:
+    def get_location_distance(self, watch_c: tuple[float, float]) -> int:
         home_zone = self._hass.states.get("zone.home").attributes
         return int(distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
 
-    async def import_device_data(self, watch_id) -> None:
+    async def import_device_data(self, watch_id: str) -> None:
         """Import device data from Xplora® API."""
         watch_location_info: Dict[str, Any] = self._watch_location
-        attr = {}
-        if watch_location_info.get("lat", 0.0):
-            attr[ATTR_TRACKER_LAT] = format(float(watch_location_info.get("lat", 0.0)), ".6f")
-        if watch_location_info.get("lng", 0.0):
-            attr[ATTR_TRACKER_LNG] = format(float(watch_location_info.get("lng", 0.0)), ".6f")
+        attr: Dict[str, Any] = {}
+        if watch_location_info.get("lat"):
+            attr[ATTR_TRACKER_LAT] = float(watch_location_info.get("lat", "0.0"))
+        if watch_location_info.get("lng"):
+            attr[ATTR_TRACKER_LNG] = float(watch_location_info.get("lng", "0.0"))
         if watch_location_info.get("rad", -1):
             attr[ATTR_TRACKER_RAD] = watch_location_info["rad"]
-        timeout = aiohttp.ClientTimeout(total=12)
-        async with aiohttp.ClientSession(timeout=timeout) as session:
-            async with session.get(
-                "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json".format(
-                    attr[ATTR_TRACKER_LAT], attr[ATTR_TRACKER_LNG]
-                )
-            ) as response:
-                await session.close()
-                res: List[str, Any] = await response.json()
-                address: List[str, str] = res["address"]
-                watch_location_info[ATTR_TRACKER_COUNTRY] = address[ATTR_TRACKER_COUNTRY]
-                attr[ATTR_TRACKER_ADDR] = "{} {}, {} {}, {}, {}".format(
-                    address["road"],
-                    address["house_number"],
-                    address["postcode"],
-                    address[ATTR_TRACKER_CITY],
-                    address["state"],
-                    address[ATTR_TRACKER_COUNTRY],
-                )
-                watch_location_info["licence"] = res["licence"]
         if watch_location_info.get(ATTR_TRACKER_COUNTRY, ""):
             attr[ATTR_TRACKER_COUNTRY] = watch_location_info[ATTR_TRACKER_COUNTRY]
         if watch_location_info.get(ATTR_TRACKER_COUNTRY_ABBR, ""):
@@ -203,24 +183,43 @@ class WatchScanner(XploraDevice):
             attr[ATTR_TRACKER_PROVINCE] = watch_location_info[ATTR_TRACKER_PROVINCE]
         if watch_location_info.get(ATTR_TRACKER_CITY, ""):
             attr[ATTR_TRACKER_CITY] = watch_location_info[ATTR_TRACKER_CITY]
-        if watch_location_info.get(ATTR_TRACKER_ADDR, ""):
-            if self._opencage == "":
-                attr[ATTR_TRACKER_ADDR] = watch_location_info[ATTR_TRACKER_ADDR]
-                attr["licence"] = res["licence"]
-            else:
-                _LOGGER.debug("load addr from OpenCageData {}".format(watch_id))
-                async with OpenCageGeocodeUA(self._opencage) as geocoder:
-                    results: dict = await geocoder.reverse_geocode_async(
-                        watch_location_info.get("lat", 0.0),
-                        watch_location_info.get("lng", 0.0),
-                        no_annotations=1,
-                        pretty=1,
-                        no_record=1,
-                        no_dedupe=1,
-                        limit=1,
-                        abbrv=1,
+
+        if self._opencage == "":
+            timeout = aiohttp.ClientTimeout(total=12)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                async with session.get(
+                    "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json".format(
+                        attr[ATTR_TRACKER_LAT], attr[ATTR_TRACKER_LNG]
                     )
-                    attr[ATTR_TRACKER_ADDR] = results[0]["formatted"]
+                ) as response:
+                    await session.close()
+                    res: Dict[str, Any] = await response.json()
+                    address: Dict[str, str] = res["address"]
+                    watch_location_info[ATTR_TRACKER_COUNTRY] = address[ATTR_TRACKER_COUNTRY]
+                    attr[ATTR_TRACKER_ADDR] = "{} {}, {} {}, {}, {}".format(
+                        address["road"],
+                        address["house_number"],
+                        address["postcode"],
+                        address[ATTR_TRACKER_CITY],
+                        address["state"],
+                        address[ATTR_TRACKER_COUNTRY],
+                    )
+                    attr["licence"] = res["licence"]
+            _LOGGER.debug("load address from openstreetmap{} {}".format(attr["licence"], watch_id))
+        else:
+            _LOGGER.debug("load address from OpenCageData {}".format(watch_id))
+            async with OpenCageGeocodeUA(self._opencage) as geocoder:
+                results: List[Any] = await geocoder.reverse_geocode_async(
+                    watch_location_info.get("lat", "0.0"),
+                    watch_location_info.get("lng", "0.0"),
+                    no_annotations=1,
+                    pretty=1,
+                    no_record=1,
+                    no_dedupe=1,
+                    limit=1,
+                    abbrv=1,
+                )
+                attr[ATTR_TRACKER_ADDR] = results[0]["formatted"]
 
         if watch_location_info.get(ATTR_TRACKER_POI, ""):
             attr[ATTR_TRACKER_POI] = watch_location_info[ATTR_TRACKER_POI]
@@ -233,8 +232,8 @@ class WatchScanner(XploraDevice):
             "%Y-%m-%d %H:%M:%S"
         )
         lat_lng: tuple[float, float] = (
-            format(float(watch_location_info.get("lat", 0.0)), ".6f"),
-            format(float(watch_location_info.get("lng", 0.0)), ".6f"),
+            float(watch_location_info.get("lat", "0.0")),
+            float(watch_location_info.get("lng", "0.0")),
         )
         distanceToHome = self.get_location_distance(lat_lng)
         attr[ATTR_TRACKER_DISTOHOME] = distanceToHome

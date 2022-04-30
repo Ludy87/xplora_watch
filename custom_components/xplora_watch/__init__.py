@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from typing import List
 
 import voluptuous as vol
 
@@ -104,14 +105,14 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 
 async def _setup_controller(hass: HomeAssistant, controller_config, config: ConfigType) -> bool:
-    childPhoneNumber: list = controller_config[CONF_CHILD_PHONENUMBER]
+    childPhoneNumber: List[str] = controller_config[CONF_CHILD_PHONENUMBER]
     countryCode: str = controller_config[CONF_COUNTRY_CODE]
     opencage_apikey: str = controller_config[CONF_OPENCAGE_APIKEY]
     phoneNumber: str = controller_config[CONF_PHONENUMBER]
     password: str = controller_config[CONF_PASSWORD]
     userlang: str = controller_config[CONF_USERLANG]
     timeZone: str = controller_config[CONF_TIMEZONE]
-    watch_ids: list = controller_config[CONF_WATCHUSER_ID]
+    watch_ids: List[str] = controller_config[CONF_WATCHUSER_ID]
 
     _types = controller_config[CONF_TYPES]
     _LOGGER.debug(f"set Entity-Types: {_types}")
@@ -122,8 +123,8 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     controller = PXA.PyXploraApi(countryCode, phoneNumber, password, userlang, timeZone)
     _LOGGER.debug(f"Xplora® Api-Library Version: {controller.version()}")
     await controller.init()
-    watchUserIDs: list = controller.getWatchUserID([])
-    watchUserID: list = controller.getWatchUserID(childPhoneNumber)
+    watchUserIDs: List[str] = controller.getWatchUserID([])
+    watchUserID: List[str] = controller.getWatchUserID(childPhoneNumber)
     _LOGGER.debug(f"Xplora® Watch IDs: {watchUserIDs}")
     if not watchUserID and not watch_ids:
         raise Exception(

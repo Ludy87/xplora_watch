@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 
 from datetime import datetime, timedelta
-from typing import List
+from typing import Any, List
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -82,11 +82,11 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
         self,
         description: SensorEntityDescription,
         controller: PXA.XploraApi,
-        scan_interval,
-        start_time,
+        scan_interval: timedelta,
+        start_time: float,
         _type: str,
-        watch_id,
-        name,
+        watch_id: str,
+        name: str,
     ) -> None:
         super().__init__(scan_interval, start_time)
         self._attr_name = f"{name} {ATTR_WATCH} {_type} {watch_id}".title()
@@ -103,7 +103,7 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
             return True
         return False
 
-    def __default_attr(self, fun, unit_of_measurement) -> None:
+    def __default_attr(self, fun: int, unit_of_measurement: Any) -> None:
         self._attr_native_value = fun
         self._attr_unit_of_measurement = unit_of_measurement
 

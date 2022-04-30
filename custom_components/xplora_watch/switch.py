@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from typing import Any, Dict, List
 
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
@@ -30,10 +31,10 @@ async def async_setup_platform(
     if discovery_info is None:
         return
     controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    watch_ids: list = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
+    watch_ids: List[str] = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
     scan_interval: timedelta = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
     start_time: float = datetime.timestamp(datetime.now())
-    _types: list = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
+    _types: List[str] = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
     entities = []
 
@@ -53,12 +54,12 @@ async def async_setup_platform(
 class SilentSwitch(XploraSwitchEntity):
     def __init__(
         self,
-        silent: list,
+        silent: Dict[str, Any],
         controller: PXA.PyXploraApi,
-        scan_interval,
-        start_time,
-        name,
-        watch_id,
+        scan_interval: timedelta,
+        start_time: float,
+        name: str,
+        watch_id: str,
     ) -> None:
         super().__init__(silent, controller, scan_interval, start_time, name, "silent", "mdi:school")
         self._silent = silent
@@ -87,12 +88,12 @@ class SilentSwitch(XploraSwitchEntity):
 class AlarmSwitch(XploraSwitchEntity):
     def __init__(
         self,
-        alarm: list,
+        alarm: Dict[str, Any],
         controller: PXA.PyXploraApi,
-        scan_interval,
-        start_time,
-        name,
-        watch_id,
+        scan_interval: timedelta,
+        start_time: float,
+        name: str,
+        watch_id: str,
     ) -> None:
         super().__init__(alarm, controller, scan_interval, start_time, name, "alarm", "mdi:alarm")
         self._alarm = alarm

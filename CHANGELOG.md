@@ -1,6 +1,6 @@
 # Change Log
 
-## [v1.0.31] - 2022-04-30
+## [v1.0.31 + v1.0.312] - 2022-04-30
 
 ### Fixed
 - 🐛 Fix empty address

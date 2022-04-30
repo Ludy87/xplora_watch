@@ -88,11 +88,11 @@ class XploraBinarySensor(XploraUpdateTime, BinarySensorEntity, RestoreEntity):
         self,
         description: BinarySensorEntity,
         controller: PXA.XploraApi,
-        scan_interval,
-        start_time,
+        scan_interval: timedelta,
+        start_time: float,
         _type: str,
-        watch_id,
-        name,
+        watch_id: str,
+        name: str,
     ) -> None:
         super().__init__(scan_interval, start_time)
         self._attr_name = f"{name} {ATTR_WATCH} {_type} {watch_id}".title()
@@ -132,7 +132,7 @@ class XploraBinarySensor(XploraUpdateTime, BinarySensorEntity, RestoreEntity):
             return True
         return False
 
-    def __default_attr(self, fun) -> None:
+    def __default_attr(self, fun: bool) -> None:
         self._attr_is_on = fun
 
     async def __update(self) -> None:
