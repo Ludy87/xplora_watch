@@ -1,9 +1,24 @@
 # Change Log
 
+## [v1.0.31] - 2022-04-30
+
+### Fixed
+- 🐛 Fix empty address
+
+### Changed
+- 🌱 homeassistant 2022.4.7
+
+### Added
+- 🏷️ add types
+
+---
 ## [v1.0.30] - 2022-04-17
+
+<details>
 
 ### Changed
 - 🎨 Black Code Formatter
+</details>
 
 ---
 ## [v0.0.29] - 2022-04-10

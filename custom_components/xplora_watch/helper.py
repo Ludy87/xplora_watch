@@ -1,14 +1,14 @@
 """HelperClasses Xplora® Watch."""
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
 from homeassistant.helpers.restore_state import RestoreEntity
 
 
 class XploraUpdateTime:
-    def __init__(self, scan_interval, start_time) -> None:
+    def __init__(self, scan_interval: timedelta, start_time: float) -> None:
         self._first = True
         self._start_time = start_time
         self._scan_interval = scan_interval
@@ -20,6 +20,6 @@ class XploraUpdateTime:
 class XploraDevice(XploraUpdateTime, TrackerEntity, RestoreEntity):
     """Representation of a Xplora® device."""
 
-    def __init__(self, scan_interval, start_time) -> None:
+    def __init__(self, scan_interval: timedelta, start_time: float) -> None:
         """Set up the Xplora® device."""
         super().__init__(scan_interval, start_time)

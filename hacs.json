@@ -1,9 +1,9 @@
 {
   "name": "Xplora® Watch",
   "domains": ["sensor", "binary_sensor", "notify", "switch", "device_tracker"],
-  "country": "DE",
+  "country": "DE,EN",
   "render_readme": true,
-  "homeassistant": "2022.4.5",
+  "homeassistant": "2022.4.7",
   "iot_class": ["Local Polling"],
   "hacs": "1.24.5"
 }
