@@ -25,7 +25,7 @@ ICON_BATTERY = [
 ]
 
 
-def bat(_battery, _isCharging) -> str:
+def bat(_battery: int, _isCharging: bool) -> str:
     _icon = "mdi:battery-unknown"
     if _battery > 90:
         _icon = ICON_BATTERY[0]
