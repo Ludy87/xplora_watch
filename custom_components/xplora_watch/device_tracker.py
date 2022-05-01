@@ -144,22 +144,35 @@ class WatchScanner(XploraDevice):
                 return False
 
         await self._async_update()
-        async_track_time_interval(self._hass, self._async_update, self._scan_interval)
+        track_update = timedelta(seconds=10)
+        async_track_time_interval(self._hass, self._async_update, track_update)
         return True
 
     async def _async_update(self, now=None) -> None:
         """Update info from Xplora® API."""
+        self.xtn = self._hass.states.get("input_boolean.xplora_track_now")  # tracking ever 10 sec
+
+        if self.xtn:
+            if self.xtn.state == "on":
+                _LOGGER.warning("don't forget this one to disable input_boolean.xplora_track_now!")
+                await self._update()
+
         xts_state = "on"
-        self.xts = self._hass.states.get("input_boolean.xplora_tracker_switch")
+        self.xts = self._hass.states.get("input_boolean.xplora_tracker_switch")  # disable tracking
         if self.xts:
             xts_state = self.xts.state
+
         if (self._update_timer() and xts_state == "on") or self._first:
-            self._first = False
-            self._start_time = datetime.timestamp(datetime.now())
-            for watch_id in self._watch_ids:
-                _LOGGER.debug(f"Updating device data {watch_id}")
-                self._watch_location = await self._controller.getWatchLastLocation(watchID=watch_id, withAsk=True)
-                self._hass.async_create_task(self.import_device_data(watch_id))
+            _LOGGER.debug("xplora_tracker_switch")
+            await self._update()
+
+    async def _update(self) -> None:
+        self._first = False
+        self._start_time = datetime.timestamp(datetime.now())
+        for watch_id in self._watch_ids:
+            _LOGGER.debug(f"Updating device data {watch_id}")
+            self._watch_location = await self._controller.getWatchLastLocation(watchID=watch_id, withAsk=True)
+            self._hass.async_create_task(self.import_device_data(watch_id))
 
     def get_location_distance(self, watch_c: tuple[float, float]) -> int:
         home_zone = self._hass.states.get("zone.home").attributes
