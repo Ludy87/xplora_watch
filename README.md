@@ -142,7 +142,16 @@ zone:
     latitude: '' # your lat
     longitude: '' # your lng
 ```
+---
+## Special functions
 
+### <u>1. disable your tracking with one toggle, without restart of Home Assistant</u>
+- **add helper toggle with Name `Xplora Tracker Switch` Entity-ID `input_boolean.xplora_tracker_switch`**
+- toggle switch Device Track [#15](https://github.com/Ludy87/xplora_watch/issues/15)
+
+### <u>2. Track your watch with one toggle</u>
+- **add helper toggle with Name `Xplora Tracker Now` Entity-ID `input_boolean.xplora_track_now`**
+- don't forget this one to disable, your watch track every 10 seconds
 ---
 ## 🏳 Supported Countries 🏳 [add Country Code](https://github.com/Ludy87/xplora_watch/issues/new?assignees=Ludy87&labels=A%3A+Country+Code&template=add_country.yml&title=%5B%F0%9F%8F%B3+add+Country+Code%5D+%28Country+summary%29)
 
