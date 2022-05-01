@@ -1,6 +1,14 @@
 # Change Log
 
-## [v1.0.31 + v1.0.312] - 2022-04-30
+## [v1.0.33] - 2022-05-01
+
+### Added
+- 🏗️ resolved [#29](https://github.com/Ludy87/xplora_watch/issues/29) tracking device
+
+---
+## [v1.0.31 + v1.0.32] - 2022-04-30
+
+<details>
 
 ### Fixed
 - 🐛 Fix empty address
@@ -10,6 +18,7 @@
 
 ### Added
 - 🏷️ add types
+</details>
 
 ---
 ## [v1.0.30] - 2022-04-17
