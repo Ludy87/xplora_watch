@@ -1,9 +1,18 @@
 # Change Log
 
+## [v1.0.34] - 2022-05-03
+
+### Fixed
+- 🐛 Fix sendText Bug
+
+---
 ## [v1.0.33] - 2022-05-01
+
+<details>
 
 ### Added
 - 🏗️ resolved [#29](https://github.com/Ludy87/xplora_watch/issues/29) tracking device
+</details>
 
 ---
 ## [v1.0.31 + v1.0.32] - 2022-04-30
