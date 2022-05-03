@@ -27,7 +27,9 @@ from .const import (
     ATTR_TRACKER_ISINSAFEZONE,
     ATTR_TRACKER_LAST_TRACK,
     ATTR_TRACKER_LAT,
-    ATTR_TRACKER_LNG,
+    ATTR_TRACKER_LATITUDE,
+    ATTR_TRACKER_LON,
+    ATTR_TRACKER_LONGITUDE,
     ATTR_TRACKER_POI,
     ATTR_TRACKER_PROVINCE,
     ATTR_TRACKER_RAD,
@@ -76,7 +78,7 @@ async def async_setup_scanner(
         _LOGGER.debug("show safezone")
         for watch_id in watch_ids:
             i = 1
-            for safeZone in await controller.getSafeZones(watch_id):
+            for safeZone in await controller.getWatchSafeZones(watch_id):
                 if safeZone:
                     lat = float(safeZone.get("lat", "0.0"))
                     lng = float(safeZone.get("lng", "0.0"))
@@ -138,7 +140,7 @@ class WatchScanner(XploraDevice):
         _LOGGER.debug("set async_init")
         await self._controller.init()
         for watch_id in self._watch_ids:
-            username = self._controller.getWatchUserName(watch_id)
+            username = self._controller.getWatchUserNames(watch_id)
             if username is None:
                 _LOGGER.error("Can not connect to Xplora® API")
                 return False
@@ -171,21 +173,23 @@ class WatchScanner(XploraDevice):
         self._start_time = datetime.timestamp(datetime.now())
         for watch_id in self._watch_ids:
             _LOGGER.debug(f"Updating device data {watch_id}")
-            self._watch_location = await self._controller.getWatchLastLocation(watchID=watch_id, withAsk=True)
+            self._watch_location = await self._controller.getWatchLastLocation(wuid=watch_id, withAsk=True)
             self._hass.async_create_task(self.import_device_data(watch_id))
 
     def get_location_distance(self, watch_c: tuple[float, float]) -> int:
         home_zone = self._hass.states.get("zone.home").attributes
-        return int(distance.distance((home_zone[ATTR_TRACKER_LAT], home_zone[ATTR_TRACKER_LNG]), watch_c).m)
+        return int(distance.distance((home_zone[ATTR_TRACKER_LATITUDE], home_zone[ATTR_TRACKER_LONGITUDE]), watch_c).m)
 
     async def import_device_data(self, watch_id: str) -> None:
         """Import device data from Xplora® API."""
         watch_location_info: Dict[str, Any] = self._watch_location
         attr: Dict[str, Any] = {}
         if watch_location_info.get("lat"):
-            attr[ATTR_TRACKER_LAT] = float(watch_location_info.get("lat", "0.0"))
+            attr[ATTR_TRACKER_LATITUDE] = float(watch_location_info.get("lat", "0.0"))
+            attr[ATTR_TRACKER_LAT] = watch_location_info.get("lat", "0.0")
         if watch_location_info.get("lng"):
-            attr[ATTR_TRACKER_LNG] = float(watch_location_info.get("lng", "0.0"))
+            attr[ATTR_TRACKER_LONGITUDE] = float(watch_location_info.get("lng", "0.0"))
+            attr[ATTR_TRACKER_LON] = watch_location_info.get("lng", "0.0")
         if watch_location_info.get("rad", -1):
             attr[ATTR_TRACKER_RAD] = watch_location_info["rad"]
         if watch_location_info.get(ATTR_TRACKER_COUNTRY, ""):
@@ -202,7 +206,7 @@ class WatchScanner(XploraDevice):
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.get(
                     "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json".format(
-                        attr[ATTR_TRACKER_LAT], attr[ATTR_TRACKER_LNG]
+                        attr[ATTR_TRACKER_LATITUDE], attr[ATTR_TRACKER_LONGITUDE]
                     )
                 ) as response:
                     await session.close()
@@ -253,12 +257,12 @@ class WatchScanner(XploraDevice):
 
         await self._async_see(
             source_type=SOURCE_TYPE_GPS,
-            dev_id=slugify(self._controller.getWatchUserName(watchID=watch_id) + " Watch Tracker " + watch_id),
+            dev_id=slugify(self._controller.getWatchUserNames(wuid=watch_id) + " Watch Tracker " + watch_id),
             gps=lat_lng,
             gps_accuracy=watch_location_info.get("rad", 0),
-            battery=await self._controller.getWatchBattery(watchID=watch_id),
-            host_name=f"{self._controller.getWatchUserName(watchID=watch_id)} Watch Tracker {watch_id}",
+            battery=await self._controller.getWatchBattery(wuid=watch_id),
+            host_name=f"{self._controller.getWatchUserNames(wuid=watch_id)} Watch Tracker {watch_id}",
             attributes=attr,
             icon="mdi:watch",
-            picture=(self._controller.getWatchUserIcon(watchID=watch_id)),
+            picture=(self._controller.getWatchUserIcons(wuid=watch_id)),
         )

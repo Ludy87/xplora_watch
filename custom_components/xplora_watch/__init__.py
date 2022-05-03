@@ -123,8 +123,8 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     controller = PXA.PyXploraApi(countryCode, phoneNumber, password, userlang, timeZone)
     _LOGGER.debug(f"Xplora® Api-Library Version: {controller.version()}")
     await controller.init()
-    watchUserIDs: List[str] = controller.getWatchUserID([])
-    watchUserID: List[str] = controller.getWatchUserID(childPhoneNumber)
+    watchUserIDs: List[str] = controller.getWatchUserIDs([])
+    watchUserID: List[str] = controller.getWatchUserIDs(childPhoneNumber)
     _LOGGER.debug(f"Xplora® Watch IDs: {watchUserIDs}")
     if not watchUserID and not watch_ids:
         raise Exception(
