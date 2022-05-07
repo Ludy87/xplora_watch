@@ -426,10 +426,22 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v1.0.35] - 2022-05-07
+
+### Fixed
+- 🐛 Fix keyerror
+### Changed
+- 🌱 homeassistant 2022.5.2
+- 🗑️ clean up
+
+---
 ## [v1.0.34] - 2022-05-03
+
+<details>
 
 ### Fixed
 - 🐛 Fix sendText Bug
+</details>
 
 ---
 ## [v1.0.33] - 2022-05-01
