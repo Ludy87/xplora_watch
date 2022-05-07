@@ -211,19 +211,20 @@ class WatchScanner(XploraDevice):
                 ) as response:
                     await session.close()
                     res: Dict[str, Any] = await response.json()
-                    address: Dict[str, str] = res["address"]
-                    watch_location_info[ATTR_TRACKER_COUNTRY] = address[ATTR_TRACKER_COUNTRY]
-                    attr[ATTR_TRACKER_ADDR] = "{} {}, {} {}, {}, {}".format(
-                        address["road"],
-                        address["house_number"],
-                        address["postcode"],
-                        address[ATTR_TRACKER_CITY],
-                        address["state"],
-                        address[ATTR_TRACKER_COUNTRY],
-                    )
-                    attr["licence"] = res["licence"]
-            _LOGGER.debug("load address from openstreetmap{} {}".format(attr["licence"], watch_id))
-        else:
+                    address: Dict[str, str] = res.get("address", [])
+                    if address:
+                        watch_location_info[ATTR_TRACKER_COUNTRY] = address.get(ATTR_TRACKER_COUNTRY, "")
+                        attr[ATTR_TRACKER_ADDR] = "{} {}, {} {}, {}, {}".format(
+                            address.get("road", ""),
+                            address.get("house_number", ""),
+                            address.get("postcode", ""),
+                            address.get(ATTR_TRACKER_CITY, ""),
+                            address.get("state", ""),
+                            address.get(ATTR_TRACKER_COUNTRY, ""),
+                        )
+                        attr["licence"] = res.get("licence", None)
+                        _LOGGER.debug("load address from openstreetmap{} {}".format(attr["licence"], watch_id))
+        if not attr.get("licence", None):
             _LOGGER.debug("load address from OpenCageData {}".format(watch_id))
             async with OpenCageGeocodeUA(self._opencage) as geocoder:
                 results: List[Any] = await geocoder.reverse_geocode_async(
