@@ -36,9 +36,12 @@ _LOGGER = logging.getLogger(__name__)
 SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key=SENSOR_BATTERY,
+        native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
     ),
-    SensorEntityDescription(key=SENSOR_XCOIN, icon="mdi:hand-coin"),
+    SensorEntityDescription(
+        key=SENSOR_XCOIN, icon="mdi:hand-coin", native_unit_of_measurement="💰", device_class=SensorDeviceClass.MONETARY
+    ),
 )
 
 
@@ -103,9 +106,8 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
             return True
         return False
 
-    def __default_attr(self, fun: int, unit_of_measurement: Any) -> None:
+    def __default_attr(self, fun: int) -> None:
         self._attr_native_value = fun
-        self._attr_unit_of_measurement = unit_of_measurement
 
     async def __update(self) -> None:
         """https://github.com/home-assistant/core/blob/master/homeassistant/helpers/entity.py#L219"""
@@ -113,10 +115,7 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
         if self.__isTypes(SENSOR_BATTERY):
             charging = await self._controller.getWatchIsCharging(wuid=self._watch_id)
 
-            self.__default_attr(
-                (await self._controller.getWatchBattery(wuid=self._watch_id)),
-                PERCENTAGE,
-            )
+            self.__default_attr((await self._controller.getWatchBattery(wuid=self._watch_id)))
             self._attr_icon = bat(self._attr_native_value, charging)
 
             _LOGGER.debug(
@@ -128,7 +127,7 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
 
         elif self.__isTypes(SENSOR_XCOIN):
 
-            self.__default_attr(self._controller.getWatchUserXcoins(wuid=self._watch_id), "💰")
+            self.__default_attr(self._controller.getWatchUserXcoins(wuid=self._watch_id))
 
             _LOGGER.debug(
                 "Updating sensor: %s | XCoins: %s",
