@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 
 from datetime import datetime, timedelta
-from typing import Any, List
+from typing import List
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
