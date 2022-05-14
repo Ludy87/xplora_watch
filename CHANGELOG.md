@@ -1,12 +1,24 @@
 # Change Log
 
+## [v1.0.36] - 2022-05-15
+
+### Fixed
+- 🐛 Fix #35
+### Changed
+- 🌱 bump pyxplora_api to 2.0.90
+- 🗑️ clean up
+
+---
 ## [v1.0.35] - 2022-05-07
+
+<details>
 
 ### Fixed
 - 🐛 Fix keyerror
 ### Changed
 - 🌱 homeassistant 2022.5.2
 - 🗑️ clean up
+</details>
 
 ---
 ## [v1.0.34] - 2022-05-03
