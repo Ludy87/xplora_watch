@@ -46,3 +46,6 @@
 - name: "Bug: Fix!"
   description: Fix Bug
   color: d73a4a
+- name: "Beta"
+  description: Beta Version Release
+  color: d73a4a
