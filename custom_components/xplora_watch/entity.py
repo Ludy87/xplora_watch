@@ -3,7 +3,8 @@ from __future__ import annotations
 
 import logging
 
-from typing import Any
+from datetime import timedelta
+from typing import Any, Dict
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -16,7 +17,16 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class XploraSwitchEntity(XploraUpdateTime, SwitchEntity, RestoreEntity):
-    def __init__(self, switch, controller, scan_interval, start_time, name, func_name, icon) -> None:
+    def __init__(
+        self,
+        switch: Dict[str, Any],
+        controller: PXA.PyXploraApi,
+        scan_interval: timedelta,
+        start_time: float,
+        name: str,
+        func_name: str,
+        icon: str,
+    ) -> None:
         super().__init__(scan_interval, start_time)
         _LOGGER.debug(f"init switch {func_name} {name}")
         self._controller: PXA.PyXploraApi = controller
@@ -26,7 +36,7 @@ class XploraSwitchEntity(XploraUpdateTime, SwitchEntity, RestoreEntity):
         self._attr_name = name
         self._attr_unique_id = switch["id"]
 
-    def _state(self, status) -> bool:
+    def _state(self, status: str) -> bool:
         if status == "DISABLE":
             return False
         return True

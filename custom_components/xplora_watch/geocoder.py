@@ -9,6 +9,7 @@ from decimal import Decimal
 import collections
 
 from random import randint
+from typing import Dict, List
 import requests
 
 try:
@@ -222,16 +223,19 @@ class OpenCageGeocodeUA:
         data.update(params)  # Add user parameters
         return data
 
-    async def getUA(self):
+    async def getUA(self) -> str:
         url = "https://raw.githubusercontent.com/Ludy87/xplora_watch/main/custom_components/xplora_watch/ua.json"
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36"
         }
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
-                data = await response.json(content_type=None)
+                data: List[Dict[str, str]] = await response.json(content_type=None)
                 i = randint(0, len(data) - 1)
-                return data[i]["useragent"]
+                return data[i].get(
+                    "useragent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+                )
 
 
 def _query_for_reverse_geocoding(lat, lng):

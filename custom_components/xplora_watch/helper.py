@@ -3,9 +3,6 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
-from homeassistant.components.device_tracker.config_entry import TrackerEntity
-from homeassistant.helpers.restore_state import RestoreEntity
-
 
 class XploraUpdateTime:
     def __init__(self, scan_interval: timedelta, start_time: float) -> None:
@@ -17,7 +14,7 @@ class XploraUpdateTime:
         return int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds()
 
 
-class XploraDevice(XploraUpdateTime, TrackerEntity, RestoreEntity):
+class XploraDevice(XploraUpdateTime):
     """Representation of a Xplora® device."""
 
     def __init__(self, scan_interval: timedelta, start_time: float) -> None:

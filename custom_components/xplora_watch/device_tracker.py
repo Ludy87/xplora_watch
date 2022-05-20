@@ -172,6 +172,9 @@ class WatchScanner(XploraDevice):
         self._first = False
         self._start_time = datetime.timestamp(datetime.now())
         for watch_id in self._watch_ids:
+            if await self._controller.getWatchBattery(watch_id) == -1:
+                _LOGGER.warn(f"no Data from Xplora Server: Watch ID {watch_id}, restart your Watch and try again!")
+                continue
             _LOGGER.debug(f"Updating device data {watch_id}")
             self._watch_location = await self._controller.getWatchLastLocation(wuid=watch_id, withAsk=True)
             self._hass.async_create_task(self.import_device_data(watch_id))
