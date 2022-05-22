@@ -426,12 +426,21 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v1.0.38] - 2022-05-22
+
+### Changed
+- 🌱 bump pyxplora_api to 2.0.92
+
+---
 ## [v1.0.37] - 2022-05-20
+
+<details>
 
 ### Fixed
 - 🐛 Fix #35
 ### Changed
 - 🌱 bump pyxplora_api to 2.0.91
+</details>
 
 ---
 ## [v1.0.36] - 2022-05-15
