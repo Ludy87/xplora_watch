@@ -82,7 +82,7 @@ async def async_setup_scanner(
                 if safeZone:
                     lat = float(safeZone.get("lat", "0.0"))
                     lng = float(safeZone.get("lng", "0.0"))
-                    rad = safeZone.get("rad")
+                    rad = safeZone.get("rad", -1)
                     attr = {}
                     if safeZone.get("name", None):
                         attr[ATTR_TRACKER_SAFEZONENAME] = safeZone.get("name")
@@ -187,22 +187,22 @@ class WatchScanner(XploraDevice):
         """Import device data from Xplora® API."""
         watch_location_info: Dict[str, Any] = self._watch_location
         attr: Dict[str, Any] = {}
-        if watch_location_info.get("lat"):
+        if watch_location_info.get("lat", "0.0"):
             attr[ATTR_TRACKER_LATITUDE] = float(watch_location_info.get("lat", "0.0"))
             attr[ATTR_TRACKER_LAT] = watch_location_info.get("lat", "0.0")
-        if watch_location_info.get("lng"):
+        if watch_location_info.get("lng", "0.0"):
             attr[ATTR_TRACKER_LONGITUDE] = float(watch_location_info.get("lng", "0.0"))
             attr[ATTR_TRACKER_LON] = watch_location_info.get("lng", "0.0")
         if watch_location_info.get("rad", -1):
-            attr[ATTR_TRACKER_RAD] = watch_location_info["rad"]
+            attr[ATTR_TRACKER_RAD] = watch_location_info.get("rad", -1)
         if watch_location_info.get(ATTR_TRACKER_COUNTRY, ""):
-            attr[ATTR_TRACKER_COUNTRY] = watch_location_info[ATTR_TRACKER_COUNTRY]
+            attr[ATTR_TRACKER_COUNTRY] = watch_location_info.get(ATTR_TRACKER_COUNTRY, "")
         if watch_location_info.get(ATTR_TRACKER_COUNTRY_ABBR, ""):
-            attr[ATTR_TRACKER_COUNTRY_ABBR] = watch_location_info[ATTR_TRACKER_COUNTRY_ABBR]
+            attr[ATTR_TRACKER_COUNTRY_ABBR] = watch_location_info.get(ATTR_TRACKER_COUNTRY_ABBR, "")
         if watch_location_info.get(ATTR_TRACKER_PROVINCE, ""):
-            attr[ATTR_TRACKER_PROVINCE] = watch_location_info[ATTR_TRACKER_PROVINCE]
+            attr[ATTR_TRACKER_PROVINCE] = watch_location_info.get(ATTR_TRACKER_PROVINCE, "")
         if watch_location_info.get(ATTR_TRACKER_CITY, ""):
-            attr[ATTR_TRACKER_CITY] = watch_location_info[ATTR_TRACKER_CITY]
+            attr[ATTR_TRACKER_CITY] = watch_location_info.get(ATTR_TRACKER_CITY, "")
 
         if self._opencage == "":
             timeout = aiohttp.ClientTimeout(total=12)
@@ -243,11 +243,11 @@ class WatchScanner(XploraDevice):
                 attr[ATTR_TRACKER_ADDR] = results[0]["formatted"]
 
         if watch_location_info.get(ATTR_TRACKER_POI, ""):
-            attr[ATTR_TRACKER_POI] = watch_location_info[ATTR_TRACKER_POI]
+            attr[ATTR_TRACKER_POI] = watch_location_info.get(ATTR_TRACKER_POI, "")
         if watch_location_info.get(ATTR_TRACKER_ISINSAFEZONE, ""):
-            attr[ATTR_TRACKER_ISINSAFEZONE] = watch_location_info[ATTR_TRACKER_ISINSAFEZONE]
+            attr[ATTR_TRACKER_ISINSAFEZONE] = watch_location_info.get(ATTR_TRACKER_ISINSAFEZONE, "")
         if watch_location_info.get(ATTR_TRACKER_SAFEZONELABEL, ""):
-            attr[ATTR_TRACKER_SAFEZONELABEL] = watch_location_info[ATTR_TRACKER_SAFEZONELABEL]
+            attr[ATTR_TRACKER_SAFEZONELABEL] = watch_location_info.get(ATTR_TRACKER_SAFEZONELABEL, "")
 
         attr[ATTR_TRACKER_LAST_TRACK] = datetime.fromtimestamp(watch_location_info.get(ATTR_TRACKER_TIME, "")).strftime(
             "%Y-%m-%d %H:%M:%S"
@@ -263,7 +263,7 @@ class WatchScanner(XploraDevice):
             source_type=SOURCE_TYPE_GPS,
             dev_id=slugify(self._controller.getWatchUserNames(wuid=watch_id) + " Watch Tracker " + watch_id),
             gps=lat_lng,
-            gps_accuracy=watch_location_info.get("rad", 0),
+            gps_accuracy=watch_location_info.get("rad", -1),
             battery=await self._controller.getWatchBattery(wuid=watch_id),
             host_name=f"{self._controller.getWatchUserNames(wuid=watch_id)} Watch Tracker {watch_id}",
             attributes=attr,

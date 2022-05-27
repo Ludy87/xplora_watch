@@ -1,9 +1,21 @@
 # Change Log
 
+## [v1.0.39] - 2022-05-27
+
+### Fixed
+- 🐛 Fix device_tracker: ```rad``` default ```-1```
+### Changed
+- 🌱 bump pyxplora_api to 2.0.93
+
+---
+
 ## [v1.0.38] - 2022-05-22
+
+<details>
 
 ### Changed
 - 🌱 bump pyxplora_api to 2.0.92
+</details>
 
 ---
 ## [v1.0.37] - 2022-05-20
