@@ -249,7 +249,7 @@ class WatchScanner(XploraDevice):
         if watch_location_info.get(ATTR_TRACKER_SAFEZONELABEL, ""):
             attr[ATTR_TRACKER_SAFEZONELABEL] = watch_location_info.get(ATTR_TRACKER_SAFEZONELABEL, "")
 
-        attr[ATTR_TRACKER_LAST_TRACK] = datetime.fromtimestamp(watch_location_info.get(ATTR_TRACKER_TIME, "")).strftime(
+        attr[ATTR_TRACKER_LAST_TRACK] = datetime.fromtimestamp(watch_location_info.get(ATTR_TRACKER_TIME, 31532399)).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
         lat_lng: tuple[float, float] = (
