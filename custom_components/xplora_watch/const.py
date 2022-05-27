@@ -17,6 +17,7 @@ CONF_USERLANG = "userlang"
 CONF_WATCHUSER_ID = "watch_id"
 
 SENSOR_BATTERY = "battery"
+SENSOR_STEP_DAY = "step_day"
 SENSOR_XCOIN = "xcoin"
 
 BINARY_SENSOR_CHARGING = "charging"

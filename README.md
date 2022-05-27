@@ -55,18 +55,6 @@ xplora_watch:
   password: "password"
   userlang: "de-DE"
   timezone: "Europe/Berlin"
-  types:
-    - "battery"
-    - "xcoin"
-    - "state"
-    - "safezone"
-    - "charging"
-    - "silents"
-    - "alarms"
-    - "dt_watch"
-  safezones: "show" # optional
-  scan_interval: 180 # default sec - optional
-  tracker_scan_interval: 60 # default sec - optional
 ```
 ---
 ### <u>Optional Settings</u>
@@ -102,15 +90,16 @@ xplora_watch:
     - "5678901234"
   watch_id: # optional
     - 012328123d123f5e775e5e3346739732
-  types:
-    - "battery"
-    - "xcoin"
-    - "state"
-    - "safezone"
-    - "charging"
-    - "silents"
-    - "alarms"
-    - "dt_watch"
+  types: # optional
+    - "battery" # optional
+    - "xcoin" # optional
+    - "state" # optional
+    - "safezone" # optional
+    - "charging" # optional
+    - "silents" # optional
+    - "alarms" # optional
+    - "dt_watch" # optional
+    - "step_day" # optional
   safezones: "show" # optional
   scan_interval: 180 # default sec - optional
   tracker_scan_interval: 60 # default sec - optional
@@ -426,15 +415,23 @@ logger:
 <!-- START ./CHANGELOG.md -->
 # Change Log
 
+## [v1.0.40] - 2022-05-28
+
+### Added
+- 🏗️ Steps sensor (Step counter) #37
+
+---
 ## [v1.0.39] - 2022-05-27
+
+<details>
 
 ### Fixed
 - 🐛 Fix device_tracker: ```rad``` default ```-1```
 ### Changed
 - 🌱 bump pyxplora_api to 2.0.93
+</details>
 
 ---
-
 ## [v1.0.38] - 2022-05-22
 
 <details>

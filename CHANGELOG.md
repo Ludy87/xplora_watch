@@ -1,14 +1,22 @@
 # Change Log
 
+## [v1.0.40] - 2022-05-28
+
+### Added
+- 🏗️ Steps sensor (Step counter) #37
+
+---
 ## [v1.0.39] - 2022-05-27
+
+<details>
 
 ### Fixed
 - 🐛 Fix device_tracker: ```rad``` default ```-1```
 ### Changed
 - 🌱 bump pyxplora_api to 2.0.93
+</details>
 
 ---
-
 ## [v1.0.38] - 2022-05-22
 
 <details>
