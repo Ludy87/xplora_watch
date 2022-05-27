@@ -1,6 +1,6 @@
 {
   "name": "Xplora® Watch",
-  "country": ["DE","EN"],
+  "country": "DE",
   "render_readme": true,
   "homeassistant": "2022.5.2",
   "iot_class": ["Local Polling"],
