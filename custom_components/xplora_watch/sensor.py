@@ -4,15 +4,17 @@ from __future__ import annotations
 import logging
 
 from datetime import datetime, timedelta
-from typing import List
+from typing import Any, Dict, List
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorEntityDescription,
+    SensorStateClass,
 )
 from homeassistant.const import CONF_SCAN_INTERVAL, PERCENTAGE
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import DeviceInfo, EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -22,7 +24,10 @@ from .const import (
     CONF_TYPES,
     CONF_WATCHUSER_ID,
     DATA_XPLORA,
+    DOMAIN,
+    MANUFACTURER,
     SENSOR_BATTERY,
+    SENSOR_STEP_DAY,
     SENSOR_XCOIN,
     XPLORA_CONTROLLER,
 )
@@ -38,6 +43,12 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
         key=SENSOR_BATTERY,
         native_unit_of_measurement=PERCENTAGE,
         device_class=SensorDeviceClass.BATTERY,
+    ),
+    SensorEntityDescription(
+        key=SENSOR_STEP_DAY,
+        icon="mdi:run",
+        state_class=SensorStateClass.TOTAL,
+        entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorEntityDescription(
         key=SENSOR_XCOIN, icon="mdi:hand-coin", native_unit_of_measurement="💰", device_class=SensorDeviceClass.MONETARY
@@ -59,7 +70,7 @@ async def async_setup_platform(
     start_time: float = datetime.timestamp(datetime.now())
     _types: List[str] = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
 
-    entities = []
+    entities: List[SensorEntity] = []
 
     for description in SENSOR_TYPES:
         if description.key in _types:
@@ -123,6 +134,22 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
                 self._attr_name,
                 str(self._attr_native_value),
                 str(charging),
+            )
+
+        elif self.__isTypes(SENSOR_STEP_DAY):
+
+            d = datetime.now()
+            dt = datetime(year=d.year, month=d.month, day=d.day)
+            steps = await self._controller.getWatchUserSteps("01102f442f525f5f775f5f3336316068", date=dt.timestamp())
+            day_steps: List[Dict[str, Any]] = steps.get("daySteps")
+            for day_step in day_steps:
+                if day_step.get("key", "1970-12-31").__eq__("{}-{}-{}".format(d.year, d.strftime("%m"), d.day)):
+                    self.__default_attr(day_step.get("step", 0))
+
+            _LOGGER.debug(
+                "Updating sensor: %s | XCoins: %s",
+                self._attr_name,
+                str(self._attr_native_value),
             )
 
         elif self.__isTypes(SENSOR_XCOIN):
