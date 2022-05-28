@@ -1,9 +1,11 @@
 # Change Log
 
-## [v1.0.40] - 2022-05-28
+## [v1.0.40 + v1.0.41] - 2022-05-28
 
 ### Added
 - 🏗️ Steps sensor (Step counter) #37
+### Fixed
+- 🐛 Fix sensor: clear dummy ```wuid```
 
 ---
 ## [v1.0.39] - 2022-05-27

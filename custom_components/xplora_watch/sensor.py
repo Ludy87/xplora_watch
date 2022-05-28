@@ -24,8 +24,6 @@ from .const import (
     CONF_TYPES,
     CONF_WATCHUSER_ID,
     DATA_XPLORA,
-    DOMAIN,
-    MANUFACTURER,
     SENSOR_BATTERY,
     SENSOR_STEP_DAY,
     SENSOR_XCOIN,
@@ -140,14 +138,14 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
 
             d = datetime.now()
             dt = datetime(year=d.year, month=d.month, day=d.day)
-            steps = await self._controller.getWatchUserSteps("01102f442f525f5f775f5f3336316068", date=dt.timestamp())
-            day_steps: List[Dict[str, Any]] = steps.get("daySteps")
+            steps = await self._controller.getWatchUserSteps(wuid=self._watch_id, date=dt.timestamp())
+            day_steps: List[Dict[str, Any]] = steps.get("daySteps", [])
             for day_step in day_steps:
                 if day_step.get("key", "1970-12-31").__eq__("{}-{}-{}".format(d.year, d.strftime("%m"), d.day)):
                     self.__default_attr(day_step.get("step", 0))
 
             _LOGGER.debug(
-                "Updating sensor: %s | XCoins: %s",
+                "Updating sensor: %s | Step per Day: %s",
                 self._attr_name,
                 str(self._attr_native_value),
             )
