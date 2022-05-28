@@ -155,12 +155,7 @@ logger:
 ```
 
 ---
-# Workaround for logout in the Xplora® App
-
-1. add phone number from watch to contacts (as admin)
-2. create a login profile for this phone number
-3. log into the app with the created profile to test whether it works
-4. use the login data for the integration
+# [Workaround for logout in the Xplora® App](https://github.com/Ludy87/xplora_watch/issues/24)
 
 ---
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
