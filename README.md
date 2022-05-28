@@ -143,8 +143,8 @@ zone:
 - don't forget this one to disable, your watch track every 10 seconds
 ---
 ## [🏳 Supported Countries 🏳](https://github.com/Ludy87/xplora_watch/wiki/Countries)
-[add Country Code](https://github.com/Ludy87/xplora_watch/issues/new?assignees=Ludy87&labels=A%3A+Country+Code&template=add_country.yml&title=%5B%F0%9F%8F%B3+add+Country+Code%5D+%28Country+summary%29)
-
+- [add Country Code](https://github.com/Ludy87/xplora_watch/issues/new?assignees=Ludy87&labels=A%3A+Country+Code&template=add_country.yml&title=%5B%F0%9F%8F%B3+add+Country+Code%5D+%28Country+summary%29)
+- [remove Country Code](https://github.com/Ludy87/xplora_watch/issues/new?assignees=&labels=R%3A+Country+Code&template=remove_country.yml&title=%5B%F0%9F%8F%B3+remove+Country+Code%5D+%28Country+summary%29)
 ---
 # Debug
 
