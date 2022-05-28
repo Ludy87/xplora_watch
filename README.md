@@ -19,6 +19,7 @@ Features | Type
 ---|---
 Battery | Sensor
 Watch-Xcoin | Sensor
+Watch Step per Day | Sensor
 Watch Online state | Binary Sensor
 Watch is safe | Binary Sensor
 Watch charging | Binary Sensor
@@ -93,13 +94,13 @@ xplora_watch:
   types: # optional
     - "battery" # optional
     - "xcoin" # optional
+    - "step_day" # optional
     - "state" # optional
     - "safezone" # optional
     - "charging" # optional
     - "silents" # optional
     - "alarms" # optional
     - "dt_watch" # optional
-    - "step_day" # optional
   safezones: "show" # optional
   scan_interval: 180 # default sec - optional
   tracker_scan_interval: 60 # default sec - optional
