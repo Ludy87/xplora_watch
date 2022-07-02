@@ -34,7 +34,7 @@ Watch Show Safezone | Device Tracker
 
 ### MANUAL INSTALLATION
 
-Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/releases) folder and all of its contents into your Home Assistant's custom_components folder. This folder is usually inside your /config folder. If you are running Hass.io, use SAMBA to copy the folder over. If you are running Home Assistant Supervised, the custom_components folder might be located at /usr/share/hassio/homeassistant. You may need to create the custom_components folder and then copy the localtuya folder and all of its contents into it Alternatively, you can install localtuya through HACS by adding this repository.
+Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/releases) folder and all of its contents into your Home Assistant's custom_components folder. This folder is usually inside your /config folder. If you are running Hass.io, use SAMBA to copy the folder over. If you are running Home Assistant Supervised, the custom_components folder might be located at /usr/share/hassio/homeassistant. You may need to create the custom_components folder and then copy the localtuya folder and all of its contents into it. Alternatively, you can install localtuya through HACS by adding this repository.
 
 ### INSTALLATION mit HACS
 
@@ -48,7 +48,7 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 
 1. Add entry to your `configuration.yaml`
 
-### <u>Small Settings</u>
+### <u>Minimal Configuration</u>
 ```yaml
 xplora_watch:
   country_code: "+49"
@@ -64,7 +64,6 @@ for [OpenCage Geocoding API](https://opencagedata.com/) address searching
 ```yaml
   opencage: API_KEY # optional
 ```
-You have more watches and you will one watch integridad? Select this one with ```child_phonenumber``` or ```watch_id```. The safety way is ```child_phonenumber```
 
 ```yaml
   child_phonenumber: # optional & ignored if 'watch_id' is set
@@ -125,7 +124,7 @@ notify:
 ---
 ## Tracking Setting
 
-1. define if wrong status (`not_home`|`home`)
+1. Define alternativer coordinates for the home zone if the home status is not showing as expected (`not_home`|`home`)
 ```yaml
 zone:
   - name: Home
@@ -135,13 +134,13 @@ zone:
 ---
 ## Special functions
 
-### <u>1. disable your tracking with one toggle, without restart of Home Assistant</u>
-- **add helper toggle with Name `Xplora Tracker Switch` Entity-ID `input_boolean.xplora_tracker_switch`**
-- toggle switch Device Track [#15](https://github.com/Ludy87/xplora_watch/issues/15)
+### <u>1. Enable/Disable tracking with a toggle switch, without restarting Home Assistant</u>
+- **Add helper toggle with Name `Xplora Tracker Switch` and Entity-ID `input_boolean.xplora_tracker_switch`**
+- Turn off this switch to stop tracking and reduce battery usage [#15](https://github.com/Ludy87/xplora_watch/issues/15)
 
-### <u>2. Track your watch with one toggle</u>
-- **add helper toggle with Name `Xplora Tracker Now` Entity-ID `input_boolean.xplora_track_now`**
-- don't forget this one to disable, your watch track every 10 seconds
+### <u>2. Track the watch position with high accuracy</u>
+- **Add helper toggle with Name `Xplora Track Now` and Entity-ID `input_boolean.xplora_track_now`**
+- This works similar to the "Localize/ Live Tracking" feature in the mobile Xplora App. Don't forget to disable this switch after you're done. Your watch(es) will be tracked every 10 seconds wich will drain the battery.
 ---
 ## [🏳 Supported Countries 🏳](https://github.com/Ludy87/xplora_watch/wiki/Countries)
 - [add Country Code](https://github.com/Ludy87/xplora_watch/issues/new?assignees=Ludy87&labels=A%3A+Country+Code&template=add_country.yml&title=%5B%F0%9F%8F%B3+add+Country+Code%5D+%28Country+summary%29)
@@ -156,7 +155,7 @@ logger:
 ```
 
 ---
-# [Workaround for logout in the Xplora® App](https://github.com/Ludy87/xplora_watch/issues/24)
+# [Workaround for getting logged out of the Xplora® App on your phone](https://github.com/Ludy87/xplora_watch/issues/24)
 
 ---
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
