@@ -191,7 +191,7 @@ logger:
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
 
 <!-- START ./CHANGELOG.md -->
-## Change Log
+# Change Log
 
 ## [v1.0.40 + v1.0.41] - 2022-05-28
 
