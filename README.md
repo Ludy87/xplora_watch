@@ -8,10 +8,12 @@ Home Assistant Sensors for Xplora® Watch
 [![GitHub](https://img.shields.io/github/license/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/issues)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=appveyor)](https://github.com/psf/black)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/Ludy87/xplora_watch.svg?logo=lgtm&logoWidth=18&style=for-the-badge&logo=appveyor)](https://lgtm.com/projects/g/Ludy87/xplora_watch/alerts/)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Ludy87/xplora_watch.svg?logo=lgtm&logoWidth=18&style=for-the-badge&logo=appveyor)](https://lgtm.com/projects/g/Ludy87/xplora_watch/context:python)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Ludy87/xplora_watch.svg?logo=lgtm&logoWidth=18&style=for-the-badge)](https://lgtm.com/projects/g/Ludy87/xplora_watch/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Ludy87/xplora_watch.svg?logo=lgtm&logoWidth=18&style=for-the-badge)](https://lgtm.com/projects/g/Ludy87/xplora_watch/context:python)
 
 [![Validate with hassfest and HACS](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ludy87)
 
 ![Xplora® Watch](https://github.com/home-assistant/brands/blob/master/custom_integrations/xplora_watch/logo@2x.png?raw=true)
 
