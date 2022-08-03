@@ -193,7 +193,17 @@ logger:
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
 
 <!-- START ./CHANGELOG.md -->
+## [v1.0.42] - 2022-08-03
+
+### Added
+
+- 🌱 add error message
+
+---
+
 ## [v1.0.40 + v1.0.41] - 2022-05-28
+
+<details>
 
 ### Added
 
@@ -202,6 +212,8 @@ logger:
 ### Fixed
 
 - 🐛 Fix sensor: clear dummy ```wuid```
+
+</details>
 
 ---
 
