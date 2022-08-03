@@ -44,6 +44,7 @@ from .const import (
     XPLORA_CONTROLLER,
 )
 from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.exception_classes import LoginError
 
 PLATFORMS = [
     BINARY_SENSOR_DOMAIN,
@@ -129,7 +130,10 @@ async def _setup_controller(hass: HomeAssistant, controller_config, config: Conf
     _LOGGER.debug("init API-Controller from Library")
     controller = PXA.PyXploraApi(countryCode, phoneNumber, password, userlang, timeZone)
     _LOGGER.debug(f"Xplora® Api-Library Version: {controller.version()}")
-    await controller.init()
+    try:
+        await controller.init()
+    except LoginError as err:
+        _LOGGER.error(err.message)
     watchUserIDs: List[str] = controller.getWatchUserIDs([])
     watchUserID: List[str] = controller.getWatchUserIDs(childPhoneNumber)
     _LOGGER.debug(f"Xplora® Watch IDs: {watchUserIDs}")
