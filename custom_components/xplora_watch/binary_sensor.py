@@ -30,6 +30,7 @@ from .const import (
 from .helper import XploraUpdateTime
 
 from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.exception_classes import LoginError
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -106,7 +107,10 @@ class XploraBinarySensor(XploraUpdateTime, BinarySensorEntity, RestoreEntity):
         _LOGGER.debug(f"set Binary Sensor: {self.entity_description.key}")
 
     async def __isOnline(self) -> bool:
-        await self._controller.init()
+        try:
+            await self._controller.init()
+        except LoginError as err:
+            _LOGGER.error(err.message)
         self._attr_icon = "mdi:lan-check"
         if (await self._controller.askWatchLocate(wuid=self._watch_id) is True) or (
             await self._controller.getTrackWatchInterval(wuid=self._watch_id) != -1

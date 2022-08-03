@@ -2,6 +2,6 @@
   "name": "Xplora® Watch",
   "country": "DE",
   "render_readme": true,
-  "homeassistant": "2022.5.2",
-  "hacs": "1.25.1"
+  "homeassistant": "2022.7.7",
+  "hacs": "1.26.2"
 }

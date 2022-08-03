@@ -50,6 +50,7 @@ from .const import (
 from .helper import XploraDevice
 
 from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.exception_classes import LoginError
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -138,7 +139,10 @@ class WatchScanner(XploraDevice):
     async def async_init(self) -> bool:
         """Further initialize connection to Xplora® API."""
         _LOGGER.debug("set async_init")
-        await self._controller.init()
+        try:
+            await self._controller.init()
+        except LoginError as err:
+            _LOGGER.error(err.message)
         for watch_id in self._watch_ids:
             username = self._controller.getWatchUserNames(watch_id)
             if username is None:
