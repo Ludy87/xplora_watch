@@ -2,10 +2,11 @@ name: Bandit Check
 
 on:
   push:
+    branches: [ main ]
     paths-ignore:
       - '.github/**'
   pull_request:
-
+    branches: [ main ]
 jobs:
   bandit:
     runs-on: "ubuntu-latest"
