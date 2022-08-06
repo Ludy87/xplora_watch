@@ -1,8 +1,20 @@
+## [v1.0.43] - 2022-08-06
+
+### Fixed
+
+- 🐛 Fix Steps sensor (Step counter) #43
+
+---
+
 ## [v1.0.42] - 2022-08-03
+
+<details>
 
 ### Added
 
 - 🌱 add error message
+
+</details>
 
 ---
 
