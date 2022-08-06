@@ -141,7 +141,7 @@ class XploraSensor(XploraUpdateTime, SensorEntity, RestoreEntity):
             steps = await self._controller.getWatchUserSteps(wuid=self._watch_id, date=dt.timestamp())
             day_steps: List[Dict[str, Any]] = steps.get("daySteps", [])
             for day_step in day_steps:
-                if day_step.get("key", "1970-12-31").__eq__("{}-{}-{}".format(d.year, d.strftime("%m"), d.day)):
+                if day_step.get("key", "1970-12-31").__eq__("{}-{}-{}".format(d.year, d.strftime("%m"), d.strftime("%d"))):
                     self.__default_attr(day_step.get("step", 0))
 
             _LOGGER.debug(
