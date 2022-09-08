@@ -3,14 +3,13 @@ from __future__ import annotations
 
 import logging
 
-from collections.abc import Awaitable, Callable
 from datetime import datetime, timedelta
 from typing import Any, Dict, List
 
 import aiohttp
 from .geocoder import OpenCageGeocodeUA
 
-from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
+from homeassistant.components.device_tracker import AsyncSeeCallback, SourceType
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
@@ -58,7 +57,7 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_scanner(
     hass: HomeAssistant,
     config: ConfigType,
-    async_see: Callable[..., Awaitable[None]],
+    async_see: AsyncSeeCallback,
     discovery_info: DiscoveryInfoType | None = None,
 ) -> bool:
     """Validate the configuration and return a Xplora® scanner."""
@@ -92,7 +91,7 @@ async def async_setup_scanner(
                     if safeZone.get("groupName", None):
                         attr[ATTR_TRACKER_SAFEZONEGROUPNAME] = safeZone.get("groupName")
                     await async_see(
-                        source_type=SOURCE_TYPE_GPS,
+                        source_type=SourceType.GPS,
                         dev_id=slugify("Safezone " + str(i) + " " + watch_id),
                         gps=(lat, lng),
                         gps_accuracy=rad,
@@ -264,7 +263,7 @@ class WatchScanner(XploraDevice):
         attr[ATTR_TRACKER_DISTOHOME] = distanceToHome
 
         await self._async_see(
-            source_type=SOURCE_TYPE_GPS,
+            source_type=SourceType.GPS,
             dev_id=slugify(self._controller.getWatchUserNames(wuid=watch_id) + " Watch Tracker " + watch_id),
             gps=lat_lng,
             gps_accuracy=watch_location_info.get("rad", -1),
