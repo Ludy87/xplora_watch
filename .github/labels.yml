@@ -6,37 +6,37 @@
 # the GitHub Action https://github.com/marketplace/actions/github-labeler.
 - name: "Bug: Confirmed!"
   description: Something isn't working
-  color: d73a4a
+  color: "d73a4a"
 - name: "Bug: False Alarm"
   description: no Bug - False Alarm
-  color: 80006C
+  color: "80006C"
 - name: check for Bug
   description: it is checked whether there is an Bug
-  color: 1AFF00
+  color: "1AFF00"
 - name: documentation
   description: Improvements or additions to documentation
-  color: 0075ca
+  color: "0075ca"
 - name: duplicate
   description: This issue or pull request already exists
-  color: cfd3d7
+  color: "cfd3d7"
 - name: feature request
   description: Request a new Xplora® Watch feature
-  color: a2eeef
+  color: "a2eeef"
 - name: help wanted
   description: Extra attention is needed
-  color: 008672
+  color: "008672"
 - name: invalid
   description: This doesn't seem right
-  color: e4e669
+  color: "e4e669"
 - name: performance
   description: Performance
   color: "016175"
 - name: question
   description: Further information is requested
-  color: d876e3
+  color: "d876e3"
 - name: Configuration incorrect
   description: Configuration implemented incorrectly
-  color: 8AFF00
+  color: "8AFF00"
 - name: "A: Country Code"
   description: add Country Code
   color: "0000FF"
@@ -45,9 +45,9 @@
   color: "FF00FF"
 - name: "Bug: Fix!"
   description: Fix Bug
-  color: d73a4a
+  color: "d73a4a"
 - name: "Beta"
   description: Beta Version Release
-  color: d73a4a
+  color: "d73a4a"
 - name: "Version 2"
-  color: 5319e7
+  color: "5319e7"
