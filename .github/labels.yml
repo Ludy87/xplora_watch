@@ -49,3 +49,5 @@
 - name: "Beta"
   description: Beta Version Release
   color: d73a4a
+- name: "Version 2"
+  color: 5319e7
