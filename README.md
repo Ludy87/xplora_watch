@@ -48,14 +48,11 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 
 1. Ensure that [HACS](https://hacs.xyz/) is installed.
 2. Search for and install the "__Xplora® Watch Integration__" integration. [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/releases)
-3. [Add a `xplora_watch` entry to your `configuration.yaml`.](https://github.com/Ludy87/xplora_watch#basis-configuration)
-4. Restart Home Assistant.
+3. [Configuration for the "Xplora® Watch Version 2" integration is now performed via a config flow as opposed to yaml configuration file.](https://github.com/Ludy87/xplora_watch#basis-configuration)
 
 ---
 
 ## Basis Configuration
-
-Configuration for the "Xplora® Watch Version 2" integration is now performed via a config flow as opposed to yaml configuration file.
 
 1. Go to HACS -> Integrations -> Click "+"
 2. Search for "Xplora® Watch" repository and add to HACS
