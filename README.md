@@ -63,8 +63,9 @@ Configuration for the "Xplora® Watch Version 2" integration is now performed vi
 4. In Home Assistant, go to Configuration -> Integrations -> Click "+ Add Integration"
 5. Search for "Xplora® Watch" and follow the instructions to setup.
 
----
+Xplora® should now appear as a card under the HA Integrations page with "Configure" selection available at the bottom of the card.
 
+---
 ## [🏳 Supported Countries 🏳](https://github.com/Ludy87/xplora_watch/wiki/Countries)
 
 ---
