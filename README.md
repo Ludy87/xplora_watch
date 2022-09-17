@@ -65,6 +65,15 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 ![integration image](./images/integration.png)
 
 ---
+
+## Send Message
+
+Set Target with the WatchID for the receiver watch
+
+![notify image](./images/notify.png)
+
+---
+
 ## [🏳 Supported Countries 🏳](https://github.com/Ludy87/xplora_watch/wiki/Countries)
 
 ---
