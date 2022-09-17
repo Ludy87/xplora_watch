@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import CONF_ENTITY_ID, CONF_NAME, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_entry_flow
+from homeassistant.helpers import config_entry_flow, discovery
 from homeassistant.helpers.typing import ConfigType
 
 import logging
@@ -18,6 +18,7 @@ from .coordinator import XploraDataUpdateCoordinator
 PLATFORMS = [
     Platform.DEVICE_TRACKER,
     Platform.BINARY_SENSOR,
+    Platform.NOTIFY,
     Platform.SENSOR,
     Platform.SWITCH,
 ]
@@ -43,8 +44,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
-    for platform in PLATFORMS:
-        hass.async_create_task(hass.config_entries.async_forward_entry_setup(entry, platform))
+    hass.async_create_task(
+        hass.config_entries.async_forward_entry_setup(
+            entry, [platform for platform in PLATFORMS if platform != Platform.NOTIFY]
+        )
+    )
+
+    hass.async_create_task(
+        discovery.async_load_platform(
+            hass,
+            Platform.NOTIFY,
+            DOMAIN,
+            {CONF_NAME: DOMAIN, CONF_ENTITY_ID: entry.entry_id},
+            hass.data[DOMAIN][DATA_HASS_CONFIG],
+        )
+    )
 
     entry.async_on_unload(entry.add_update_listener(options_update_listener))
 
@@ -54,7 +68,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
     _LOGGER.debug("Unload a config entry.")
-    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    unload_ok = await hass.config_entries.async_unload_platforms(
+        entry, [platform for platform in PLATFORMS if platform != Platform.NOTIFY]
+    )
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
