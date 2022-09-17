@@ -90,8 +90,8 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
     ) -> None:
         super().__init__(coordinator, ward, sw_version, uid)
         self.entity_description = description
-        self._attr_name = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {uid}'.title()
-        self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{uid}'
+        self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {uid}".title()
+        self._attr_unique_id = f"{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{uid}"
         self._config_entry = config_entry
         _LOGGER.debug(
             "Updating binary_sensor: %s | %s | Watch_ID %s",
