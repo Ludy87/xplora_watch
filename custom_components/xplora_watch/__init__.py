@@ -43,12 +43,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
-
-    hass.async_create_task(
-        hass.config_entries.async_forward_entry_setup(
-            entry, [platform for platform in PLATFORMS if platform != Platform.NOTIFY]
-        )
-    )
+    for platform in PLATFORMS:
+        if platform != Platform.NOTIFY:
+            hass.async_create_task(hass.config_entries.async_forward_entry_setup(entry, platform))
 
     hass.async_create_task(
         discovery.async_load_platform(
