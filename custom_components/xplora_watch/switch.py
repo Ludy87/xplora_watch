@@ -1,121 +1,210 @@
-"""Support for reading status from Xplora® Watch."""
+"""Reads watch status from Xplora® Watch Version 2."""
 from __future__ import annotations
 
-from datetime import datetime, timedelta
-from typing import Any, Dict, List
+from typing import Any
 
-from homeassistant.const import CONF_SCAN_INTERVAL
-from homeassistant.core import HomeAssistant
+from homeassistant.components.switch import (
+    SwitchEntity,
+    SwitchEntityDescription,
+)
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_ID, CONF_NAME
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+
+import logging
 
 from .const import (
+    ATTR_WATCH,
     CONF_TYPES,
-    CONF_WATCHUSER_ID,
-    DATA_XPLORA,
+    CONF_WATCHES,
+    DAYS,
+    DOMAIN,
     SWITCH_ALARMS,
     SWITCH_SILENTS,
-    XPLORA_CONTROLLER,
 )
-from .entity import XploraSwitchEntity
+from .coordinator import XploraDataUpdateCoordinator
+from .entity import XploraBaseEntity
 
-from pyxplora_api import pyxplora_api_async as PXA
+_LOGGER = logging.getLogger(__name__)
+
+SENSOR_TYPES: tuple[SwitchEntityDescription, ...] = (
+    SwitchEntityDescription(
+        key=SWITCH_ALARMS,
+        icon="mdi:alarm",
+    ),
+    SwitchEntityDescription(
+        key=SWITCH_SILENTS,
+        icon="mdi:school",
+    ),
+)
 
 
-async def async_setup_platform(
+async def async_setup_entry(
     hass: HomeAssistant,
-    config: ConfigType,
-    add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
-    if discovery_info is None:
-        return
-    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    watch_ids: List[str] = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
-    scan_interval: timedelta = hass.data[CONF_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time: float = datetime.timestamp(datetime.now())
-    _types: List[str] = hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]
+    """Set up the Xplora® Watch Version 2 switch from config entry."""
+    coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    entities: list[Any] = []
 
-    entities = []
+    for description in SENSOR_TYPES:
+        for watch in coordinator.controller.watchs:
+            if config_entry.options:
+                ward: dict[str, Any] = watch.get("ward")
+                uid = ward.get(ATTR_ID)
+                if uid in config_entry.options.get(CONF_WATCHES):
+                    if description.key in config_entry.options.get(CONF_TYPES):
+                        sw_version = await coordinator.controller.getWatches(uid)
+                        if description.key == SWITCH_ALARMS:
+                            for alarm in await coordinator.controller.getWatchAlarm(uid):
+                                entities.append(
+                                    XploraAlarmSwitch(
+                                        alarm,
+                                        coordinator,
+                                        ward,
+                                        sw_version,
+                                        uid,
+                                        description,
+                                    )
+                                )
+                        if description.key == SWITCH_SILENTS:
+                            for silent in await coordinator.controller.getSilentTime(uid):
+                                entities.append(
+                                    XploraSilentSwitch(
+                                        silent,
+                                        coordinator,
+                                        ward,
+                                        sw_version,
+                                        uid,
+                                        description,
+                                    )
+                                )
+            else:
+                _LOGGER.debug(f"{watch} {config_entry.entry_id}")
+    async_add_entities(entities, True)
 
-    for watch_id in watch_ids:
-        if SWITCH_SILENTS in _types:
-            for silent in await controller.getSilentTime(wuid=watch_id):
-                name = (
-                    f'{controller.getWatchUserNames(wuid=watch_id)} Watch Silent {silent["start"]}-{silent["end"]} {watch_id}'
-                )
-                entities.append(SilentSwitch(silent, controller, scan_interval, start_time, name, watch_id))
-        if SWITCH_ALARMS in _types:
-            for alarm in await controller.getWatchAlarm(wuid=watch_id):
-                name = f'{controller.getWatchUserNames(wuid=watch_id)} Watch Alarm {alarm["start"]} {watch_id}'
-                entities.append(AlarmSwitch(alarm, controller, scan_interval, start_time, name, watch_id))
 
-    add_entities(entities)
+class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
 
+    _attr_force_update = False
 
-class SilentSwitch(XploraSwitchEntity):
     def __init__(
         self,
-        silent: Dict[str, Any],
-        controller: PXA.PyXploraApi,
-        scan_interval: timedelta,
-        start_time: float,
-        name: str,
-        watch_id: str,
+        alarm,
+        coordinator: XploraDataUpdateCoordinator,
+        ward: dict[str, Any],
+        sw_version: dict[str, Any],
+        uid,
+        description,
     ) -> None:
-        super().__init__(silent, controller, scan_interval, start_time, name, "silent", "mdi:school")
-        self._silent = silent
-        self._watch_id = watch_id
-
-    async def async_turn_on(self, **kwargs) -> None:
-        """Turn the switch on."""
-        if await self._controller.setEnableSilentTime(silentId=self._silent["id"], wuid=self._watch_id):
-            self._attr_is_on = True
-
-    async def async_turn_off(self, **kwargs) -> None:
-        """Turn the switch off."""
-        if await self._controller.setDisableSilentTime(silentId=self._silent["id"], wuid=self._watch_id):
-            self._attr_is_on = False
-
-    async def async_update(self) -> None:
-        if self._update_timer() or self._first:
-            self._first = False
-            self._start_time = datetime.timestamp(datetime.now())
-            silents = await self._controller.getSilentTime(wuid=self._watch_id)
-            for silent in silents:
-                if silent["id"] == self._silent["id"]:
-                    self._attr_is_on = self._state(silent["status"])
-
-
-class AlarmSwitch(XploraSwitchEntity):
-    def __init__(
-        self,
-        alarm: Dict[str, Any],
-        controller: PXA.PyXploraApi,
-        scan_interval: timedelta,
-        start_time: float,
-        name: str,
-        watch_id: str,
-    ) -> None:
-        super().__init__(alarm, controller, scan_interval, start_time, name, "alarm", "mdi:alarm")
+        super().__init__(coordinator, ward, sw_version, uid)
         self._alarm = alarm
-        self._watch_id = watch_id
+        self.entity_description = description
+        self._attr_name = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Alarm {alarm["start"]} {uid}'.title()
+        self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Alarm-{alarm["start"]}-{uid}'
+        self._watch_id = uid
+        self._attr_is_on = self._state(alarm["status"])
+        self._alarms: list[dict[str, Any]] = []
+        _LOGGER.debug(
+            "Updating switch: %s | %s | Watch_ID %s",
+            self._attr_name[:-33],
+            self.entity_description.key,
+            self.watch_uid[25:],
+        )
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        for alarm in self.coordinator.watch_entry[self._watch_id]["alarm"]:
+            if alarm[ATTR_ID] == self._alarm[ATTR_ID]:
+                self._attr_is_on = self._state(alarm["status"])
+                self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        if await self._controller.setEnableAlarmTime(alarmId=self._alarm["id"], wuid=self._watch_id):
+        alarms = await self._coordinator.controller.setEnableAlarmTime(alarmId=self._alarm[ATTR_ID], wuid=self._watch_id)
+        if alarms:
             self._attr_is_on = True
+        await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
-        if await self._controller.setDisableAlarmTime(alarmId=self._alarm["id"], wuid=self._watch_id):
+        alarms = await self._coordinator.controller.setDisableAlarmTime(alarmId=self._alarm[ATTR_ID], wuid=self._watch_id)
+        if alarms:
             self._attr_is_on = False
+        await self.coordinator.async_request_refresh()
 
-    async def async_update(self) -> None:
-        if self._update_timer() or self._first:
-            self._first = False
-            self._start_time = datetime.timestamp(datetime.now())
-            alarms = await self._controller.getWatchAlarm(wuid=self._watch_id)
-            for alarm in alarms:
-                if alarm["id"] == self._alarm["id"]:
-                    self._attr_is_on = self._state(alarm["status"])
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return supported attributes."""
+        weekRepeat = self._alarm["weekRepeat"]
+        weekDays = []
+        for day in range(len(weekRepeat)):
+            if weekRepeat[day] == "1":
+                weekDays.append(DAYS[day])
+        return {"Day(s)": ", ".join(weekDays)}
+
+
+class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
+
+    _attr_force_update = False
+
+    def __init__(
+        self,
+        silent,
+        coordinator: XploraDataUpdateCoordinator,
+        ward: dict[str, Any],
+        sw_version: dict[str, Any],
+        uid,
+        description,
+    ) -> None:
+        super().__init__(coordinator, ward, sw_version, uid)
+        self._silent = silent
+        self.entity_description = description
+        self._silents: list[dict[str, Any]] = self._coordinator.watch_entry[self.watch_uid]["silent"]
+        self._attr_name = (
+            f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Silent {silent["start"]}-{silent["end"]} {self.watch_uid}'.title()
+        )
+        self._attr_is_on = self._state(silent["status"])
+        self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Silent-{silent["start"]}-{silent["end"]}-{uid}'
+        self._watch_id = uid
+        _LOGGER.debug(
+            "Updating switch: %s | %s | Watch_ID %s",
+            self._attr_name[:-33],
+            self.entity_description.key,
+            self.watch_uid[25:],
+        )
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        for silent in self.coordinator.watch_entry[self._watch_id]["silent"]:
+            if silent[ATTR_ID] == self._silent[ATTR_ID]:
+                self._attr_is_on = self._state(silent["status"])
+                self.async_write_ha_state()
+
+    async def async_turn_on(self, **kwargs) -> None:
+        """Turn the switch on."""
+        silents = await self._coordinator.controller.setEnableSilentTime(silentId=self._silent[ATTR_ID], wuid=self._watch_id)
+        if silents:
+            self._attr_is_on = True
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_off(self, **kwargs) -> None:
+        """Turn the switch off."""
+        silents = await self._coordinator.controller.setDisableSilentTime(silentId=self._silent[ATTR_ID], wuid=self._watch_id)
+        if silents:
+            self._attr_is_on = False
+        await self.coordinator.async_request_refresh()
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return supported attributes."""
+        weekRepeat = self._silent["weekRepeat"]
+        weekDays = []
+        for day in range(len(weekRepeat)):
+            if weekRepeat[day] == "1":
+                weekDays.append(DAYS[day])
+        return {"Day(s)": ", ".join(weekDays)}
