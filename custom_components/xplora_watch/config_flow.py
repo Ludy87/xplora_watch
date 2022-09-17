@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 from homeassistant import config_entries, core, exceptions
 from homeassistant.config_entries import ConfigEntry, OptionsFlow
-from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, CONF_PASSWORD, CONF_RADIUS, CONF_SCAN_INTERVAL, STATE_OFF
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
@@ -16,8 +16,6 @@ import logging
 import voluptuous as vol
 
 from .const import (
-    ATTR_TRACKER_LATITUDE,
-    ATTR_TRACKER_LONGITUDE,
     CONF_COUNTRY_CODE,
     CONF_HOME_LATITUDE,
     CONF_HOME_LONGITUDE,
@@ -25,7 +23,6 @@ from .const import (
     CONF_HOME_SAFEZONE,
     CONF_MAPS,
     CONF_OPENCAGE_APIKEY,
-    CONF_PASSWORD,
     CONF_PHONENUMBER,
     CONF_TIMEZONE,
     CONF_TYPES,
@@ -151,6 +148,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
         await controller.init(True)
         watches = await controller.setDevices()
         _options = self.config_entry.options
+
         _home_zone = self.hass.states.get(HOME).attributes
         options = vol.Schema(
             {
@@ -164,20 +162,20 @@ class XploraOptionsFlowHandler(OptionsFlow):
                     CONF_SCAN_INTERVAL,
                     default=_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
                 ): vol.All(vol.Coerce(int), vol.Range(min=1, max=9999)),
-                vol.Required(CONF_HOME_SAFEZONE, default=_options.get(CONF_HOME_SAFEZONE, HOME_SAFEZONE.get("no"))): vol.In(
-                    HOME_SAFEZONE
-                ),
+                vol.Required(
+                    CONF_HOME_SAFEZONE, default=_options.get(CONF_HOME_SAFEZONE, HOME_SAFEZONE.get(STATE_OFF))
+                ): vol.In(HOME_SAFEZONE),
                 vol.Required(
                     CONF_HOME_LATITUDE,
-                    default=_options.get(CONF_HOME_LATITUDE, _home_zone[ATTR_TRACKER_LATITUDE]),
+                    default=_options.get(CONF_HOME_LATITUDE, _home_zone[ATTR_LATITUDE]),
                 ): cv.latitude,
                 vol.Required(
                     CONF_HOME_LONGITUDE,
-                    default=_options.get(CONF_HOME_LONGITUDE, _home_zone[ATTR_TRACKER_LONGITUDE]),
+                    default=_options.get(CONF_HOME_LONGITUDE, _home_zone[ATTR_LONGITUDE]),
                 ): cv.longitude,
                 vol.Required(
-                    "c",
-                    default=_options.get(CONF_HOME_RADIUS, _home_zone["radius"]),
+                    CONF_HOME_RADIUS,
+                    default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS]),
                 ): int,
                 vol.Required(
                     CONF_TYPES,
