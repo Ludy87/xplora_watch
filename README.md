@@ -62,6 +62,8 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 
 Xplora® should now appear as a card under the HA Integrations page with "Configure" selection available at the bottom of the card.
 
+![integration image](./images/integration.png)
+
 ---
 ## [🏳 Supported Countries 🏳](https://github.com/Ludy87/xplora_watch/wiki/Countries)
 
