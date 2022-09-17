@@ -9,7 +9,6 @@ from decimal import Decimal
 import collections
 
 from random import randint
-from typing import Dict, List
 import requests
 
 try:
@@ -230,7 +229,7 @@ class OpenCageGeocodeUA:
         }
         async with aiohttp.ClientSession() as session:
             async with session.get(url, headers=headers) as response:
-                data: List[Dict[str, str]] = await response.json(content_type=None)
+                data: list[dict[str, str]] = await response.json(content_type=None)
                 i = randint(0, len(data) - 1)
                 return data[i].get(
                     "useragent",

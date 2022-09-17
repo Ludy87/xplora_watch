@@ -1,7 +1,7 @@
 """Config flow for Xplora® Watch Version 2."""
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from homeassistant import config_entries, core, exceptions
 from homeassistant.config_entries import ConfigEntry, OptionsFlow
@@ -137,7 +137,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle options flow."""
-        errors: Dict[str, str] = {}
+        errors: dict[str, str] = {}
         controller = PXA.PyXploraApi(
             self.config_entry.data.get(CONF_COUNTRY_CODE),
             self.config_entry.data.get(CONF_PHONENUMBER),

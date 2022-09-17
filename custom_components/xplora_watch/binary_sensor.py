@@ -1,7 +1,7 @@
 """Reads watch status from Xplora® Watch Version 2."""
 from __future__ import annotations
 
-from typing import Any, Dict
+from typing import Any
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
@@ -64,7 +64,7 @@ async def async_setup_entry(
     for description in BINARY_SENSOR_TYPES:
         for watch in coordinator.controller.watchs:
             if config_entry.options:
-                ward: Dict[str, Any] = watch.get("ward")
+                ward: dict[str, Any] = watch.get("ward")
                 uid = ward.get(ATTR_ID)
                 if uid in config_entry.options.get(CONF_WATCHES):
                     if description.key in config_entry.options.get(CONF_TYPES):
@@ -83,9 +83,9 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
         self,
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
-        ward: Dict[str, Any],
-        sw_version: Dict[str, Any],
-        uid,
+        ward: dict[str, Any],
+        sw_version: dict[str, Any],
+        uid: str,
         description,
     ) -> None:
         super().__init__(coordinator, ward, sw_version, uid)

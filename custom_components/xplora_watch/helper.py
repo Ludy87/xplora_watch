@@ -4,7 +4,9 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from geopy import distance
 
-from .const import ATTR_TRACKER_LATITUDE, ATTR_TRACKER_LONGITUDE, HOME
+from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
+
+from .const import HOME
 
 import logging
 
@@ -33,7 +35,7 @@ def get_location_distance_meter(hass, lat_lng: tuple[float, float]) -> int:
     home_zone = hass.states.get(HOME).attributes
     return int(
         distance.distance(
-            (home_zone[ATTR_TRACKER_LATITUDE], home_zone[ATTR_TRACKER_LONGITUDE]),
+            (home_zone[ATTR_LATITUDE], home_zone[ATTR_LONGITUDE]),
             lat_lng,
         ).m
     )
