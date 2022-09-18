@@ -39,7 +39,7 @@ class XploraNotifyService(BaseNotificationService):
             _LOGGER.warning("No waatch id!")
         if len(msg) > 0:
             for watch_id in target:
-                if await self._controller.sendText(text=msg, wuid=watch_id):
+                if not await self._controller.sendText(text=msg, wuid=watch_id):
                     _LOGGER.error("Message cannot send!")
         else:
             _LOGGER.warning("Your message is empty!")
