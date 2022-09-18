@@ -95,4 +95,19 @@ logger:
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
 
 <!-- START ./CHANGELOG.md -->
+# Changelog
+
+## [v2.0.0] - 2022-09-18
+
+### Added
+
+- UI configuration
+
+### Fixed
+
+- Performence
+
+### Changed
+
+- Soucre Code
 <!-- END ./CHANGELOG.md -->
