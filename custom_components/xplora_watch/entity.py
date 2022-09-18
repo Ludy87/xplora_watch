@@ -1,6 +1,7 @@
 """Entity for Xplora® Watch Version 2 tracking."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import Any
 
 from homeassistant.core import callback
@@ -35,7 +36,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         self._ward: dict[str, Any] = ward
         self.sw_version: dict[str, Any] = sw_version
         self.watch_uid = uid
-        self._unsub_dispatcher = None
+        self._unsub_dispatchers: list[Callable[[], None]] = []
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.watch_uid)},
@@ -46,7 +47,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
             via_device=(DOMAIN, self.watch_uid),
         )
 
-    def _state(self, status) -> bool:
+    def _states(self, status) -> bool:
         if status == "DISABLE":
             return False
         return True
@@ -54,13 +55,15 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     async def async_added_to_hass(self) -> None:
         """When entity is added to hass."""
         await super().async_added_to_hass()
-        self._unsub_dispatcher = async_dispatcher_connect(self.hass, TRACKER_UPDATE_STR, self._async_receive_data)
+        self._unsub_dispatchers.append(async_dispatcher_connect(self.hass, TRACKER_UPDATE_STR, self._async_receive_data))
 
     async def async_will_remove_from_hass(self) -> None:
         """Clean up after entity before removal."""
         await super().async_will_remove_from_hass()
-        self._unsub_dispatcher()
+        for unsub in self._unsub_dispatchers:
+            unsub()
         _LOGGER.debug("When entity is remove on hass.")
+        self._unsub_dispatchers = []
 
     @callback
     def _async_receive_data(self, device, location, location_name):
