@@ -105,7 +105,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         self._attr_name = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Alarm {alarm["start"]} {uid}'.title()
         self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Alarm-{alarm["start"]}-{uid}'
         self._watch_id = uid
-        self._attr_is_on = self._state(alarm["status"])
+        self._attr_is_on = self._states(alarm["status"])
         self._alarms: list[dict[str, Any]] = []
         _LOGGER.debug(
             "Updating switch: %s | %s | Watch_ID %s",
@@ -119,7 +119,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         """Handle updated data from the coordinator."""
         for alarm in self.coordinator.watch_entry[self._watch_id]["alarm"]:
             if alarm[ATTR_ID] == self._alarm[ATTR_ID]:
-                self._attr_is_on = self._state(alarm["status"])
+                self._attr_is_on = self._states(alarm["status"])
                 self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs) -> None:
@@ -167,7 +167,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         self._attr_name = (
             f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Silent {silent["start"]}-{silent["end"]} {self.watch_uid}'.title()
         )
-        self._attr_is_on = self._state(silent["status"])
+        self._attr_is_on = self._states(silent["status"])
         self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Silent-{silent["start"]}-{silent["end"]}-{uid}'
         self._watch_id = uid
         _LOGGER.debug(
@@ -182,7 +182,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         """Handle updated data from the coordinator."""
         for silent in self.coordinator.watch_entry[self._watch_id]["silent"]:
             if silent[ATTR_ID] == self._silent[ATTR_ID]:
-                self._attr_is_on = self._state(silent["status"])
+                self._attr_is_on = self._states(silent["status"])
                 self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs) -> None:
