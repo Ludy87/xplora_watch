@@ -2,9 +2,13 @@ name: "Flake & Black check"
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - Version2
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - Version2
 
 jobs:
   validate_flake8:
