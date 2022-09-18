@@ -1,5 +1,15 @@
-## [v2.0.0] - 2022-xx-xx
+# Changelog
+
+## [v2.0.0] - 2022-09-18
+
+### Added
+
+- UI configuration
 
 ### Fixed
-### Added
+
+- Performence
+
 ### Changed
+
+- Soucre Code
