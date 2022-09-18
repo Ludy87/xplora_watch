@@ -1,276 +1,201 @@
-"""Support for Xplora® Watch tracking."""
+"""Support for Xplora® Watch Version 2 tracking."""
 from __future__ import annotations
+
+from typing import Any
+
+
+from homeassistant.components.device_tracker import SourceType
+from homeassistant.components.device_tracker.config_entry import TrackerEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import ATTR_ID, CONF_NAME
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.restore_state import RestoreEntity
 
 import logging
 
-from collections.abc import Awaitable, Callable
-from datetime import datetime, timedelta
-from typing import Any, Dict, List
-
-import aiohttp
-from .geocoder import OpenCageGeocodeUA
-
-from homeassistant.components.device_tracker import SOURCE_TYPE_GPS
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
-from homeassistant.util import slugify
-
-from geopy import distance
-
+from .coordinator import XploraDataUpdateCoordinator
 from .const import (
     ATTR_TRACKER_ADDR,
-    ATTR_TRACKER_CITY,
-    ATTR_TRACKER_COUNTRY,
-    ATTR_TRACKER_COUNTRY_ABBR,
     ATTR_TRACKER_DISTOHOME,
-    ATTR_TRACKER_ISINSAFEZONE,
+    ATTR_TRACKER_IMEI,
     ATTR_TRACKER_LAST_TRACK,
     ATTR_TRACKER_LAT,
-    ATTR_TRACKER_LATITUDE,
-    ATTR_TRACKER_LON,
-    ATTR_TRACKER_LONGITUDE,
+    ATTR_TRACKER_LICENCE,
+    ATTR_TRACKER_LNG,
     ATTR_TRACKER_POI,
-    ATTR_TRACKER_PROVINCE,
     ATTR_TRACKER_RAD,
-    ATTR_TRACKER_SAFEZONEADRESS,
-    ATTR_TRACKER_SAFEZONEGROUPNAME,
-    ATTR_TRACKER_SAFEZONELABEL,
-    ATTR_TRACKER_SAFEZONENAME,
-    ATTR_TRACKER_TIME,
-    CONF_OPENCAGE_APIKEY,
-    CONF_SAFEZONES,
-    CONF_TRACKER_SCAN_INTERVAL,
     CONF_TYPES,
-    CONF_WATCHUSER_ID,
-    DATA_XPLORA,
+    CONF_WATCHES,
+    DEVICE_TRACKER_SAFZONES,
     DEVICE_TRACKER_WATCH,
-    XPLORA_CONTROLLER,
+    DOMAIN,
 )
-from .helper import XploraDevice
-
-from pyxplora_api import pyxplora_api_async as PXA
-from pyxplora_api.exception_classes import LoginError
+from .entity import XploraBaseEntity
+from .helper import get_location_distance_meter
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_scanner(
+async def async_setup_entry(
     hass: HomeAssistant,
-    config: ConfigType,
-    async_see: Callable[..., Awaitable[None]],
-    discovery_info: DiscoveryInfoType | None = None,
-) -> bool:
-    """Validate the configuration and return a Xplora® scanner."""
-    if discovery_info is None:
-        return False
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
+    """Set up the Xplora® Watch Version 2 tracker from config entry."""
+    coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
+    entities: list[XploraDeviceTracker] = []
 
-    if DEVICE_TRACKER_WATCH not in hass.data[CONF_TYPES][discovery_info[XPLORA_CONTROLLER]]:
-        return False
-    _LOGGER.debug("set Tracker")
-
-    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][discovery_info[XPLORA_CONTROLLER]]
-    opencage: str = hass.data[CONF_OPENCAGE_APIKEY][discovery_info[XPLORA_CONTROLLER]]
-    scan_interval: timedelta = hass.data[CONF_TRACKER_SCAN_INTERVAL][discovery_info[XPLORA_CONTROLLER]]
-    start_time: float = datetime.timestamp(datetime.now())
-    watch_ids: List[str] = hass.data[CONF_WATCHUSER_ID][discovery_info[XPLORA_CONTROLLER]]
-
-    if hass.data[CONF_SAFEZONES][discovery_info[XPLORA_CONTROLLER]] == "show":
-        _LOGGER.debug("show safezone")
-        for watch_id in watch_ids:
-            i = 1
-            for safeZone in await controller.getWatchSafeZones(watch_id):
-                if safeZone:
-                    lat = float(safeZone.get("lat", "0.0"))
-                    lng = float(safeZone.get("lng", "0.0"))
-                    rad = safeZone.get("rad", -1)
-                    attr = {}
-                    if safeZone.get("name", None):
-                        attr[ATTR_TRACKER_SAFEZONENAME] = safeZone.get("name")
-                    if safeZone.get("address", None):
-                        attr[ATTR_TRACKER_SAFEZONEADRESS] = safeZone.get("address")
-                    if safeZone.get("groupName", None):
-                        attr[ATTR_TRACKER_SAFEZONEGROUPNAME] = safeZone.get("groupName")
-                    await async_see(
-                        source_type=SOURCE_TYPE_GPS,
-                        dev_id=slugify("Safezone " + str(i) + " " + watch_id),
-                        gps=(lat, lng),
-                        gps_accuracy=rad,
-                        host_name=safeZone.get("name") + " " + watch_id,
-                        attributes=attr,
-                        icon="mdi:crosshairs-gps",
+    for watch in coordinator.controller.watchs:
+        if config_entry.options:
+            ward: dict[str, Any] = watch.get("ward")
+            uid = ward.get(ATTR_ID)
+            if uid in config_entry.options.get(CONF_WATCHES):
+                sw_version = await coordinator.controller.getWatches(uid)
+                if DEVICE_TRACKER_SAFZONES in config_entry.options.get(CONF_TYPES):
+                    safeZones = await coordinator.controller.getWatchSafeZones(uid)
+                    for safeZone in safeZones:
+                        entities.append(XploraSafezoneTracker(hass, safeZone, coordinator, ward, sw_version, uid))
+                if DEVICE_TRACKER_WATCH in config_entry.options.get(CONF_TYPES):
+                    entities.append(
+                        XploraDeviceTracker(
+                            hass,
+                            coordinator=coordinator,
+                            uid=uid,
+                            ward=ward,
+                            sw_version=sw_version,
+                        )
                     )
-                    i += 1
-
-    _LOGGER.debug("set WatchScanner")
-    scanner = WatchScanner(
-        hass,
-        async_see,
-        controller,
-        scan_interval,
-        start_time,
-        watch_ids,
-        opencage,
-    )
-    return await scanner.async_init()
+        else:
+            _LOGGER.debug(f"{watch} {config_entry.entry_id}")
+    async_add_entities(entities)
 
 
-class WatchScanner(XploraDevice):
+class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
+
+    _attr_force_update: bool = False
+    _attr_icon: str | None = "mdi:crosshairs-gps"
+
     def __init__(
         self,
-        hass,
-        async_see,
-        controller,
-        scan_interval,
-        start_time,
-        watch_ids,
-        opencage,
+        hass: HomeAssistant,
+        safezone: dict[str, Any],
+        coordinator: XploraDataUpdateCoordinator,
+        ward: dict[str, Any],
+        sw_version: dict[str, Any],
+        uid: str,
     ) -> None:
-        """Initialize."""
-        super().__init__(scan_interval, start_time)
-        self.connected = False
-        self._controller: PXA.PyXploraApi = controller
-        self._watch_ids = watch_ids
-        self._async_see = async_see
-        self._hass: HomeAssistant = hass
-        self._watch_location: Dict[str, Any] = {}
-        self._opencage = opencage
+        super().__init__(coordinator, ward, sw_version, uid)
+        self._safezone = safezone
+        self._hass = hass
+        self._attr_name = f"Safezone {safezone[CONF_NAME]} {self.watch_uid}"
+        self._attr_unique_id = f'safezone_{safezone["vendorId"]}'
 
-    async def async_init(self) -> bool:
-        """Further initialize connection to Xplora® API."""
-        _LOGGER.debug("set async_init")
-        try:
-            await self._controller.init()
-        except LoginError as err:
-            _LOGGER.error(err.message)
-        for watch_id in self._watch_ids:
-            username = self._controller.getWatchUserNames(watch_id)
-            if username is None:
-                _LOGGER.error("Can not connect to Xplora® API")
-                return False
+    @property
+    def latitude(self) -> float | None:
+        """Return latitude value of the device."""
+        return self._safezone[ATTR_TRACKER_LAT]
 
-        await self._async_update()
-        track_update = timedelta(seconds=10)
-        async_track_time_interval(self._hass, self._async_update, track_update)
-        return True
+    @property
+    def longitude(self) -> float | None:
+        """Return longitude value of the device."""
+        return self._safezone[ATTR_TRACKER_LNG]
 
-    async def _async_update(self, now=None) -> None:
-        """Update info from Xplora® API."""
-        self.xtn = self._hass.states.get("input_boolean.xplora_track_now")  # tracking ever 10 sec
+    @property
+    def source_type(self) -> SourceType | str:
+        """Return the source type, eg gps or router, of the device."""
+        return SourceType.GPS
 
-        if self.xtn:
-            if self.xtn.state == "on":
-                _LOGGER.warning("don't forget this one to disable input_boolean.xplora_track_now!")
-                await self._update()
+    @property
+    def location_accuracy(self) -> int:
+        """Return the gps accuracy of the device."""
+        return self._safezone[ATTR_TRACKER_RAD]
 
-        xts_state = "on"
-        self.xts = self._hass.states.get("input_boolean.xplora_tracker_switch")  # disable tracking
-        if self.xts:
-            xts_state = self.xts.state
+    @property
+    def location_name(self) -> str | None:
+        """Return a location name for the current location of the device."""
+        return self._safezone[CONF_NAME]
 
-        if (self._update_timer() and xts_state == "on") or self._first:
-            _LOGGER.debug("xplora_tracker_switch")
-            await self._update()
-
-    async def _update(self) -> None:
-        self._first = False
-        self._start_time = datetime.timestamp(datetime.now())
-        for watch_id in self._watch_ids:
-            if await self._controller.getWatchBattery(watch_id) == -1:
-                _LOGGER.warn(f"no Data from Xplora Server: Watch ID {watch_id}, restart your Watch and try again!")
-                continue
-            _LOGGER.debug(f"Updating device data {watch_id}")
-            self._watch_location = await self._controller.getWatchLastLocation(wuid=watch_id, withAsk=True)
-            self._hass.async_create_task(self.import_device_data(watch_id))
-
-    def get_location_distance(self, watch_c: tuple[float, float]) -> int:
-        home_zone = self._hass.states.get("zone.home").attributes
-        return int(distance.distance((home_zone[ATTR_TRACKER_LATITUDE], home_zone[ATTR_TRACKER_LONGITUDE]), watch_c).m)
-
-    async def import_device_data(self, watch_id: str) -> None:
-        """Import device data from Xplora® API."""
-        watch_location_info: Dict[str, Any] = self._watch_location
-        attr: Dict[str, Any] = {}
-        if watch_location_info.get("lat", "0.0"):
-            attr[ATTR_TRACKER_LATITUDE] = float(watch_location_info.get("lat", "0.0"))
-            attr[ATTR_TRACKER_LAT] = watch_location_info.get("lat", "0.0")
-        if watch_location_info.get("lng", "0.0"):
-            attr[ATTR_TRACKER_LONGITUDE] = float(watch_location_info.get("lng", "0.0"))
-            attr[ATTR_TRACKER_LON] = watch_location_info.get("lng", "0.0")
-        if watch_location_info.get("rad", -1):
-            attr[ATTR_TRACKER_RAD] = watch_location_info.get("rad", -1)
-        if watch_location_info.get(ATTR_TRACKER_COUNTRY, ""):
-            attr[ATTR_TRACKER_COUNTRY] = watch_location_info.get(ATTR_TRACKER_COUNTRY, "")
-        if watch_location_info.get(ATTR_TRACKER_COUNTRY_ABBR, ""):
-            attr[ATTR_TRACKER_COUNTRY_ABBR] = watch_location_info.get(ATTR_TRACKER_COUNTRY_ABBR, "")
-        if watch_location_info.get(ATTR_TRACKER_PROVINCE, ""):
-            attr[ATTR_TRACKER_PROVINCE] = watch_location_info.get(ATTR_TRACKER_PROVINCE, "")
-        if watch_location_info.get(ATTR_TRACKER_CITY, ""):
-            attr[ATTR_TRACKER_CITY] = watch_location_info.get(ATTR_TRACKER_CITY, "")
-
-        if self._opencage == "":
-            timeout = aiohttp.ClientTimeout(total=12)
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                async with session.get(
-                    "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=json".format(
-                        attr[ATTR_TRACKER_LATITUDE], attr[ATTR_TRACKER_LONGITUDE]
-                    )
-                ) as response:
-                    await session.close()
-                    res: Dict[str, Any] = await response.json()
-                    address: Dict[str, str] = res.get("address", [])
-                    if address:
-                        watch_location_info[ATTR_TRACKER_COUNTRY] = address.get(ATTR_TRACKER_COUNTRY, "")
-                        attr[ATTR_TRACKER_ADDR] = "{} {}, {} {}, {}, {}".format(
-                            address.get("road", ""),
-                            address.get("house_number", ""),
-                            address.get("postcode", ""),
-                            address.get(ATTR_TRACKER_CITY, ""),
-                            address.get("state", ""),
-                            address.get(ATTR_TRACKER_COUNTRY, ""),
-                        )
-                        attr["licence"] = res.get("licence", None)
-                        _LOGGER.debug("load address from openstreetmap{} {}".format(attr["licence"], watch_id))
-        if not attr.get("licence", None):
-            _LOGGER.debug("load address from OpenCageData {}".format(watch_id))
-            async with OpenCageGeocodeUA(self._opencage) as geocoder:
-                results: List[Any] = await geocoder.reverse_geocode_async(
-                    watch_location_info.get("lat", "0.0"),
-                    watch_location_info.get("lng", "0.0"),
-                    no_annotations=1,
-                    pretty=1,
-                    no_record=1,
-                    no_dedupe=1,
-                    limit=1,
-                    abbrv=1,
-                )
-                attr[ATTR_TRACKER_ADDR] = results[0]["formatted"]
-
-        if watch_location_info.get(ATTR_TRACKER_POI, ""):
-            attr[ATTR_TRACKER_POI] = watch_location_info.get(ATTR_TRACKER_POI, "")
-        if watch_location_info.get(ATTR_TRACKER_ISINSAFEZONE, ""):
-            attr[ATTR_TRACKER_ISINSAFEZONE] = watch_location_info.get(ATTR_TRACKER_ISINSAFEZONE, "")
-        if watch_location_info.get(ATTR_TRACKER_SAFEZONELABEL, ""):
-            attr[ATTR_TRACKER_SAFEZONELABEL] = watch_location_info.get(ATTR_TRACKER_SAFEZONELABEL, "")
-
-        attr[ATTR_TRACKER_LAST_TRACK] = datetime.fromtimestamp(watch_location_info.get(ATTR_TRACKER_TIME, 31532399)).strftime(
-            "%Y-%m-%d %H:%M:%S"
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        data = super().extra_state_attributes or {}
+        return dict(
+            data,
+            **{ATTR_TRACKER_ADDR: self._safezone[ATTR_TRACKER_ADDR]},
         )
+
+
+class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
+    """Xplora® Watch Version 2 device tracker."""
+
+    _attr_force_update: bool = False
+    _attr_icon: str | None = "mdi:watch"
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        coordinator: XploraDataUpdateCoordinator,
+        uid: str,
+        ward: dict[str, Any],
+        sw_version: dict[str, Any],
+    ) -> None:
+        """Initialize the Tracker."""
+        super().__init__(coordinator, ward, sw_version=sw_version, uid=uid)
+        self._hass = hass
+        self._attr_name = f"{self._ward.get(CONF_NAME)} Watch Tracker {self.watch_uid}"
+        self._attr_unique_id = uid
+
+    @property
+    def battery_level(self) -> int | None:
+        """Return battery value of the device."""
+        return self._coordinator.watch_entry[self.watch_uid]["battery"]
+
+    @property
+    def latitude(self) -> float | None:
+        """Return latitude value of the device."""
+        return self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LAT]
+
+    @property
+    def longitude(self) -> float | None:
+        """Return longitude value of the device."""
+        return self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LNG]
+
+    @property
+    def source_type(self) -> SourceType | str:
+        """Return the source type, eg gps or router, of the device."""
+        return self._coordinator.watch_entry[self.watch_uid]["locateType"]
+
+    @property
+    def location_accuracy(self) -> int:
+        """Return the gps accuracy of the device."""
+        return self._coordinator.watch_entry[self.watch_uid]["location_accuracy"]
+
+    @property
+    def location_name(self) -> str | None:
+        """Return a location name for the current location of the device."""
+        return self._coordinator.watch_entry[self.watch_uid]["location_name"]
+
+    @property
+    def entity_picture(self) -> str:
+        """Return the entity picture to use in the frontend, if any."""
+        return self._coordinator.watch_entry[self.watch_uid]["entity_picture"]
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        data = super().extra_state_attributes or {}
         lat_lng: tuple[float, float] = (
-            float(watch_location_info.get("lat", "0.0")),
-            float(watch_location_info.get("lng", "0.0")),
+            float(self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LAT]),
+            float(self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LNG]),
         )
-        distanceToHome = self.get_location_distance(lat_lng)
-        attr[ATTR_TRACKER_DISTOHOME] = distanceToHome
-
-        await self._async_see(
-            source_type=SOURCE_TYPE_GPS,
-            dev_id=slugify(self._controller.getWatchUserNames(wuid=watch_id) + " Watch Tracker " + watch_id),
-            gps=lat_lng,
-            gps_accuracy=watch_location_info.get("rad", -1),
-            battery=await self._controller.getWatchBattery(wuid=watch_id),
-            host_name=f"{self._controller.getWatchUserNames(wuid=watch_id)} Watch Tracker {watch_id}",
-            attributes=attr,
-            icon="mdi:watch",
-            picture=(self._controller.getWatchUserIcons(wuid=watch_id)),
+        distanceToHome = get_location_distance_meter(self._hass, lat_lng)
+        return dict(
+            data,
+            **{
+                ATTR_TRACKER_DISTOHOME: distanceToHome,
+                ATTR_TRACKER_ADDR: self._coordinator.watch_entry[self.watch_uid]["location_name"],
+                ATTR_TRACKER_LAST_TRACK: self._coordinator.watch_entry[self.watch_uid]["lastTrackTime"],
+                ATTR_TRACKER_IMEI: self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_IMEI],
+                ATTR_TRACKER_POI: self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_POI],
+                ATTR_TRACKER_LICENCE: self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LICENCE],
+            },
         )

@@ -1,55 +1,45 @@
-"""Support for Xplora® Watch notifications."""
+"""Send Message to watch from Xplora® Watch Version 2."""
 from __future__ import annotations
 
-import logging
-
-from typing import Any
-
 from homeassistant.components.notify import BaseNotificationService, ATTR_TARGET
+from homeassistant.const import CONF_ENTITY_ID
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
-from .const import DATA_XPLORA
+from .const import DOMAIN
+from .coordinator import XploraDataUpdateCoordinator
 
-from pyxplora_api import pyxplora_api_async as PXA
+import logging
+
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_get_service(
+def get_service(
     hass: HomeAssistant,
     config: ConfigType,
     discovery_info: DiscoveryInfoType | None = None,
-) -> XploraNotificationService:
-    _LOGGER.debug("set Notify Controller")
-    controller: PXA.PyXploraApi = hass.data[DATA_XPLORA][0]
-    _LOGGER.debug("set Notify Service")
-    sv = XploraNotificationService()
-    sv.setup(controller)
-
-    return sv
+) -> BaseNotificationService:
+    """Set up notification service."""
+    coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][(discovery_info or {})[CONF_ENTITY_ID]]
+    return XploraNotifyService(hass, coordinator)
 
 
-class XploraNotificationService(BaseNotificationService):
-    def __init__(self) -> None:
+class XploraNotifyService(BaseNotificationService):
+    def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
         _LOGGER.debug("init Notify Service")
+        self._controller = coordinator.controller
 
-    def setup(self, controller: PXA.PyXploraApi) -> None:
-        _LOGGER.debug("init Setup")
-        self._controller = controller
-
-    async def async_send_message(self, message: str = "", **kwargs: Any) -> None:
+    async def async_send_message(self, message="", **kwargs):
+        """Send a message to a user."""
         msg = message.strip()
         target = kwargs[ATTR_TARGET]
-        _LOGGER.debug(f"sent message {msg} to {target}")
+        _LOGGER.debug(f"sent message '{msg}' to {target}")
         if not target:
             _LOGGER.warning("No waatch id!")
-        if len(msg):
-            watch_ids = self._controller.getWatchUserIDs(target)
-            if not watch_ids:
-                _LOGGER.warning("Dont find watch id!")
-                return
-            for watch_id in watch_ids:
-                _LOGGER.debug(await self._controller.sendText(text=msg, wuid=watch_id))
+        if len(msg) > 0:
+            for watch_id in target:
+                if await self._controller.sendText(text=msg, wuid=watch_id):
+                    _LOGGER.error("Message cannot send!")
         else:
             _LOGGER.warning("Your message is empty!")

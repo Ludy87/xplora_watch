@@ -1,57 +1,73 @@
-"""Const for Xplora® Watch."""
-DOMAIN = "xplora_watch"
-MANUFACTURER = "Xplora® Watch"
+"""Const for Xplora® Watch Version 2."""
+from __future__ import annotations
 
-XPLORA_CONTROLLER = "controller"
+from typing import Final
 
-CONF_CHILD_PHONENUMBER = "child_phonenumber"
-CONF_COUNTRY_CODE = "country_code"
-CONF_OPENCAGE_APIKEY = "opencage"
-CONF_PASSWORD = "password"
-CONF_PHONENUMBER = "phonenumber"
-CONF_SAFEZONES = "safezones"
-CONF_TIMEZONE = "timezone"
-CONF_TRACKER_SCAN_INTERVAL = "tracker_scan_interval"
-CONF_TYPES = "types"
-CONF_USERLANG = "userlang"
-CONF_WATCHUSER_ID = "watch_id"
+DOMAIN: Final = "xplora_watch"
+MANUFACTURER: Final = "Xplora®"
+DEVICE_NAME: Final = "Xplora® Watch"
+ATTRIBUTION: Final = "Data provided by Xplora®"
 
-SENSOR_BATTERY = "battery"
-SENSOR_STEP_DAY = "step_day"
-SENSOR_XCOIN = "xcoin"
+ATTR_TRACKER_ADDR: Final = "address"
+ATTR_TRACKER_DISTOHOME: Final = "Home Distance (m)"
+ATTR_TRACKER_IMEI: Final = "imei"
+ATTR_TRACKER_LAST_TRACK: Final = "last tracking"
+ATTR_TRACKER_LAT: Final = "lat"
+ATTR_TRACKER_LICENCE: Final = "licence"
+ATTR_TRACKER_LNG: Final = "lng"
+ATTR_TRACKER_POI: Final = "poi"
+ATTR_TRACKER_RAD: Final = "rad"
 
-BINARY_SENSOR_CHARGING = "charging"
-BINARY_SENSOR_SAFEZONE = "safezone"
-BINARY_SENSOR_STATE = "state"
+ATTR_WATCH: Final = "watch"
 
-SWITCH_ALARMS = "alarms"
-SWITCH_SILENTS = "silents"
+CONF_COUNTRY_CODE: Final = "country_code"
+CONF_HOME_SAFEZONE: Final = "home_is_safezone"
+CONF_HOME_LATITUDE: Final = "home_latitude"
+CONF_HOME_LONGITUDE: Final = "home_longitude"
+CONF_HOME_RADIUS: Final = "home_radius"
+CONF_MAPS: Final = "maps"
+CONF_OPENCAGE_APIKEY: Final = "opencage_apikey"
+CONF_PHONENUMBER: Final = "phonenumber"
+CONF_TIMEZONE: Final = "timezone"
+CONF_TYPES: Final = "types"
+CONF_USERLANG: Final = "userlang"
+CONF_WATCHES: Final = "watches"
 
-DEVICE_TRACKER_WATCH = "dt_watch"
+DAYS: Final = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"]
+HOME: Final = "zone.home"
 
-DATA_XPLORA = "xplora"
+SENSOR_BATTERY: Final = "battery"
+SENSOR_STEP_DAY: Final = "step_day"
+SENSOR_XCOIN: Final = "xcoin"
 
-DEFAULT_SCAN_INTERVAL = 3 * 60
-TRACKER_UPDATE = 60
+BINARY_SENSOR_CHARGING: Final = "charging"
+BINARY_SENSOR_SAFEZONE: Final = "safezone"
+BINARY_SENSOR_STATE: Final = "state"
 
-ATTR_WATCH = "watch"
+SWITCH_ALARMS: Final = "alarms"
+SWITCH_SILENTS: Final = "silents"
 
-ATTR_TRACKER_ADDR = "address"
-ATTR_TRACKER_CITY = "city"
-ATTR_TRACKER_COUNTRY = "country"
-ATTR_TRACKER_COUNTRY_ABBR = "countryAbbr"
-ATTR_TRACKER_DISTOHOME = "Home Distance (m)"
-ATTR_TRACKER_ISINSAFEZONE = "isInSafeZone"
-ATTR_TRACKER_LAST_TRACK = "last tracking"
-ATTR_TRACKER_LAT = "lat"
-ATTR_TRACKER_LATITUDE = "latitude"
-ATTR_TRACKER_LON = "lon"
-ATTR_TRACKER_LONGITUDE = "longitude"
-ATTR_TRACKER_POI = "poi"
-ATTR_TRACKER_PROVINCE = "province"
-ATTR_TRACKER_RAD = "radius"
-ATTR_TRACKER_SAFEZONEADRESS = "safezoneaddress"
-ATTR_TRACKER_SAFEZONELABEL = "safeZoneLabel"
-ATTR_TRACKER_SAFEZONEGROUPNAME = "safezonegroupname"
-ATTR_TRACKER_SAFEZONENAME = "safezonename"
-ATTR_TRACKER_TIME = "tm"
+DEVICE_TRACKER_SAFZONES: Final = "watch_safezone"
+DEVICE_TRACKER_WATCH: Final = "dt_watch"
+
+DEFAULT_SCAN_INTERVAL: Final = 3 * 60
+TRACKER_UPDATE: Final = 60
+
+TRACKER_UPDATE_STR: Final = f"{DOMAIN}_tracker_update"
+
+DATA_HASS_CONFIG: Final = "hass_config"
+
+HOME_SAFEZONE: Final[dict[str, str]] = {"off": "off", "on": "on"}
+MAPS: Final[list[str]] = ["openstreetmap.org (free)", "opencagedata.com (with Licence)"]
+SENSORS: Final[dict[str, str]] = {
+    BINARY_SENSOR_CHARGING: "show charging",
+    BINARY_SENSOR_SAFEZONE: "is in Safezone",
+    BINARY_SENSOR_STATE: "online State",
+    DEVICE_TRACKER_SAFZONES: "show Safezone",
+    DEVICE_TRACKER_WATCH: "Device tracking",
+    SENSOR_BATTERY: "Battery state",
+    SENSOR_STEP_DAY: "Step per Day",
+    SENSOR_XCOIN: "XCoins",
+    SWITCH_ALARMS: "Alarms",
+    SWITCH_SILENTS: "Time of silent",
+}

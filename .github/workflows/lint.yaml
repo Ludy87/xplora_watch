@@ -2,9 +2,13 @@ name: "Flake & Black check"
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - Version2
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - Version2
 
 jobs:
   validate_flake8:
@@ -14,10 +18,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: '3.x'
       - name: Install flake8 & black
         run: |
           pip install flake8 black

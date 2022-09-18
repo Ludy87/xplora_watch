@@ -1,15 +1,21 @@
-# Xplora® Watch
+# Xplora® Watch Version 2
 
-Home Assistant Sensors for Xplora® Watch
+Xplora® Watch Version 2 integration for Home Assistant
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge&logo=appveyor)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge&logo=appveyor)](https://github.com/hacs/integration)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/releases)
-![GitHub Release Date](https://img.shields.io/github/release-date/Ludy87/xplora_watch)
+![GitHub Release Date](https://img.shields.io/github/release-date/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)
 [![GitHub](https://img.shields.io/github/license/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/issues)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=appveyor)](https://github.com/psf/black)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/Ludy87/xplora_watch.svg?logo=lgtm&logoWidth=18&style=for-the-badge)](https://lgtm.com/projects/g/Ludy87/xplora_watch/alerts/)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/Ludy87/xplora_watch.svg?logo=lgtm&logoWidth=18&style=for-the-badge)](https://lgtm.com/projects/g/Ludy87/xplora_watch/context:python)
 
 [![Validate with hassfest and HACS](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml)
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ludy87)
+
+[![✨ Wishlist from Amazon ✨](https://www.astra-g.org/wp-content/uploads/2022/09/amazon_wish.png)](https://smile.amazon.de/registry/wishlist/2MX8QK8VE9MV1)
 
 ## Features
 
@@ -19,103 +25,25 @@ Battery | Sensor
 Watch-Xcoin | Sensor
 Watch Step per Day | Sensor
 Watch Online state | Binary Sensor
-Watch is safe | Binary Sensor
-Watch charging | Binary Sensor
+Watch is in Safezone | Binary Sensor
+charging state | Binary Sensor
 Watch silent(s) | Switch
 Watch alarm(s) | Switch
 Send Message | Notify
 Watch Tracking | Device Tracker
-Watch Show Safezone | Device Tracker
-
+Watch Show Safezone(s) | Device Tracker
 ---
+
 ## Basis Configuration
 
-1. Add entry to your `configuration.yaml`
+Configuration for the "Xplora® Watch Version 2" integration is now performed via a config flow as opposed to yaml configuration file.
 
-### <u>Small Settings</u>
-```yaml
-xplora_watch:
-  country_code: "+49"
-  phonenumber: "123456789"
-  password: "password"
-  userlang: "de-DE"
-  timezone: "Europe/Berlin"
-```
----
-### <u>Optional Settings</u>
-
-for [OpenCage Geocoding API](https://opencagedata.com/) address searching
-```yaml
-  opencage: API_KEY # optional
-```
-You have more watches and you will one watch integridad? Select this one with ```child_phonenumber``` or ```watch_id```. The safety way is ```child_phonenumber```
-
-```yaml
-  child_phonenumber: # optional & ignored if 'watch_id' is set
-    - "9876543210"
-    - "5678901234"
-```
-If ```watch_id``` is set, ```child_phonenumber``` is ignored. Errors can occur.
-```yaml
-  watch_id: # optional
-    - 012328123d123f5e775e5e3346739732
-```
----
-### <u>Full Settings</u>
-```yaml
-xplora_watch:
-  country_code: "+49"
-  phonenumber: "123456789"
-  password: "password"
-  userlang: "de-DE"
-  timezone: "Europe/Berlin"
-  opencage: API_KEY # optional
-  child_phonenumber: # optional & ignored if 'watch_id' is set
-    - "9876543210"
-    - "5678901234"
-  watch_id: # optional
-    - 012328123d123f5e775e5e3346739732
-  types: # optional
-    - "battery" # optional
-    - "xcoin" # optional
-    - "step_day" # optional
-    - "state" # optional
-    - "safezone" # optional
-    - "charging" # optional
-    - "silents" # optional
-    - "alarms" # optional
-    - "dt_watch" # optional
-  safezones: "show" # optional
-  scan_interval: 180 # default sec - optional
-  tracker_scan_interval: 60 # default sec - optional
-```
-2. Restart Home Assistant
-3. Check `Home Assistant » Developer Tools » States`
+1. Go to HACS -> Integrations -> Click "+"
+2. Search for "Xplora® Watch" repository and add to HACS
+3. Restart Home Assistant when it says to.
+4. In Home Assistant, go to Configuration -> Integrations -> Click "+ Add Integration"
+5. Search for "Xplora® Watch" and follow the instructions to setup.
 
 ---
-## Notify configuration
 
-1. Add entry Notification to your `configuration.yaml`
-```yaml
-notify:
-  - platform: xplora_watch
-    name: "XPlora"
-```
-2. Restart Home Assistant
-3. Check `Home Assistant » Developer Tools » States`
-
-![notify image](./images/notify.png)
-
----
-## Tracking Setting
-
-1. define if wrong status (`not_home`|`home`)
-```yaml
-zone:
-  - name: Home
-    latitude: '' # your lat
-    longitude: '' # your lng
-```
-
----
 ## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)

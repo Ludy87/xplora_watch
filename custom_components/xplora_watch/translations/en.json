@@ -1,0 +1,51 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Integration has already been configured",
+            "single_instance_allowed": "Already configured. Only one configuration possible."
+        },
+        "error": {
+            "cannot_connect": "Connection Failed",
+            "invalid_auth": "Invalid authentication"
+        },
+        "create_entry": {
+            "default": "Xplora® Watch Integration was created!"
+        },
+        "step": {
+            "user": {
+                "title": "Set up Xplora® Watch",
+                "description": "Account Authentication",
+                "data": {
+                    "country_code": "Countrycode (+49)",
+                    "phonenumber": "phonenumber without Countrycode",
+                    "password": "Password",
+                    "timezone": "Timezone",
+                    "userlang": "Language (en-EN)"
+                }
+            }
+        }
+    },
+    "options": {
+        "error": {
+            "api_key_error": "OpenCage API KEY must be specified!",
+            "no_watch": "Please select a Watch!",
+            "no_sensor": "Please select one or more sensors!"
+        },
+        "step": {
+            "init": {
+                "title": "further settings for Xplora® Watch",
+                "data": {
+                    "watches": "Watches",
+                    "maps": "Maps",
+                    "opencage_apikey": "OpenCage API KEY",
+                    "scan_interval": "Scan Intervall (s)",
+                    "home_is_safezone": "Home is Safezone",
+                    "home_latitude": "Home latitude",
+                    "home_longitude": "Home longitude",
+                    "home_radius": "Home radius",
+                    "types": "Sensortypes"
+                }
+            }
+        }
+    }
+}
