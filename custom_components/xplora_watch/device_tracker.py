@@ -7,7 +7,7 @@ from typing import Any
 from homeassistant.components.device_tracker import SourceType
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_ID, CONF_NAME
+from homeassistant.const import ATTR_ID, ATTR_LATITUDE, ATTR_LONGITUDE, CONF_NAME, STATE_HOME, STATE_NOT_HOME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -25,14 +25,18 @@ from .const import (
     ATTR_TRACKER_LNG,
     ATTR_TRACKER_POI,
     ATTR_TRACKER_RAD,
+    CONF_HOME_LATITUDE,
+    CONF_HOME_LONGITUDE,
+    CONF_HOME_RADIUS,
     CONF_TYPES,
     CONF_WATCHES,
     DEVICE_TRACKER_SAFZONES,
     DEVICE_TRACKER_WATCH,
     DOMAIN,
+    HOME,
 )
 from .entity import XploraBaseEntity
-from .helper import get_location_distance_meter
+from .helper import get_location_distance, get_location_distance_meter
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -64,6 +68,7 @@ async def async_setup_entry(
                             uid=uid,
                             ward=ward,
                             sw_version=sw_version,
+                            config_entry=config_entry,
                         )
                     )
         else:
@@ -138,12 +143,14 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         uid: str,
         ward: dict[str, Any],
         sw_version: dict[str, Any],
+        config_entry: ConfigEntry,
     ) -> None:
         """Initialize the Tracker."""
         super().__init__(coordinator, ward, sw_version=sw_version, uid=uid)
         self._hass = hass
         self._attr_name = f"{self._ward.get(CONF_NAME)} Watch Tracker {self.watch_uid}"
         self._attr_unique_id = uid
+        self._config_entry = config_entry
 
     @property
     def battery_level(self) -> int | None:
@@ -179,6 +186,30 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
     def entity_picture(self) -> str:
         """Return the entity picture to use in the frontend, if any."""
         return self._coordinator.watch_entry[self.watch_uid]["entity_picture"]
+
+    @property
+    def state(self) -> str | None:
+        """Return the state of the device."""
+        _options = self._config_entry.options
+        latitude = self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LAT]
+        longitude = self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LNG]
+        home_raduis = self.hass.states.get(HOME).attributes["radius"]
+        if self.latitude is not None and self.longitude is not None:
+            zone_state = get_location_distance(
+                (
+                    _options.get(CONF_HOME_LATITUDE, self.hass.states.get(HOME).attributes[ATTR_LATITUDE]),
+                    _options.get(CONF_HOME_LONGITUDE, self.hass.states.get(HOME).attributes[ATTR_LONGITUDE]),
+                ),
+                (latitude, longitude),
+                _options.get(CONF_HOME_RADIUS, home_raduis),
+            )
+            if zone_state is False:
+                state = STATE_NOT_HOME
+            else:
+                state = STATE_HOME
+            return state
+
+        return None
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
