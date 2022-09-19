@@ -74,6 +74,12 @@ Set Target with the WatchID for the receiver watch
 
 ---
 
+## Send Message via Service
+
+![message_service image](./images/message_service.png)
+
+---
+
 ## [🏳 Supported Countries 🏳](https://github.com/Ludy87/xplora_watch/wiki/Countries)
 
 ---
