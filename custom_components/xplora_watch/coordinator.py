@@ -156,4 +156,3 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             }
             self.watch_entry[wuid][ATTR_TRACKER_LICENCE] = licence
         return self.watch_entry
-
