@@ -157,6 +157,3 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.watch_entry[wuid][ATTR_TRACKER_LICENCE] = licence
         return self.watch_entry
 
-    async def options_update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
-        """Handle options update."""
-        await hass.config_entries.async_reload(config_entry.entry_id)
