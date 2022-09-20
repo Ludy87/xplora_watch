@@ -24,7 +24,7 @@ _LOGGER = logging.getLogger(__name__)
 
 @callback
 def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
-    """Set up services for UniFi integration."""
+    """Set up services for Xplora® Watch integration."""
 
     notify_service = XploraNotificationService(hass, coordinator)
 
@@ -38,7 +38,7 @@ def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoord
 
 @callback
 def async_unload_services(hass: HomeAssistant) -> None:
-    """Unload UniFi Network services."""
+    """Unload Xplora® Watch send_message services."""
     hass.services.async_remove(DOMAIN, "send_message")
 
 
@@ -48,11 +48,11 @@ class XploraNotificationService:
         self._controller = coordinator.controller
 
     async def async_send_message(self, message="", target=None, **kwargs):
-        """Send a message to one or multiple pre-allowed chat IDs."""
+        """Send a message to one Watch."""
         msg = message.strip()
         _LOGGER.debug(f"sent message '{msg}' to {target}")
         if not target:
-            _LOGGER.warning("No waatch id!")
+            _LOGGER.warning("No watch id!")
         if len(msg) > 0:
             for watch_id in target:
                 if not await self._controller.sendText(text=msg, wuid=watch_id):
