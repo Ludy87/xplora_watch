@@ -4,13 +4,11 @@ on:
   push:
     branches:
       - main
-      - Version2
     paths-ignore:
       - '.github/**'
   pull_request:
     branches:
       - main
-      - Version2
   schedule:
     - cron: "0 0 * * *"
 
