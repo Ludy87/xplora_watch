@@ -49,5 +49,10 @@
 - name: "Beta"
   description: Beta Version Release
   color: "d73a4a"
+- name: "Version 1"
+  color: "ff0000"
 - name: "Version 2"
   color: "5319e7"
+- name: "dependencies"
+  description: Pull requests that update a dependency file
+  color: "0366d6"
