@@ -1,6 +1,6 @@
 name: Request a feature
 description: Request a new Xplora® Watch feature
-title: "[🏗️ FR] (feature summary)"
+title: "🏗️ (feature summary)"
 labels: 'feature request'
 body:
   - type: textarea
