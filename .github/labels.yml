@@ -60,3 +60,5 @@
   color: "0366d6"
 - name: "solved"
   color: "0366d6"
+- name: "stale"
+  color: "ff0000"
