@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from geopy import distance
+import os
 
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
 
@@ -51,3 +52,29 @@ def get_location_distance(home_lat_lng: tuple[float, float], lat_lng: tuple[floa
         return True
     else:
         return False
+
+
+def service_yaml(watches: list[str]):
+    path = os.path.abspath(os.getcwd() + "/custom_components/xplora_watch")
+    with open(path + "/services.yaml", "w+") as f:
+        f.write("# Please do not change the file, it will be overwritten!\n\n")
+        f.write("send_message:\n")
+        f.write("  name: Send message\n")
+        f.write("  description: Send a notification.\n")
+        f.write("  fields:\n")
+        f.write("    message:\n")
+        f.write("      name: Message\n")
+        f.write("      description: Message body of the notification.\n")
+        f.write("      required: true\n")
+        f.write("      example: The window has been open for 10 minutes.\n")
+        f.write("      selector:\n")
+        f.write("        text:\n")
+        f.write("    target:\n")
+        f.write("      name: Watch\n")
+        f.write("      description: An array of pre-authorized chat_ids to send the notification to.\n")
+        f.write("      required: true\n")
+        f.write("      selector:\n")
+        f.write("        select:\n")
+        f.write("          options:\n")
+        for watch in watches:
+            f.write(f"            - {watch}\n")

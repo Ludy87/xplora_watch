@@ -9,11 +9,10 @@ from homeassistant.helpers.typing import ConfigType
 
 import logging
 
-from .const import (
-    DATA_HASS_CONFIG,
-    DOMAIN,
-)
+from .const import DATA_HASS_CONFIG, DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
+from .helper import service_yaml
+from .services import async_setup_services, async_unload_services
 
 PLATFORMS = [
     Platform.DEVICE_TRACKER,
@@ -42,7 +41,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await coordinator.async_config_entry_first_refresh()
 
     hass.data.setdefault(DOMAIN, {})
+
+    async_setup_services(hass, coordinator)
+
     hass.data[DOMAIN][entry.entry_id] = coordinator
+    watches = await coordinator.controller.setDevices()
+
+    service_yaml(watches)
+
     for platform in PLATFORMS:
         if platform != Platform.NOTIFY:
             hass.async_create_task(hass.config_entries.async_forward_entry_setup(entry, platform))
@@ -68,6 +74,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unload_ok = await hass.config_entries.async_unload_platforms(
         entry, [platform for platform in PLATFORMS if platform != Platform.NOTIFY]
     )
+    async_unload_services(hass)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
     return unload_ok
