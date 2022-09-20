@@ -8,16 +8,6 @@ body:
   attributes:
     value: |
       Before you open a new issue, search through the existing issues to see if others have had the same problem.
-- type: dropdown
-  attributes:
-    label: Did you test the latest [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/releases) code?
-    description: >-
-      Always try the latest code to make sure the issue you are reporting is not already fixed.
-    options:
-      - Yes, and the problem still exists.
-      - No, but I will test it now!
-  validations:
-    required: true
 - type: textarea
   attributes:
     label: "System Health details"
