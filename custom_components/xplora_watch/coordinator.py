@@ -76,8 +76,8 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
             self.battery = watchLocate.get("watch_battery", -1)
             self.isCharging = watchLocate.get("watch_charging", False)
-            self.lat = watchLocate.get(ATTR_TRACKER_LAT, 0.0)
-            self.lng = watchLocate.get(ATTR_TRACKER_LNG, 0.0)
+            self.lat = float(watchLocate.get(ATTR_TRACKER_LAT, 0.0))
+            self.lng = float(watchLocate.get(ATTR_TRACKER_LNG, 0.0))
             self.poi = watchLocate.get(ATTR_TRACKER_POI, "")
             self.location_accuracy = watchLocate.get(ATTR_TRACKER_RAD, -1)
             self.locateType = watchLocate.get("locateType", PXA.LocationType.UNKNOWN.value)
