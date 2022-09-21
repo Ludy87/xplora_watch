@@ -84,6 +84,3 @@ async def options_update_listener(hass: HomeAssistant, config_entry: ConfigEntry
     """Handle options update."""
     _LOGGER.debug("Configuration options updated, reloading Xplora® Watch Version 2 integration")
     await hass.config_entries.async_reload(config_entry.entry_id)
-
-
-async_remove_entry = config_entry_flow.webhook_async_remove_entry

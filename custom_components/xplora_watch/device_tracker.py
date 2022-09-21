@@ -99,12 +99,12 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
     @property
     def latitude(self) -> float | None:
         """Return latitude value of the device."""
-        return self._safezone[ATTR_TRACKER_LAT]
+        return float(self._safezone[ATTR_TRACKER_LAT])
 
     @property
     def longitude(self) -> float | None:
         """Return longitude value of the device."""
-        return self._safezone[ATTR_TRACKER_LNG]
+        return float(self._safezone[ATTR_TRACKER_LNG])
 
     @property
     def source_type(self) -> SourceType | str:
