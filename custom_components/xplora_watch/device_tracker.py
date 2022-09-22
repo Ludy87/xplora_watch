@@ -61,16 +61,7 @@ async def async_setup_entry(
                     for safeZone in safeZones:
                         entities.append(XploraSafezoneTracker(hass, safeZone, coordinator, ward, sw_version, uid))
                 if DEVICE_TRACKER_WATCH in config_entry.options.get(CONF_TYPES):
-                    entities.append(
-                        XploraDeviceTracker(
-                            hass,
-                            coordinator=coordinator,
-                            uid=uid,
-                            ward=ward,
-                            sw_version=sw_version,
-                            config_entry=config_entry,
-                        )
-                    )
+                    entities.append(XploraDeviceTracker(hass, coordinator, uid, ward, sw_version, config_entry))
         else:
             _LOGGER.debug(f"{watch} {config_entry.entry_id}")
     async_add_entities(entities)
