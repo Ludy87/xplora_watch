@@ -62,3 +62,7 @@
   color: "0366d6"
 - name: "stale"
   color: "ff0000"
+- name: "PR: released"
+  color: "d73a4a"
+- name: "PR: rejected"
+  color: "ff0000"
