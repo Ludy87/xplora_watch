@@ -3,10 +3,9 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 from geopy import distance
-import os
 
-from homeassistant.core import HomeAssistant
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
+from homeassistant.core import HomeAssistant
 
 from .const import HOME
 
@@ -80,7 +79,6 @@ def service_yaml(hass: HomeAssistant, watches: list[str]):
             f.write("        select:\n")
             f.write("          options:\n")
             for watch in watches:
-               f.write(f"            - {watch}\n")
+                f.write(f"            - {watch}\n")
     except IOError:
         _LOGGER.exception("Error writing service definition to path '%s'", path)
-  
