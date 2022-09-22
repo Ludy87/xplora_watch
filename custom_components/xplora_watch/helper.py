@@ -6,6 +6,7 @@ from geopy import distance
 import os
 
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
+from homeassistant.core import HomeAssistant
 
 from .const import HOME
 
@@ -32,7 +33,7 @@ class XploraDevice(XploraUpdateTime):
         super().__init__(scan_interval, start_time)
 
 
-def get_location_distance_meter(hass, lat_lng: tuple[float, float]) -> int:
+def get_location_distance_meter(hass: HomeAssistant, lat_lng: tuple[float, float]) -> int:
     home_zone = hass.states.get(HOME).attributes
     return int(
         distance.distance(
@@ -54,8 +55,9 @@ def get_location_distance(home_lat_lng: tuple[float, float], lat_lng: tuple[floa
         return False
 
 
-def service_yaml(watches: list[str]):
-    path = os.path.abspath(os.getcwd() + "/custom_components/xplora_watch")
+def service_yaml(hass: HomeAssistant, watches: list[str]):
+    path = hass.config.path("custom_components/xplora_watch")
+    _LOGGER.debug("services.yaml path: %s", path)
     with open(path + "/services.yaml", "w+") as f:
         f.write("# Please do not change the file, it will be overwritten!\n\n")
         f.write("send_message:\n")
