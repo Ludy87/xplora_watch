@@ -47,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = coordinator
     watches = await coordinator.controller.setDevices()
 
-    service_yaml(watches)
+    service_yaml(hass, watches)
 
     for platform in PLATFORMS:
         if platform != Platform.NOTIFY:
