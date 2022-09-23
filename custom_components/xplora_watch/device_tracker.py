@@ -3,11 +3,10 @@ from __future__ import annotations
 
 from typing import Any
 
-
 from homeassistant.components.device_tracker import SourceType
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_ID, ATTR_LATITUDE, ATTR_LONGITUDE, CONF_NAME, STATE_HOME, STATE_NOT_HOME
+from homeassistant.const import ATTR_ID, CONF_NAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -25,18 +24,14 @@ from .const import (
     ATTR_TRACKER_LNG,
     ATTR_TRACKER_POI,
     ATTR_TRACKER_RAD,
-    CONF_HOME_LATITUDE,
-    CONF_HOME_LONGITUDE,
-    CONF_HOME_RADIUS,
     CONF_TYPES,
     CONF_WATCHES,
     DEVICE_TRACKER_SAFZONES,
     DEVICE_TRACKER_WATCH,
     DOMAIN,
-    HOME,
 )
 from .entity import XploraBaseEntity
-from .helper import get_location_distance, get_location_distance_meter
+from .helper import get_location_distance_meter
 
 _LOGGER = logging.getLogger(__name__)
 
