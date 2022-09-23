@@ -1,0 +1,68 @@
+# Configuration for Label Actions - https://github.com/dessant/label-actions
+
+Bug:
+  issues:
+    label:
+      - 'check for Bug'
+      - 'wait'
+      - 'Version 2'
+    comment: >
+      :wave: @{issue-author}, it is checked whether there is a bug.
+      Please have some patience.
+
+      This action was performed automatically.
+
+"Bug: Confirmed!":
+  issues:
+    label:
+      - 'in progress'
+      - 'wait'
+      - 'Version 2'
+    unlabel:
+      - 'check for Bug'
+    comment: >
+      :wave: @{issue-author}, we found the bug, it will be fixed shortly.
+
+      This action was performed automatically.
+
+"feature request":
+  issues:
+    label:
+      - 'wait'
+      - 'Version 2'
+    comment: >
+      :wave: @{issue-author}, your proposal will be considered.
+      Please have some patience.
+
+      This action was performed automatically.
+
+wontfix:
+  issues:
+    unlabel:
+      - 'wait'
+      - 'in progress'
+      - 'help wanted'
+      - 'check for Bug'
+    comment: >
+      :wave: @{issue-author}, the bug will not be further investigated. 
+      A new integration version has been released, check if the bug persists. 
+      If the error persists, open a new bug report.
+
+      This action was performed automatically.
+    close: true
+    lock: true
+
+"PR: rejected":
+  prs:
+    comment: >
+      :wave: @{issue-author}
+      This pull request has been automatically locked because it was rejected.
+    close: true
+
+-wontfix:
+  issues:
+    reopen: true
+    unlock: true
+
+solved:
+  lock: true
