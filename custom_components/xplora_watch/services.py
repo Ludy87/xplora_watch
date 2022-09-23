@@ -1,3 +1,4 @@
+"""Support for Xplora® Watch Version 2 send_message."""
 from __future__ import annotations
 
 import logging
@@ -15,8 +16,7 @@ ATTR_TARGET = "target"
 
 
 BASE_SERVICE_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_TARGET): vol.All(cv.ensure_list, [cv.string]), vol.Required(ATTR_MSG): cv.string},
-    extra=vol.ALLOW_EXTRA,
+    {vol.Required(ATTR_TARGET): vol.All(cv.ensure_list, [cv.string]), vol.Required(ATTR_MSG): cv.string}, extra=vol.ALLOW_EXTRA
 )
 
 _LOGGER = logging.getLogger(__name__)

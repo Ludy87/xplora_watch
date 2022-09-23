@@ -43,12 +43,7 @@ def get_location_distance_meter(hass: HomeAssistant, lat_lng: tuple[float, float
 
 
 def get_location_distance(home_lat_lng: tuple[float, float], lat_lng: tuple[float, float], radius: int) -> int:
-    if radius >= int(
-        distance.distance(
-            home_lat_lng,
-            lat_lng,
-        ).m
-    ):
+    if radius >= int(distance.distance(home_lat_lng, lat_lng).m):
         return True
     else:
         return False

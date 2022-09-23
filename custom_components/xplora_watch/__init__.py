@@ -4,7 +4,7 @@ from __future__ import annotations
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ENTITY_ID, CONF_NAME, Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_entry_flow, discovery
+from homeassistant.helpers import discovery
 from homeassistant.helpers.typing import ConfigType
 
 import logging

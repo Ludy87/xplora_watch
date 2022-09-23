@@ -154,33 +154,21 @@ class XploraOptionsFlowHandler(OptionsFlow):
             {
                 vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, [])): cv.multi_select(watches),
                 vol.Required(CONF_MAPS, default=_options.get(CONF_MAPS, MAPS[0])): vol.In(MAPS),
-                vol.Optional(
-                    CONF_OPENCAGE_APIKEY,
-                    default=_options.get(CONF_OPENCAGE_APIKEY, ""),
-                ): cv.string,
-                vol.Required(
-                    CONF_SCAN_INTERVAL,
-                    default=_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                ): vol.All(vol.Coerce(int), vol.Range(min=1, max=9999)),
+                vol.Optional(CONF_OPENCAGE_APIKEY, default=_options.get(CONF_OPENCAGE_APIKEY, "")): cv.string,
+                vol.Required(CONF_SCAN_INTERVAL, default=_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): vol.All(
+                    vol.Coerce(int), vol.Range(min=1, max=9999)
+                ),
                 vol.Required(
                     CONF_HOME_SAFEZONE, default=_options.get(CONF_HOME_SAFEZONE, HOME_SAFEZONE.get(STATE_OFF))
                 ): vol.In(HOME_SAFEZONE),
                 vol.Required(
-                    CONF_HOME_LATITUDE,
-                    default=_options.get(CONF_HOME_LATITUDE, _home_zone[ATTR_LATITUDE]),
+                    CONF_HOME_LATITUDE, default=_options.get(CONF_HOME_LATITUDE, _home_zone[ATTR_LATITUDE])
                 ): cv.latitude,
                 vol.Required(
-                    CONF_HOME_LONGITUDE,
-                    default=_options.get(CONF_HOME_LONGITUDE, _home_zone[ATTR_LONGITUDE]),
+                    CONF_HOME_LONGITUDE, default=_options.get(CONF_HOME_LONGITUDE, _home_zone[ATTR_LONGITUDE])
                 ): cv.longitude,
-                vol.Required(
-                    CONF_HOME_RADIUS,
-                    default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS]),
-                ): int,
-                vol.Required(
-                    CONF_TYPES,
-                    default=_options.get(CONF_TYPES, []),
-                ): cv.multi_select(SENSORS),
+                vol.Required(CONF_HOME_RADIUS, default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS])): int,
+                vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): cv.multi_select(SENSORS),
             }
         )
 

@@ -109,14 +109,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             if self.maps == MAPS[1]:
                 async with OpenCageGeocodeUA(self.opencage_apikey) as geocoder:
                     results: list[Any] = await geocoder.reverse_geocode_async(
-                        self.lat,
-                        self.lng,
-                        no_annotations=1,
-                        pretty=1,
-                        no_record=1,
-                        no_dedupe=1,
-                        limit=1,
-                        abbrv=1,
+                        self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
                     )
                     self.location_name = "{}".format(results[0]["formatted"])
                 _LOGGER.debug("load address from opencagedata.com")

@@ -38,18 +38,9 @@ from .helper import get_location_distance
 _LOGGER = logging.getLogger(__name__)
 
 BINARY_SENSOR_TYPES: tuple[BinarySensorEntityDescription, ...] = (
-    BinarySensorEntityDescription(
-        key=BINARY_SENSOR_CHARGING,
-        device_class=BinarySensorDeviceClass.BATTERY_CHARGING,
-    ),
-    BinarySensorEntityDescription(
-        key=BINARY_SENSOR_SAFEZONE,
-        device_class=BinarySensorDeviceClass.SAFETY,
-    ),
-    BinarySensorEntityDescription(
-        key=BINARY_SENSOR_STATE,
-        device_class=BinarySensorDeviceClass.CONNECTIVITY,
-    ),
+    BinarySensorEntityDescription(key=BINARY_SENSOR_CHARGING, device_class=BinarySensorDeviceClass.BATTERY_CHARGING),
+    BinarySensorEntityDescription(key=BINARY_SENSOR_SAFEZONE, device_class=BinarySensorDeviceClass.SAFETY),
+    BinarySensorEntityDescription(key=BINARY_SENSOR_STATE, device_class=BinarySensorDeviceClass.CONNECTIVITY),
 )
 
 

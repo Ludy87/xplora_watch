@@ -16,9 +16,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 def get_service(
-    hass: HomeAssistant,
-    config: ConfigType,
-    discovery_info: DiscoveryInfoType | None = None,
+    hass: HomeAssistant, config: ConfigType, discovery_info: DiscoveryInfoType | None = None
 ) -> BaseNotificationService:
     """Set up notification service."""
     coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][(discovery_info or {})[CONF_ENTITY_ID]]

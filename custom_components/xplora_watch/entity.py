@@ -24,11 +24,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     _attr_attribution = ATTRIBUTION
 
     def __init__(
-        self,
-        coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, Any],
-        sw_version: dict[str, Any],
-        uid: str,
+        self, coordinator: XploraDataUpdateCoordinator, ward: dict[str, Any], sw_version: dict[str, Any], uid: str
     ) -> None:
         """Initialize entity."""
         super().__init__(coordinator)

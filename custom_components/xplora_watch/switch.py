@@ -14,37 +14,19 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 import logging
 
-from .const import (
-    ATTR_WATCH,
-    CONF_TYPES,
-    CONF_WATCHES,
-    DAYS,
-    DOMAIN,
-    SWITCH_ALARMS,
-    SWITCH_SILENTS,
-)
+from .const import ATTR_WATCH, CONF_TYPES, CONF_WATCHES, DAYS, DOMAIN, SWITCH_ALARMS, SWITCH_SILENTS
 from .coordinator import XploraDataUpdateCoordinator
 from .entity import XploraBaseEntity
 
 _LOGGER = logging.getLogger(__name__)
 
 SENSOR_TYPES: tuple[SwitchEntityDescription, ...] = (
-    SwitchEntityDescription(
-        key=SWITCH_ALARMS,
-        icon="mdi:alarm",
-    ),
-    SwitchEntityDescription(
-        key=SWITCH_SILENTS,
-        icon="mdi:school",
-    ),
+    SwitchEntityDescription(key=SWITCH_ALARMS, icon="mdi:alarm"),
+    SwitchEntityDescription(key=SWITCH_SILENTS, icon="mdi:school"),
 )
 
 
-async def async_setup_entry(
-    hass: HomeAssistant,
-    config_entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
-) -> None:
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     """Set up the Xplora® Watch Version 2 switch from config entry."""
     coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
     entities: list[Any] = []
@@ -59,28 +41,10 @@ async def async_setup_entry(
                         sw_version = await coordinator.controller.getWatches(uid)
                         if description.key == SWITCH_ALARMS:
                             for alarm in await coordinator.controller.getWatchAlarm(uid):
-                                entities.append(
-                                    XploraAlarmSwitch(
-                                        alarm,
-                                        coordinator,
-                                        ward,
-                                        sw_version,
-                                        uid,
-                                        description,
-                                    )
-                                )
+                                entities.append(XploraAlarmSwitch(alarm, coordinator, ward, sw_version, uid, description))
                         if description.key == SWITCH_SILENTS:
                             for silent in await coordinator.controller.getSilentTime(uid):
-                                entities.append(
-                                    XploraSilentSwitch(
-                                        silent,
-                                        coordinator,
-                                        ward,
-                                        sw_version,
-                                        uid,
-                                        description,
-                                    )
-                                )
+                                entities.append(XploraSilentSwitch(silent, coordinator, ward, sw_version, uid, description))
             else:
                 _LOGGER.debug(f"{watch} {config_entry.entry_id}")
     async_add_entities(entities, True)
@@ -108,10 +72,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         self._attr_is_on = self._states(alarm["status"])
         self._alarms: list[dict[str, Any]] = []
         _LOGGER.debug(
-            "Updating switch: %s | %s | Watch_ID %s",
-            self._attr_name[:-33],
-            self.entity_description.key,
-            self.watch_uid[25:],
+            "Updating switch: %s | %s | Watch_ID %s", self._attr_name[:-33], self.entity_description.key, self.watch_uid[25:]
         )
 
     @callback
@@ -171,10 +132,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Silent-{silent["start"]}-{silent["end"]}-{uid}'
         self._watch_id = uid
         _LOGGER.debug(
-            "Updating switch: %s | %s | Watch_ID %s",
-            self._attr_name[:-33],
-            self.entity_description.key,
-            self.watch_uid[25:],
+            "Updating switch: %s | %s | Watch_ID %s", self._attr_name[:-33], self.entity_description.key, self.watch_uid[25:]
         )
 
     @callback
