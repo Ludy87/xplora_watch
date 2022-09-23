@@ -12,12 +12,12 @@ jobs:
       - name: X days stale issues
         uses: actions/stale@v5
         with:
-          repo-token: ${{ secrets.TOKEN }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           days-before-stale: 30
           days-before-close: 7
           remove-stale-when-updated: true
           stale-issue-label: "stale"
-          exempt-issue-labels: "pinned,Bug: Confirmed!,check for Bug"
+          exempt-issue-labels: "pinned,Bug: Confirmed!,check for Bug,wait"
           stale-issue-message: >
             This issue has been automatically marked as stale because it has
             not had recent activity. It will be closed if no further activity
