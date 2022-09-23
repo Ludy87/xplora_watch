@@ -215,8 +215,10 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         data = super().extra_state_attributes or {}
         distanceToHome = None
-        if self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LAT] is not None and
-        self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LNG] is not None:
+        if (
+            self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LAT] is not None
+            and self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LNG] is not None
+        ):
             lat_lng: tuple[float, float] = (
                 float(self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LAT]),
                 float(self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LNG]),
