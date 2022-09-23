@@ -161,7 +161,7 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
     @property
     def source_type(self) -> SourceType | str:
         """Return the source type, eg gps or router, of the device."""
-        return self._coordinator.watch_entry[self.watch_uid]["locateType"]
+        return SourceType.GPS
 
     @property
     def location_accuracy(self) -> int:
@@ -169,7 +169,7 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         return self._coordinator.watch_entry[self.watch_uid]["location_accuracy"]
 
     @property
-    def location_name(self) -> str | None:
+    def address(self) -> str | None:
         """Return a location name for the current location of the device."""
         return self._coordinator.watch_entry[self.watch_uid]["location_name"]
 
@@ -177,30 +177,6 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
     def entity_picture(self) -> str:
         """Return the entity picture to use in the frontend, if any."""
         return self._coordinator.watch_entry[self.watch_uid]["entity_picture"]
-
-    @property
-    def state(self) -> str | None:
-        """Return the state of the device."""
-        _options = self._config_entry.options
-        latitude = self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LAT]
-        longitude = self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LNG]
-        home_raduis = self.hass.states.get(HOME).attributes["radius"]
-        if self.latitude is not None and self.longitude is not None:
-            zone_state = get_location_distance(
-                (
-                    _options.get(CONF_HOME_LATITUDE, self.hass.states.get(HOME).attributes[ATTR_LATITUDE]),
-                    _options.get(CONF_HOME_LONGITUDE, self.hass.states.get(HOME).attributes[ATTR_LONGITUDE]),
-                ),
-                (latitude, longitude),
-                _options.get(CONF_HOME_RADIUS, home_raduis),
-            )
-            if zone_state is False:
-                state = STATE_NOT_HOME
-            else:
-                state = STATE_HOME
-            return state
-
-        return None
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
