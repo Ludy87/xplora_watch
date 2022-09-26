@@ -126,8 +126,8 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                             self.location_name = "{}".format(res.get("display_name", ""))
                             _LOGGER.debug("load address from openstreetmap.org")
             self.watch_entry[wuid] = {
-                "battery": self.battery,
-                "isCharging": self.isCharging,
+                "battery": self.battery if self.battery != -1 else None,
+                "isCharging": self.isCharging if self.battery != -1 else None,
                 "isOnline": self.isOnline,
                 "isSafezone": self.isSafezone,
                 "alarm": self.alarm,
