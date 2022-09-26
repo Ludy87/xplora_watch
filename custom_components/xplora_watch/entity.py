@@ -51,6 +51,8 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     async def async_added_to_hass(self) -> None:
         """When entity is added to hass."""
         await super().async_added_to_hass()
+        if state := await self.async_get_last_state():
+            self._state = state.state
         self._unsub_dispatchers.append(async_dispatcher_connect(self.hass, TRACKER_UPDATE_STR, self._async_receive_data))
 
     async def async_will_remove_from_hass(self) -> None:

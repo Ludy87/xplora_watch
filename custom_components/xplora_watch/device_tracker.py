@@ -116,7 +116,7 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         )
 
 
-class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
+class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
     """Xplora® Watch Version 2 device tracker."""
 
     _attr_force_update: bool = False
@@ -190,8 +190,10 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
             data,
             **{
                 ATTR_TRACKER_DISTOHOME: distanceToHome,
-                ATTR_TRACKER_ADDR: self._coordinator.watch_entry[self.watch_uid]["location_name"],
-                ATTR_TRACKER_LAST_TRACK: self._coordinator.watch_entry[self.watch_uid]["lastTrackTime"],
+                ATTR_TRACKER_ADDR: self.address if distanceToHome else None,
+                ATTR_TRACKER_LAST_TRACK: self._coordinator.watch_entry[self.watch_uid]["lastTrackTime"]
+                if distanceToHome
+                else None,
                 ATTR_TRACKER_IMEI: self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_IMEI],
                 ATTR_TRACKER_POI: self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_POI],
                 ATTR_TRACKER_LICENCE: self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LICENCE],
