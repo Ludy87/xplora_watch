@@ -13,11 +13,11 @@ jobs:
     name: "flake8"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3.0.2
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v4.2.0
         with:
           python-version: '3.9'
       - name: Install flake8 & black
@@ -28,7 +28,7 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=30 --max-line-length=127 --statistics --ignore=E501,E266,E202,E201,E301
       - name: Bandit Check (Python security linter)
-        uses: jpetrucciani/bandit-check@master
+        uses: jpetrucciani/bandit-check@v1.7.3
         with:
           bandit_flags: '-s B105,B311'
           path: './custom_components/xplora_watch/'
