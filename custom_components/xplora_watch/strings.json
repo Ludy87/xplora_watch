@@ -30,12 +30,15 @@
         "error": {
             "api_key_error": "[%key:common::config_flow::error::api_key_error%]",
             "no_watch": "[%key:common::config_flow::error::no_watch%]",
-            "no_sensor": "[%key:common::config_flow::error::no_sensor%]"
+            "no_sensor": "[%key:common::config_flow::error::no_sensor%]",
+            "friendly_name_error": "[%key:common::config_flow::error::friendly_name_error%]"
         },
         "step": {
             "init": {
                 "data": {
                     "watches": "[%key:common::config_flow::data::watches%]",
+                    "watches_1": "[%key:common::config_flow::data::watches_1%]",
+                    "watches_2": "[%key:common::config_flow::data::watches_2%]",
                     "maps": "[%key:common::config_flow::data::maps%]",
                     "opencage_apikey": "[%key:common::config_flow::data::opencage_apikey%]",
                     "scan_interval": "[%key:common::config_flow::data::scan_interval%]",

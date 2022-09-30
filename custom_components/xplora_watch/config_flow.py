@@ -1,6 +1,7 @@
 """Config flow for Xplora® Watch Version 2."""
 from __future__ import annotations
 
+from collections import OrderedDict
 from typing import Any
 
 from homeassistant import config_entries, core, exceptions
@@ -68,11 +69,21 @@ def validate_options_input(user_input: dict[str, Any]) -> dict[str, str]:
     errors = {}
     key: str = user_input[CONF_OPENCAGE_APIKEY]
     maps = user_input[CONF_MAPS]
+
     if maps == MAPS[1] and len(key) == 0:
         errors["base"] = "api_key_error"
 
     if not user_input[CONF_WATCHES]:
         errors["base"] = "no_watch"
+
+    for watch in user_input[CONF_WATCHES]:
+        for i in range(1, 3):
+            if not user_input.get(f"{CONF_WATCHES}_{i}"):
+                errors["base"] = "friendly_name_error"
+                continue
+
+            if "=" not in user_input.get(f"{CONF_WATCHES}_{i}") and len(user_input.get(f"{CONF_WATCHES}_{i}")) != len(watch):
+                errors["base"] = "friendly_name_error"
 
     if not user_input[CONF_TYPES]:
         errors["base"] = "no_sensor"
@@ -149,10 +160,22 @@ class XploraOptionsFlowHandler(OptionsFlow):
         watches = await controller.setDevices()
         _options = self.config_entry.options
 
+        schema = OrderedDict()
+        schema[vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, watches))] = cv.multi_select(watches)
+        i = 1
+        for watch in controller.getWatchUserIDs():
+            schema[
+                vol.Optional(
+                    f"{CONF_WATCHES}_{i}",
+                    default=_options.get(f"{CONF_WATCHES}_{i}", watch),
+                )
+            ] = cv.string
+            i += 1
+
         _home_zone = self.hass.states.get(HOME).attributes
         options = vol.Schema(
             {
-                vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, [])): cv.multi_select(watches),
+                **schema,
                 vol.Required(CONF_MAPS, default=_options.get(CONF_MAPS, MAPS[0])): vol.In(MAPS),
                 vol.Optional(CONF_OPENCAGE_APIKEY, default=_options.get(CONF_OPENCAGE_APIKEY, "")): cv.string,
                 vol.Required(CONF_SCAN_INTERVAL, default=_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): vol.All(
@@ -167,7 +190,9 @@ class XploraOptionsFlowHandler(OptionsFlow):
                 vol.Required(
                     CONF_HOME_LONGITUDE, default=_options.get(CONF_HOME_LONGITUDE, _home_zone[ATTR_LONGITUDE])
                 ): cv.longitude,
-                vol.Required(CONF_HOME_RADIUS, default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS])): int,
+                vol.Required(
+                    CONF_HOME_RADIUS, default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS])
+                ): cv.positive_int,
                 vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): cv.multi_select(SENSORS),
             }
         )

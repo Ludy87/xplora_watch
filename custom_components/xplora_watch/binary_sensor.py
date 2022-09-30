@@ -81,12 +81,23 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
     ) -> None:
         super().__init__(coordinator, ward, sw_version, uid)
         self.entity_description = description
-        self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {uid}".title()
+
+        for i in range(1, 3):
+            _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
+            if "=" in _wuid:
+                friendly_name = _wuid.split("=")
+                if friendly_name[0] == uid:
+                    self._attr_name = f"{friendly_name[1]} {description.key}".title()
+                else:
+                    self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {uid}".title()
+            else:
+                self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {uid}".title()
+
         self._attr_unique_id = f"{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{uid}"
         self._config_entry = config_entry
         _LOGGER.debug(
             "Updating binary_sensor: %s | %s | Watch_ID %s",
-            self._attr_name[:-33],
+            self._attr_name[:-33] if "=" not in _wuid else self._attr_name,
             self.entity_description.key,
             self.watch_uid[25:],
         )

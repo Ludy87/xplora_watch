@@ -8,11 +8,8 @@ from homeassistant.core import HomeAssistant, ServiceCall, callback
 
 import homeassistant.helpers.config_validation as cv
 
-from .const import DOMAIN
+from .const import ATTR_MSG, ATTR_TARGET, DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
-
-ATTR_MSG = "message"
-ATTR_TARGET = "target"
 
 
 BASE_SERVICE_SCHEMA = vol.Schema(
