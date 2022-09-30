@@ -30,6 +30,7 @@ charging state | Binary Sensor
 Watch silent(s) | Switch
 Watch alarm(s) | Switch
 Send Message | Notify
+Send Message | Service
 Watch Tracking | Device Tracker
 Watch Show Safezone(s) | Device Tracker
 ---

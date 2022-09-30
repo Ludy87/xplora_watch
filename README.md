@@ -34,6 +34,7 @@ charging state | Binary Sensor
 Watch silent(s) | Switch
 Watch alarm(s) | Switch
 Send Message | Notify
+Send Message | Service
 Watch Tracking | Device Tracker
 Watch Show Safezone(s) | Device Tracker
 
@@ -67,6 +68,17 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 ---
 
+## Change Friendly Name (v2.0.7)
+
+Set Friendly Name
+Please note that this can also change the entry_id!
+
+Rule format: ```watchID=New Name``` Notice the equals sign
+
+![friendly_name image](./images/friendly_name.png)
+
+---
+
 ## Send Message
 
 Set Target with the WatchID for the receiver watch
@@ -75,7 +87,7 @@ Set Target with the WatchID for the receiver watch
 
 ---
 
-## Send Message via Service
+## Send Message via Service (v2.0.3)
 
 ![message_service image](./images/message_service.png)
 
@@ -98,8 +110,6 @@ logger:
 ## [Workaround for getting logged out of the Xplora® App on your phone](https://github.com/Ludy87/xplora_watch/issues/24)
 
 ---
-
-## [Changelog](https://github.com/Ludy87/xplora_watch/blob/main/CHANGELOG.md)
 
 <!-- START ./CHANGELOG.md -->
 ## Changelog
