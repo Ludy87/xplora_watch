@@ -8,6 +8,8 @@ MANUFACTURER: Final = "Xplora®"
 DEVICE_NAME: Final = "Xplora® Watch"
 ATTRIBUTION: Final = "Data provided by Xplora®"
 
+ATTR_MSG = "message"
+ATTR_TARGET = "target"
 ATTR_TRACKER_ADDR: Final = "address"
 ATTR_TRACKER_DISTOHOME: Final = "Home Distance (m)"
 ATTR_TRACKER_IMEI: Final = "imei"

@@ -29,13 +29,16 @@
         "error": {
             "api_key_error": "OpenCage API KEY muss angegeben werden!",
             "no_watch": "Bitte eine Uhr ausw\u00E4hlen!",
-            "no_sensor": "Bitte ein oder mehrere Sensoren ausw\u00E4hlen!"
+            "no_sensor": "Bitte ein oder mehrere Sensoren ausw\u00E4hlen!",
+            "friendly_name_error": "Friendly Name Format nicht korrekt (watch_id=friendly_name)"
         },
         "step": {
             "init": {
                 "title": "weitere Einstellungen für Xplora® Watch",
                 "data": {
                     "watches": "Uhren",
+                    "watches_1": "Friendly Name Uhr 1",
+                    "watches_2": "Friendly Name Uhr 2",
                     "maps": "Maps",
                     "opencage_apikey": "OpenCage API KEY",
                     "scan_interval": "Scan Intervall (in s)",

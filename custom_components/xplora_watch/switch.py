@@ -41,10 +41,14 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                         sw_version = await coordinator.controller.getWatches(uid)
                         if description.key == SWITCH_ALARMS:
                             for alarm in await coordinator.controller.getWatchAlarm(uid):
-                                entities.append(XploraAlarmSwitch(alarm, coordinator, ward, sw_version, uid, description))
+                                entities.append(
+                                    XploraAlarmSwitch(config_entry, alarm, coordinator, ward, sw_version, uid, description)
+                                )
                         if description.key == SWITCH_SILENTS:
                             for silent in await coordinator.controller.getSilentTime(uid):
-                                entities.append(XploraSilentSwitch(silent, coordinator, ward, sw_version, uid, description))
+                                entities.append(
+                                    XploraSilentSwitch(config_entry, silent, coordinator, ward, sw_version, uid, description)
+                                )
             else:
                 _LOGGER.debug(f"{watch} {config_entry.entry_id}")
     async_add_entities(entities, True)
@@ -56,6 +60,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
 
     def __init__(
         self,
+        config_entry: ConfigEntry,
         alarm,
         coordinator: XploraDataUpdateCoordinator,
         ward: dict[str, Any],
@@ -66,13 +71,27 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         super().__init__(coordinator, ward, sw_version, uid)
         self._alarm = alarm
         self.entity_description = description
-        self._attr_name = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Alarm {alarm["start"]} {uid}'.title()
+
+        for i in range(1, 3):
+            _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
+            if "=" in _wuid:
+                friendly_name = _wuid.split("=")
+                if friendly_name[0] == uid:
+                    self._attr_name = f'{friendly_name[1]} Alarm {alarm["start"]}'.title()
+                else:
+                    self._attr_name = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Alarm {alarm["start"]} {uid}'.title()
+            else:
+                self._attr_name = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Alarm {alarm["start"]} {uid}'.title()
+
         self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Alarm-{alarm["start"]}-{uid}'
         self._watch_id = uid
         self._attr_is_on = self._states(alarm["status"])
         self._alarms: list[dict[str, Any]] = []
         _LOGGER.debug(
-            "Updating switch: %s | %s | Watch_ID %s", self._attr_name[:-33], self.entity_description.key, self.watch_uid[25:]
+            "Updating switch: %s | %s | Watch_ID %s",
+            self._attr_name[:-33] if "=" not in _wuid else self._attr_name,
+            self.entity_description.key,
+            self.watch_uid[25:],
         )
 
     @callback
@@ -114,6 +133,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
     def __init__(
         self,
+        config_entry: ConfigEntry,
         silent,
         coordinator: XploraDataUpdateCoordinator,
         ward: dict[str, Any],
@@ -125,14 +145,26 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         self._silent = silent
         self.entity_description = description
         self._silents: list[dict[str, Any]] = self._coordinator.watch_entry[self.watch_uid]["silent"]
-        self._attr_name = (
-            f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Silent {silent["start"]}-{silent["end"]} {self.watch_uid}'.title()
-        )
+
+        for i in range(1, 3):
+            _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
+            if "=" in _wuid:
+                friendly_name = _wuid.split("=")
+                if friendly_name[0] == uid:
+                    self._attr_name = f'{friendly_name[1]} Silent {silent["start"]}-{silent["end"]}'.title()
+                else:
+                    self._attr_name = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Silent {silent["start"]}-{silent["end"]} {self.watch_uid}'.title()
+            else:
+                self._attr_name = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Silent {silent["start"]}-{silent["end"]} {self.watch_uid}'.title()
+
         self._attr_is_on = self._states(silent["status"])
         self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Silent-{silent["start"]}-{silent["end"]}-{uid}'
         self._watch_id = uid
         _LOGGER.debug(
-            "Updating switch: %s | %s | Watch_ID %s", self._attr_name[:-33], self.entity_description.key, self.watch_uid[25:]
+            "Updating switch: %s | %s | Watch_ID %s",
+            self._attr_name[:-33] if "=" not in _wuid else self._attr_name,
+            self.entity_description.key,
+            self.watch_uid[25:],
         )
 
     @callback

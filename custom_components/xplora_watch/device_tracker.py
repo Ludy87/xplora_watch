@@ -54,9 +54,11 @@ async def async_setup_entry(
                 if DEVICE_TRACKER_SAFZONES in config_entry.options.get(CONF_TYPES):
                     safeZones = await coordinator.controller.getWatchSafeZones(uid)
                     for safeZone in safeZones:
-                        entities.append(XploraSafezoneTracker(hass, safeZone, coordinator, ward, sw_version, uid))
+                        entities.append(
+                            XploraSafezoneTracker(hass, config_entry, safeZone, coordinator, ward, sw_version, uid)
+                        )
                 if DEVICE_TRACKER_WATCH in config_entry.options.get(CONF_TYPES):
-                    entities.append(XploraDeviceTracker(hass, coordinator, uid, ward, sw_version, config_entry))
+                    entities.append(XploraDeviceTracker(hass, config_entry, coordinator, uid, ward, sw_version))
         else:
             _LOGGER.debug(f"{watch} {config_entry.entry_id}")
     async_add_entities(entities)
@@ -70,6 +72,7 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
     def __init__(
         self,
         hass: HomeAssistant,
+        config_entry: ConfigEntry,
         safezone: dict[str, Any],
         coordinator: XploraDataUpdateCoordinator,
         ward: dict[str, Any],
@@ -79,7 +82,18 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         super().__init__(coordinator, ward, sw_version, uid)
         self._safezone = safezone
         self._hass = hass
-        self._attr_name = f"Safezone {safezone[CONF_NAME]} {self.watch_uid}"
+
+        for i in range(1, 3):
+            _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
+            if "=" in _wuid:
+                friendly_name = _wuid.split("=")
+                if friendly_name[0] == uid:
+                    self._attr_name = f"{friendly_name[1]} Safezone {safezone[CONF_NAME]}"
+                else:
+                    self._attr_name = f"Safezone {safezone[CONF_NAME]} {self.watch_uid}"
+            else:
+                self._attr_name = f"Safezone {safezone[CONF_NAME]} {self.watch_uid}"
+
         self._attr_unique_id = f'safezone_{safezone["vendorId"]}'
 
     @property
@@ -125,16 +139,27 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
     def __init__(
         self,
         hass: HomeAssistant,
+        config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
         uid: str,
         ward: dict[str, Any],
         sw_version: dict[str, Any],
-        config_entry: ConfigEntry,
     ) -> None:
         """Initialize the Tracker."""
         super().__init__(coordinator, ward, sw_version=sw_version, uid=uid)
         self._hass = hass
-        self._attr_name = f"{self._ward.get(CONF_NAME)} Watch Tracker {self.watch_uid}"
+
+        for i in range(1, 3):
+            _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
+            if "=" in _wuid:
+                friendly_name = _wuid.split("=")
+                if friendly_name[0] == uid:
+                    self._attr_name = f"{friendly_name[1]} Watch Tracker"
+                else:
+                    self._attr_name = f"{self._ward.get(CONF_NAME)} Watch Tracker {self.watch_uid}"
+            else:
+                self._attr_name = f"{self._ward.get(CONF_NAME)} Watch Tracker {self.watch_uid}"
+
         self._attr_unique_id = uid
         self._config_entry = config_entry
 
