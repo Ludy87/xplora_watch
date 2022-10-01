@@ -97,7 +97,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        for alarm in self.coordinator.watch_entry[self._watch_id]["alarm"]:
+        for alarm in self.coordinator.data[self._watch_id]["alarm"]:
             if alarm[ATTR_ID] == self._alarm[ATTR_ID]:
                 self._attr_is_on = self._states(alarm["status"])
                 self.async_write_ha_state()
@@ -144,7 +144,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         super().__init__(coordinator, ward, sw_version, uid)
         self._silent = silent
         self.entity_description = description
-        self._silents: list[dict[str, Any]] = self._coordinator.watch_entry[self.watch_uid]["silent"]
+        self._silents: list[dict[str, Any]] = self._coordinator.data[self.watch_uid]["silent"]
 
         for i in range(1, 3):
             _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
@@ -170,7 +170,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        for silent in self.coordinator.watch_entry[self._watch_id]["silent"]:
+        for silent in self.coordinator.data[self._watch_id]["silent"]:
             if silent[ATTR_ID] == self._silent[ATTR_ID]:
                 self._attr_is_on = self._states(silent["status"])
                 self.async_write_ha_state()

@@ -91,9 +91,9 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
     @property
     def native_value(self) -> int:
         if self.entity_description.key == SENSOR_BATTERY:
-            return self._coordinator.watch_entry[self.watch_uid][SENSOR_BATTERY]
+            return self._coordinator.data[self.watch_uid][SENSOR_BATTERY]
         if self.entity_description.key == SENSOR_STEP_DAY:
-            return self._coordinator.watch_entry[self.watch_uid][SENSOR_STEP_DAY]
+            return self._coordinator.data[self.watch_uid][SENSOR_STEP_DAY]
         if self.entity_description.key == SENSOR_XCOIN:
-            return self._coordinator.watch_entry[self.watch_uid][SENSOR_XCOIN]
+            return self._coordinator.data[self.watch_uid][SENSOR_XCOIN]
         return None

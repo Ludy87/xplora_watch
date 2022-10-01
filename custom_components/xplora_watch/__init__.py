@@ -11,7 +11,7 @@ import logging
 
 from .const import DATA_HASS_CONFIG, DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
-from .helper import service_yaml
+from .helper import set_service_yaml
 from .services import async_setup_services, async_unload_services
 
 PLATFORMS = [
@@ -47,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = coordinator
     watches = await coordinator.controller.setDevices()
 
-    service_yaml(hass, watches)
+    set_service_yaml(hass, watches)
 
     for platform in PLATFORMS:
         if platform != Platform.NOTIFY:

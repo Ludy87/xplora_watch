@@ -49,7 +49,7 @@ def get_location_distance(home_lat_lng: tuple[float, float], lat_lng: tuple[floa
         return False
 
 
-def service_yaml(hass: HomeAssistant, watches: list[str]):
+def set_service_yaml(hass: HomeAssistant, watches: list[str]):
     path = hass.config.path("custom_components/xplora_watch/services.yaml")
     _LOGGER.debug("services.yaml path: %s", path)
     try:
@@ -75,5 +75,8 @@ def service_yaml(hass: HomeAssistant, watches: list[str]):
             f.write("          options:\n")
             for watch in watches:
                 f.write(f"            - {watch}\n")
+            f.write("see:\n")
+            f.write("  name: Track Watch\n")
+            f.write("  description: Manually update all information from your watch\n")
     except IOError:
         _LOGGER.exception("Error writing service definition to path '%s'", path)

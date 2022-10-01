@@ -106,14 +106,14 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
     def is_on(self) -> bool:
         """Return true if the binary sensor is on."""
         if self.entity_description.key == BINARY_SENSOR_CHARGING:
-            return self._coordinator.watch_entry[self.watch_uid]["isCharging"]
+            return self._coordinator.data[self.watch_uid]["isCharging"]
         if self.entity_description.key == BINARY_SENSOR_STATE:
-            return self._coordinator.watch_entry[self.watch_uid]["isOnline"]
+            return self._coordinator.data[self.watch_uid]["isOnline"]
         if self.entity_description.key == BINARY_SENSOR_SAFEZONE:
             _options = self._config_entry.options
             if _options.get(CONF_HOME_SAFEZONE, STATE_OFF) == STATE_ON:
-                latitude = self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LAT]
-                longitude = self._coordinator.watch_entry[self.watch_uid][ATTR_TRACKER_LNG]
+                latitude = self._coordinator.data[self.watch_uid][ATTR_TRACKER_LAT]
+                longitude = self._coordinator.data[self.watch_uid][ATTR_TRACKER_LNG]
                 home_latitude = self.hass.states.get(HOME).attributes[ATTR_LATITUDE]
                 home_longitude = self.hass.states.get(HOME).attributes[ATTR_LONGITUDE]
                 home_raduis = self.hass.states.get(HOME).attributes["radius"]
@@ -126,7 +126,7 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
                     _options.get(CONF_HOME_RADIUS, home_raduis),
                 ):
                     return False
-            return self._coordinator.watch_entry[self.watch_uid]["isSafezone"]
+            return self._coordinator.data[self.watch_uid]["isSafezone"]
         return False
 
     @property
