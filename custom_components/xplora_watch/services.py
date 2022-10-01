@@ -1,4 +1,4 @@
-"""Support for Xplora® Watch Version 2 send_message."""
+"""Support for Xplora® Watch Version 2 send message and manually refresh."""
 from __future__ import annotations
 
 import logging
@@ -8,12 +8,16 @@ from homeassistant.core import HomeAssistant, ServiceCall, callback
 
 import homeassistant.helpers.config_validation as cv
 
-from .const import ATTR_MSG, ATTR_TARGET, DOMAIN
+from .const import ATTR_SERVICE_MSG, ATTR_SERVICE_SEE, ATTR_SERVICE_SEND_MSG, ATTR_SERVICE_TARGET, DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
 
 
-BASE_SERVICE_SCHEMA = vol.Schema(
-    {vol.Required(ATTR_TARGET): vol.All(cv.ensure_list, [cv.string]), vol.Required(ATTR_MSG): cv.string}, extra=vol.ALLOW_EXTRA
+BASE_NOTIFY_SERVICE_SCHEMA = vol.Schema(
+    {vol.Required(ATTR_SERVICE_TARGET): vol.All(cv.ensure_list, [cv.string]), vol.Required(ATTR_SERVICE_MSG): cv.string},
+    extra=vol.ALLOW_EXTRA,
+)
+BASE_SEE_SERVICE_SCHEMA = vol.Schema(
+    {vol.Optional(ATTR_SERVICE_TARGET): vol.All(cv.ensure_list, [cv.string])}, extra=vol.ALLOW_EXTRA
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -24,25 +28,45 @@ def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoord
     """Set up services for Xplora® Watch integration."""
 
     notify_service = XploraNotificationService(hass, coordinator)
+    see_service = XploraSeeService(hass, coordinator)
+
+    async def async_see(service: ServiceCall) -> None:
+        await see_service.async_see()
 
     async def async_send_xplora_message(service: ServiceCall) -> None:
         kwargs = dict(service.data)
         _LOGGER.debug(kwargs)
-        await notify_service.async_send_message(kwargs[ATTR_MSG], kwargs[ATTR_TARGET])
+        await notify_service.async_send_message(kwargs[ATTR_SERVICE_MSG], kwargs[ATTR_SERVICE_TARGET])
 
-    hass.services.async_register(DOMAIN, "send_message", async_send_xplora_message, schema=BASE_SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN, ATTR_SERVICE_SEND_MSG, async_send_xplora_message, schema=BASE_NOTIFY_SERVICE_SCHEMA)
+    hass.services.async_register(DOMAIN, ATTR_SERVICE_SEE, async_see, schema=BASE_SEE_SERVICE_SCHEMA)
 
 
 @callback
 def async_unload_services(hass: HomeAssistant) -> None:
     """Unload Xplora® Watch send_message services."""
-    hass.services.async_remove(DOMAIN, "send_message")
+    hass.services.async_remove(DOMAIN, ATTR_SERVICE_SEND_MSG)
+    hass.services.async_remove(DOMAIN, ATTR_SERVICE_SEE)
 
 
-class XploraNotificationService:
+class XploraService:
     def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
         self._hass = hass
         self._controller = coordinator.controller
+        self._coordinator = coordinator
+
+
+class XploraSeeService(XploraService):
+    def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
+        super().__init__(hass, coordinator)
+
+    async def async_see(self, **kwargs):
+        await self._coordinator.async_refresh()
+
+
+class XploraNotificationService(XploraService):
+    def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
+        super().__init__(hass, coordinator)
 
     async def async_send_message(self, message="", target=None, **kwargs):
         """Send a message to one Watch."""
