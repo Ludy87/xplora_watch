@@ -52,6 +52,12 @@ wontfix:
     close: true
     lock: true
 
+"PR: released":
+  prs:
+    unlabel:
+      - 'wait'
+      - 'in progress'
+
 "PR: rejected":
   prs:
     comment: >
