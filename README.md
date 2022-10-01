@@ -35,6 +35,7 @@ Watch silent(s) | Switch
 Watch alarm(s) | Switch
 Send Message | Notify
 Send Message | Service
+Manually update | Service
 Watch Tracking | Device Tracker
 Watch Show Safezone(s) | Device Tracker
 
@@ -65,6 +66,16 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 Xplora® should now appear as a card under the HA Integrations page with "Configure" selection available at the bottom of the card.
 
 ![integration image](./images/integration.png)
+
+---
+
+## Manually update (v2.0.8)
+
+Manually update all information from your watch
+
+Rule format: ```watchID=New Name``` Notice the equals sign
+
+![manually_refresh image](./images/manually_refresh.png)
 
 ---
 
