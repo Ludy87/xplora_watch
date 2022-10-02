@@ -31,7 +31,9 @@ def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoord
     see_service = XploraSeeService(hass, coordinator)
 
     async def async_see(service: ServiceCall) -> None:
-        await see_service.async_see()
+        kwargs = dict(service.data)
+        _LOGGER.debug(kwargs)
+        await see_service.async_see(kwargs[ATTR_SERVICE_TARGET])
 
     async def async_send_xplora_message(service: ServiceCall) -> None:
         kwargs = dict(service.data)
@@ -60,8 +62,12 @@ class XploraSeeService(XploraService):
     def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
         super().__init__(hass, coordinator)
 
-    async def async_see(self, **kwargs):
-        await self._coordinator.async_refresh()
+    async def async_see(self, targets: list[str] = None, **kwargs):
+        if "all" in targets[0]:
+            targets = self._controller.getWatchUserIDs()
+        await self._coordinator._async_update_watch_data(targets)
+        self._coordinator._schedule_refresh()
+        self._coordinator.async_update_listeners()
 
 
 class XploraNotificationService(XploraService):

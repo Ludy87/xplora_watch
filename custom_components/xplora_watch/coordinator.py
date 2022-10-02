@@ -62,13 +62,16 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     async def init(self) -> None:
         await self.controller.init(True)
 
-    async def _async_update_watch_data(self) -> dict[str, any]:
+    async def _async_update_watch_data(self, targets: list[str] = None) -> dict[str, any]:
         """Fetch data from Xplora®."""
         await self.init()
         self.watch_entry: dict[str, any] = {}
         if self.data:
             self.watch_entry.update(self.data)
-        ids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
+        if targets:
+            ids = await self.controller.setDevices(targets)
+        else:
+            ids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
         for wuid in ids:
             _LOGGER.debug(f"Fetch data from Xplora®: {wuid[25:]}")
             device: dict[str, any] = self.controller.getDevice(wuid=wuid)
