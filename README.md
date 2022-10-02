@@ -69,11 +69,9 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 ---
 
-## Manually update (v2.0.8)
+## Manually update (v2.0.8 & v2.0.9)
 
 Manually update all information from your watch
-
-Rule format: ```watchID=New Name``` Notice the equals sign
 
 ![manually_refresh image](./images/manually_refresh.png)
 
