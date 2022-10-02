@@ -77,7 +77,7 @@ def validate_options_input(user_input: dict[str, Any]) -> dict[str, str]:
         errors["base"] = "no_watch"
 
     for watch in user_input[CONF_WATCHES]:
-        for i in range(1, 3):
+        for i in range(1, len(user_input[CONF_WATCHES]) + 1):
             if not user_input.get(f"{CONF_WATCHES}_{i}"):
                 errors["base"] = "friendly_name_error"
                 continue
@@ -163,7 +163,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
         schema = OrderedDict()
         schema[vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, watches))] = cv.multi_select(watches)
         i = 1
-        for watch in controller.getWatchUserIDs():
+        for watch in watches:
             schema[
                 vol.Optional(
                     f"{CONF_WATCHES}_{i}",

@@ -82,7 +82,7 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
         super().__init__(coordinator, ward, sw_version, uid)
         self.entity_description = description
 
-        for i in range(1, 3):
+        for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
             _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
             if "=" in _wuid:
                 friendly_name = _wuid.split("=")
