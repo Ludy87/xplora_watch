@@ -33,7 +33,7 @@ def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoord
     async def async_see(service: ServiceCall) -> None:
         kwargs = dict(service.data)
         _LOGGER.debug(kwargs)
-        await see_service.async_see(kwargs[ATTR_SERVICE_TARGET])
+        await see_service.async_see(kwargs[ATTR_SERVICE_TARGET] if ATTR_SERVICE_TARGET in kwargs else ["all"])
 
     async def async_send_xplora_message(service: ServiceCall) -> None:
         kwargs = dict(service.data)

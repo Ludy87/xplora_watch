@@ -83,6 +83,7 @@ def set_service_yaml(hass: HomeAssistant, watches: list[str]):
             f.write("      name: Watch\n")
             f.write("      description: Select your watch to update data.\n")
             f.write("      required: true\n")
+            f.write('      default: "all"\n')
             f.write("      selector:\n")
             f.write("        select:\n")
             f.write("          options:\n")
