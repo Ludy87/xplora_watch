@@ -1,8 +1,9 @@
 """Config flow for Xplora® Watch Version 2."""
 from __future__ import annotations
 
+import logging
+import voluptuous as vol
 from collections import OrderedDict
-from typing import Any
 
 from homeassistant import config_entries, core, exceptions
 from homeassistant.config_entries import ConfigEntry, OptionsFlow
@@ -12,9 +13,6 @@ from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
 
 from pyxplora_api import pyxplora_api_async as PXA
-
-import logging
-import voluptuous as vol
 
 from .const import (
     CONF_COUNTRY_CODE,
@@ -41,16 +39,21 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 
-async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict[str, str]:
+DATA_SCHEMA = {
+    vol.Required(CONF_COUNTRY_CODE, default="+"): cv.string,
+    vol.Required(CONF_PHONENUMBER): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string,
+    vol.Required(CONF_TIMEZONE, default="Europe/Berlin"): cv.string,
+    vol.Required(CONF_USERLANG, default="de-DE"): cv.string,
+}
+
+
+async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
-    Data has the keys from data_schema with values provided by the user.
+    Data has the keys from DATA_SCHEMA with values provided by the user.
     """
     account = PXA.PyXploraApi(
-        data[CONF_COUNTRY_CODE],
-        data[CONF_PHONENUMBER],
-        data[CONF_PASSWORD],
-        data[CONF_USERLANG],
-        data[CONF_TIMEZONE],
+        data[CONF_COUNTRY_CODE], data[CONF_PHONENUMBER], data[CONF_PASSWORD], data[CONF_USERLANG], data[CONF_TIMEZONE]
     )
 
     try:
@@ -62,9 +65,9 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
     return {"title": f"{MANUFACTURER}"}
 
 
-def validate_options_input(user_input: dict[str, Any]) -> dict[str, str]:
+def validate_options_input(user_input: dict[str, any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
-    Data has the keys from data_schema with values provided by the user.
+    Data has the keys from DATA_SCHEMA with values provided by the user.
     """
     errors = {}
     key: str = user_input[CONF_OPENCAGE_APIKEY]
@@ -78,11 +81,12 @@ def validate_options_input(user_input: dict[str, Any]) -> dict[str, str]:
 
     for watch in user_input[CONF_WATCHES]:
         for i in range(1, len(user_input[CONF_WATCHES]) + 1):
-            if not user_input.get(f"{CONF_WATCHES}_{i}"):
+            user_input_watches = user_input.get(f"{CONF_WATCHES}_{i}")
+            if not user_input_watches:
                 errors["base"] = "friendly_name_error"
                 continue
 
-            if "=" not in user_input.get(f"{CONF_WATCHES}_{i}") and len(user_input.get(f"{CONF_WATCHES}_{i}")) != len(watch):
+            if "=" not in user_input_watches and len(user_input_watches) != len(watch):
                 errors["base"] = "friendly_name_error"
 
     if not user_input[CONF_TYPES]:
@@ -103,7 +107,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Get the options flow for this handler."""
         return XploraOptionsFlowHandler(config_entry)
 
-    async def async_step_user(self, user_input: dict[str, Any] = None) -> FlowResult:
+    async def async_step_user(self, user_input: dict[str, any] = None) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
@@ -123,19 +127,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if info:
                 return self.async_create_entry(title=info["title"], data=user_input)
 
-        data_schema = {
-            vol.Required(CONF_COUNTRY_CODE): cv.string,
-            vol.Required(CONF_PHONENUMBER): cv.string,
-            vol.Required(CONF_PASSWORD): cv.string,
-            vol.Required(CONF_TIMEZONE, default="Europe/Berlin"): cv.string,
-            vol.Required(CONF_USERLANG, default="de-DE"): cv.string,
-        }
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema(data_schema),
-            errors=errors,
-            last_step=False,
-        )
+        return self.async_show_form(step_id="user", data_schema=vol.Schema(DATA_SCHEMA), errors=errors, last_step=False)
 
 
 class XploraOptionsFlowHandler(OptionsFlow):
@@ -146,7 +138,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
         super().__init__()
         self.config_entry = config_entry
 
-    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_init(self, user_input: dict[str, any] | None = None) -> FlowResult:
         """Handle options flow."""
         errors: dict[str, str] = {}
         controller = PXA.PyXploraApi(
@@ -164,12 +156,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
         schema[vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, watches))] = cv.multi_select(watches)
         i = 1
         for watch in watches:
-            schema[
-                vol.Optional(
-                    f"{CONF_WATCHES}_{i}",
-                    default=_options.get(f"{CONF_WATCHES}_{i}", watch),
-                )
-            ] = cv.string
+            schema[vol.Optional(f"{CONF_WATCHES}_{i}", default=_options.get(f"{CONF_WATCHES}_{i}", watch))] = cv.string
             i += 1
 
         _home_zone = self.hass.states.get(HOME).attributes

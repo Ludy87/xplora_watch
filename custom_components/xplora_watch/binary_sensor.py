@@ -1,19 +1,13 @@
 """Reads watch status from Xplora® Watch Version 2."""
 from __future__ import annotations
 
-from typing import Any
+import logging
 
-from homeassistant.components.binary_sensor import (
-    BinarySensorDeviceClass,
-    BinarySensorEntity,
-    BinarySensorEntityDescription,
-)
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass, BinarySensorEntity, BinarySensorEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, ATTR_LATITUDE, ATTR_LONGITUDE, CONF_NAME, STATE_OFF, STATE_ON
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-
-import logging
 
 from .const import (
     ATTR_TRACKER_LAT,
@@ -55,12 +49,12 @@ async def async_setup_entry(
     for description in BINARY_SENSOR_TYPES:
         for watch in coordinator.controller.watchs:
             if config_entry.options:
-                ward: dict[str, Any] = watch.get("ward")
-                uid = ward.get(ATTR_ID)
-                if uid in config_entry.options.get(CONF_WATCHES):
+                ward: dict[str, any] = watch.get("ward")
+                wuid = ward.get(ATTR_ID)
+                if wuid in config_entry.options.get(CONF_WATCHES):
                     if description.key in config_entry.options.get(CONF_TYPES):
-                        sw_version = await coordinator.controller.getWatches(uid)
-                        entities.append(XploraBinarySensor(config_entry, coordinator, ward, sw_version, uid, description))
+                        sw_version = await coordinator.controller.getWatches(wuid)
+                        entities.append(XploraBinarySensor(config_entry, coordinator, ward, sw_version, wuid, description))
             else:
                 _LOGGER.debug(f"{watch} {config_entry.entry_id}")
     async_add_entities(entities)
@@ -74,32 +68,32 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
         self,
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, Any],
-        sw_version: dict[str, Any],
-        uid: str,
-        description,
+        ward: dict[str, any],
+        sw_version: dict[str, any],
+        wuid: str,
+        description: BinarySensorEntityDescription,
     ) -> None:
-        super().__init__(coordinator, ward, sw_version, uid)
+        super().__init__(coordinator, ward, sw_version, wuid)
         self.entity_description = description
 
         for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
             _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
             if "=" in _wuid:
                 friendly_name = _wuid.split("=")
-                if friendly_name[0] == uid:
+                if friendly_name[0] == wuid:
                     self._attr_name = f"{friendly_name[1]} {description.key}".title()
                 else:
-                    self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {uid}".title()
+                    self._attr_name = f"{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {wuid}".title()
             else:
-                self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {uid}".title()
+                self._attr_name = f"{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {wuid}".title()
 
-        self._attr_unique_id = f"{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{uid}"
+        self._attr_unique_id = f"{ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{wuid}"
         self._config_entry = config_entry
         _LOGGER.debug(
             "Updating binary_sensor: %s | %s | Watch_ID %s",
             self._attr_name[:-33] if "=" not in _wuid else self._attr_name,
-            self.entity_description.key,
-            self.watch_uid[25:],
+            description.key,
+            wuid[25:],
         )
 
     @property
@@ -130,6 +124,6 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
         return False
 
     @property
-    def extra_state_attributes(self) -> dict[str, Any]:
+    def extra_state_attributes(self) -> dict[str, any]:
         data = super().extra_state_attributes or {}
         return dict(data, **{})

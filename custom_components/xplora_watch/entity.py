@@ -1,16 +1,14 @@
 """Entity for Xplora® Watch Version 2 tracking."""
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
-from typing import Any
 
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
-
-import logging
 
 from .const import ATTRIBUTION, DEVICE_NAME, DOMAIN, MANUFACTURER, TRACKER_UPDATE_STR
 from .coordinator import XploraDataUpdateCoordinator
@@ -24,23 +22,23 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     _attr_attribution = ATTRIBUTION
 
     def __init__(
-        self, coordinator: XploraDataUpdateCoordinator, ward: dict[str, Any], sw_version: dict[str, Any], uid: str
+        self, coordinator: XploraDataUpdateCoordinator, ward: dict[str, any], sw_version: dict[str, any], wuid: str
     ) -> None:
         """Initialize entity."""
         super().__init__(coordinator)
         self._coordinator = coordinator
-        self._ward: dict[str, Any] = ward
-        self.sw_version: dict[str, Any] = sw_version
-        self.watch_uid = uid
+        self._ward: dict[str, any] = ward
+        self.sw_version: dict[str, any] = sw_version
+        self.watch_uid = wuid
         self._unsub_dispatchers: list[Callable[[], None]] = []
 
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, self.watch_uid)},
+            identifiers={(DOMAIN, wuid)},
             manufacturer=MANUFACTURER,
-            model=self._coordinator.data[self.watch_uid]["model"],
-            name=f"{DEVICE_NAME} {self.watch_uid}",
+            model=self._coordinator.data[wuid]["model"],
+            name=f"{DEVICE_NAME} {wuid}",
             sw_version=self.sw_version.get("osVersion", "n/a"),
-            via_device=(DOMAIN, self.watch_uid),
+            via_device=(DOMAIN, wuid),
         )
 
     def _states(self, status) -> bool:
@@ -64,7 +62,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         self._unsub_dispatchers = []
 
     @callback
-    def _async_receive_data(self, device, location, location_name):
+    def _async_receive_data(self, device, location, location_name) -> None:
         """Update device data."""
         _LOGGER.debug("Update device data.\n{}\n{}".format(device, self._name))
         if device != self._name:

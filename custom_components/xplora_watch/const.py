@@ -8,6 +8,8 @@ MANUFACTURER: Final = "Xplora®"
 DEVICE_NAME: Final = "Xplora® Watch"
 ATTRIBUTION: Final = "Data provided by Xplora®"
 
+URL_OPENSTREETMAP = "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=jsonv2"
+
 ATTR_SERVICE_MSG: Final = "message"
 ATTR_SERVICE_SEE: Final = "see"
 ATTR_SERVICE_SEND_MSG: Final = "send_message"
