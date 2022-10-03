@@ -1,26 +1,20 @@
 """Support for Xplora® Watch Version 2"""
 from __future__ import annotations
 
+import logging
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_ENTITY_ID, CONF_NAME, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import discovery
 from homeassistant.helpers.typing import ConfigType
 
-import logging
-
 from .const import DATA_HASS_CONFIG, DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
 from .helper import set_service_yaml
 from .services import async_setup_services, async_unload_services
 
-PLATFORMS = [
-    Platform.DEVICE_TRACKER,
-    Platform.BINARY_SENSOR,
-    Platform.NOTIFY,
-    Platform.SENSOR,
-    Platform.SWITCH,
-]
+PLATFORMS = [Platform.DEVICE_TRACKER, Platform.BINARY_SENSOR, Platform.NOTIFY, Platform.SENSOR, Platform.SWITCH]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -80,7 +74,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 
-async def options_update_listener(hass: HomeAssistant, config_entry: ConfigEntry):
+async def options_update_listener(hass: HomeAssistant, config_entry: ConfigEntry) -> None:
     """Handle options update."""
     _LOGGER.debug("Configuration options updated, reloading Xplora® Watch Version 2 integration")
     await hass.config_entries.async_reload(config_entry.entry_id)

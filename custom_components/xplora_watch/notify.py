@@ -1,6 +1,7 @@
 """Send Message to watch from Xplora® Watch Version 2."""
 from __future__ import annotations
 
+import logging
 from homeassistant.components.notify import BaseNotificationService, ATTR_TARGET
 from homeassistant.const import CONF_ENTITY_ID
 from homeassistant.core import HomeAssistant
@@ -8,9 +9,6 @@ from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 from .const import DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
-
-import logging
-
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,7 +32,7 @@ class XploraNotifyService(BaseNotificationService):
         target = kwargs[ATTR_TARGET]
         _LOGGER.debug(f"sent message '{msg}' to {target}")
         if not target:
-            _LOGGER.warning("No waatch id!")
+            _LOGGER.warning("No watch id!")
         if len(msg) > 0:
             for watch_id in target:
                 if not await self._controller.sendText(text=msg, wuid=watch_id):

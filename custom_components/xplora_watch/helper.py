@@ -1,7 +1,7 @@
 """HelperClasses Xplora® Watch Version 2."""
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+import logging
 from geopy import distance
 
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
@@ -9,27 +9,7 @@ from homeassistant.core import HomeAssistant
 
 from .const import HOME
 
-import logging
-
 _LOGGER = logging.getLogger(__name__)
-
-
-class XploraUpdateTime:
-    def __init__(self, scan_interval: timedelta, start_time: float) -> None:
-        self._first = True
-        self._start_time = start_time
-        self._scan_interval = scan_interval
-
-    def _update_timer(self) -> int:
-        return int(datetime.timestamp(datetime.now()) - self._start_time) > self._scan_interval.total_seconds()
-
-
-class XploraDevice(XploraUpdateTime):
-    """Representation of a Xplora® device."""
-
-    def __init__(self, scan_interval: timedelta, start_time: float) -> None:
-        """Set up the Xplora® device."""
-        super().__init__(scan_interval, start_time)
 
 
 def get_location_distance_meter(hass: HomeAssistant, lat_lng: tuple[float, float]) -> int:
@@ -42,14 +22,14 @@ def get_location_distance_meter(hass: HomeAssistant, lat_lng: tuple[float, float
     )
 
 
-def get_location_distance(home_lat_lng: tuple[float, float], lat_lng: tuple[float, float], radius: int) -> int:
+def get_location_distance(home_lat_lng: tuple[float, float], lat_lng: tuple[float, float], radius: int) -> bool:
     if radius >= int(distance.distance(home_lat_lng, lat_lng).m):
         return True
     else:
         return False
 
 
-def set_service_yaml(hass: HomeAssistant, watches: list[str]):
+def set_service_yaml(hass: HomeAssistant, watches: list[str]) -> None:
     path = hass.config.path("custom_components/xplora_watch/services.yaml")
     _LOGGER.debug("services.yaml path: %s", path)
     try:
