@@ -1,6 +1,8 @@
 """Coordinator for Xplora® Watch Version 2"""
 from __future__ import annotations
 
+import aiohttp
+import logging
 from datetime import datetime, timedelta
 
 from homeassistant.config_entries import ConfigEntry
@@ -28,11 +30,9 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAPS,
+    URL_OPENSTREETMAP,
 )
 from .geocoder import OpenCageGeocodeUA
-
-import aiohttp
-import logging
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -69,10 +69,10 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         if self.data:
             self.watch_entry.update(self.data)
         if targets:
-            ids = await self.controller.setDevices(targets)
+            wuids = await self.controller.setDevices(targets)
         else:
-            ids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
-        for wuid in ids:
+            wuids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
+        for wuid in wuids:
             _LOGGER.debug(f"Fetch data from Xplora®: {wuid[25:]}")
             device: dict[str, any] = self.controller.getDevice(wuid=wuid)
 
@@ -119,9 +119,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 _LOGGER.debug("load address from opencagedata.com")
             else:
                 async with aiohttp.ClientSession(timeout=timeout) as session:
-                    async with session.get(
-                        "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=jsonv2".format(self.lat, self.lng)
-                    ) as response:
+                    async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng)) as response:
                         await session.close()
                         res: dict[str, any] = await response.json()
                         licence = res.get(ATTR_TRACKER_LICENCE, None)

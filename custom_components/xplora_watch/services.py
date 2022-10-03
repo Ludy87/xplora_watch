@@ -4,9 +4,8 @@ from __future__ import annotations
 import logging
 import voluptuous as vol
 
-from homeassistant.core import HomeAssistant, ServiceCall, callback
-
 import homeassistant.helpers.config_validation as cv
+from homeassistant.core import HomeAssistant, ServiceCall, callback
 
 from .const import ATTR_SERVICE_MSG, ATTR_SERVICE_SEE, ATTR_SERVICE_SEND_MSG, ATTR_SERVICE_TARGET, DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
@@ -17,7 +16,7 @@ BASE_NOTIFY_SERVICE_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 BASE_SEE_SERVICE_SCHEMA = vol.Schema(
-    {vol.Optional(ATTR_SERVICE_TARGET): vol.All(cv.ensure_list, [cv.string])}, extra=vol.ALLOW_EXTRA
+    {vol.Required(ATTR_SERVICE_TARGET): vol.All(cv.ensure_list, [cv.string])}, extra=vol.ALLOW_EXTRA
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -27,7 +26,7 @@ _LOGGER = logging.getLogger(__name__)
 def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
     """Set up services for Xplora® Watch integration."""
 
-    notify_service = XploraNotificationService(hass, coordinator)
+    notify_service = XploraMessageService(hass, coordinator)
     see_service = XploraSeeService(hass, coordinator)
 
     async def async_see(service: ServiceCall) -> None:
@@ -70,7 +69,7 @@ class XploraSeeService(XploraService):
         self._coordinator.async_update_listeners()
 
 
-class XploraNotificationService(XploraService):
+class XploraMessageService(XploraService):
     def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
         super().__init__(hass, coordinator)
 
