@@ -9,7 +9,17 @@ from homeassistant.const import ATTR_ID, CONF_NAME
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import ATTR_WATCH, CONF_TYPES, CONF_WATCHES, DAYS, DOMAIN, SWITCH_ALARMS, SWITCH_SILENTS
+from .const import (
+    ATTR_WATCH,
+    CONF_LANGUAGE,
+    CONF_TYPES,
+    CONF_WATCHES,
+    DAYS,
+    DEFAULT_LANGUAGE,
+    DOMAIN,
+    SWITCH_ALARMS,
+    SWITCH_SILENTS,
+)
 from .coordinator import XploraDataUpdateCoordinator
 from .entity import XploraBaseEntity
 
@@ -63,12 +73,11 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         wuid: str,
         description: SwitchEntityDescription,
     ) -> None:
-        super().__init__(coordinator, ward, sw_version, wuid)
+        super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         self._alarm = alarm
-        self.entity_description = description
 
-        for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
-            _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
+        for i in range(1, len(self._option.get(CONF_WATCHES)) + 1):
+            _wuid: str = self._option.get(f"{CONF_WATCHES}_{i}")
             if "=" in _wuid:
                 friendly_name = _wuid.split("=")
                 if friendly_name[0] == wuid:
@@ -113,11 +122,12 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     @property
     def extra_state_attributes(self) -> dict[str, any]:
         """Return supported attributes."""
+        language = self._option.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         weekRepeat = self._alarm["weekRepeat"]
         weekDays = []
         for day in range(len(weekRepeat)):
             if weekRepeat[day] == "1":
-                weekDays.append(DAYS[day])
+                weekDays.append(DAYS.get(language)[day])
         return {"Day(s)": ", ".join(weekDays)}
 
 
@@ -135,13 +145,12 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         wuid: str,
         description: SwitchEntityDescription,
     ) -> None:
-        super().__init__(coordinator, ward, sw_version, wuid)
+        super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         self._silent = silent
-        self.entity_description = description
         self._silents: list[dict[str, any]] = self._coordinator.data[wuid]["silent"]
 
-        for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
-            _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
+        for i in range(1, len(self._option.get(CONF_WATCHES)) + 1):
+            _wuid: str = self._option.get(f"{CONF_WATCHES}_{i}")
             if "=" in _wuid:
                 friendly_name = _wuid.split("=")
                 if friendly_name[0] == wuid:
@@ -189,9 +198,10 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     @property
     def extra_state_attributes(self) -> dict[str, any]:
         """Return supported attributes."""
+        language = self._option.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         weekRepeat = self._silent["weekRepeat"]
         weekDays = []
         for day in range(len(weekRepeat)):
             if weekRepeat[day] == "1":
-                weekDays.append(DAYS[day])
+                weekDays.append(DAYS.get(language)[day])
         return {"Day(s)": ", ".join(weekDays)}
