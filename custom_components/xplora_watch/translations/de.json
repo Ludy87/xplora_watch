@@ -16,6 +16,7 @@
                 "title": "Xplora® Watch einrichten",
                 "description": "Kontoauthentifizierung",
                 "data": {
+                    "language": "Sprache",
                     "country_code": "L\u00E4ndercode (+49)",
                     "phonenumber": "Telefonnummer ohne L\u00E4ndercode",
                     "password": "Passwort",
@@ -39,13 +40,14 @@
                     "watches": "Uhren",
                     "watches_1": "Friendly Name Uhr 1",
                     "watches_2": "Friendly Name Uhr 2",
+                    "language": "Sprache",
                     "maps": "Maps",
                     "opencage_apikey": "OpenCage API KEY",
                     "scan_interval": "Scan Intervall (in s)",
-                    "home_is_safezone": "Home is Safezone",
-                    "home_latitude": "Home latitude",
-                    "home_longitude": "Home longitude",
-                    "home_radius": "Home radius",
+                    "home_is_safezone": "Home ist Sicherheitszone",
+                    "home_latitude": "Home Latitude",
+                    "home_longitude": "Home Longitude",
+                    "home_radius": "Home Radius",
                     "types": "Sensortypen"
                 }
             }
