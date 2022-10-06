@@ -64,8 +64,7 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         wuid: str,
         description: SensorEntityDescription,
     ) -> None:
-        super().__init__(coordinator, ward, sw_version, wuid)
-        self.entity_description = description
+        super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
 
         for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
             _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
