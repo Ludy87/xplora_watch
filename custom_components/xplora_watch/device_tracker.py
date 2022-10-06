@@ -73,7 +73,7 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         sw_version: dict[str, any],
         wuid: str,
     ) -> None:
-        super().__init__(coordinator, ward, sw_version, wuid)
+        super().__init__(config_entry, None, coordinator, ward, sw_version, wuid)
         self._safezone = safezone
         self._hass = hass
 
@@ -140,7 +140,7 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         sw_version: dict[str, any],
     ) -> None:
         """Initialize the Tracker."""
-        super().__init__(coordinator, ward, sw_version, wuid)
+        super().__init__(config_entry, None, coordinator, ward, sw_version, wuid)
         self._hass = hass
 
         for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
