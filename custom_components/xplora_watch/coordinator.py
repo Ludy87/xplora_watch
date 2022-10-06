@@ -73,7 +73,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         else:
             wuids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
         for wuid in wuids:
-            _LOGGER.debug(f"Fetch data from Xplora®: {wuid[25:]}")
+            _LOGGER.debug("Fetch data from Xplora®: %s", wuid[25:])
             device: dict[str, any] = self.controller.getDevice(wuid=wuid)
 
             watchLocate: dict[str, any] = device.get("loadWatchLocation", {})
