@@ -17,6 +17,7 @@ from .const import (
     DAYS,
     DEFAULT_LANGUAGE,
     DOMAIN,
+    STR_DAYS,
     SWITCH_ALARMS,
     SWITCH_SILENTS,
 )
@@ -128,7 +129,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         for day in range(len(weekRepeat)):
             if weekRepeat[day] == "1":
                 weekDays.append(DAYS.get(language)[day])
-        return {"Day(s)": ", ".join(weekDays)}
+        return {STR_DAYS.get(language): ", ".join(weekDays)}
 
 
 class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
@@ -204,4 +205,4 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         for day in range(len(weekRepeat)):
             if weekRepeat[day] == "1":
                 weekDays.append(DAYS.get(language)[day])
-        return {"Day(s)": ", ".join(weekDays)}
+        return {STR_DAYS.get(language): ", ".join(weekDays)}
