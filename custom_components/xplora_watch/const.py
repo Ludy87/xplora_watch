@@ -72,6 +72,11 @@ MAPS: Final[list[str]] = ["openstreetmap.org (free)", "opencagedata.com (with Li
 DEFAULT_LANGUAGE: Final = "en"
 LANGUAGES: Final[list[str]] = ["de", "en"]
 
+STR_DAYS: Final[dict[str, str]] = {
+    "en": "Day(s)",
+    "de": "Tag(e)",
+}
+
 DAYS: Final[dict[str, list[str]]] = {
     "en": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     "de": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
