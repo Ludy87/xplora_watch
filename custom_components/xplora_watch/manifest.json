@@ -7,7 +7,7 @@
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],
   "requirements": [
-    "pyxplora_api==2.0.123",
+    "pyxplora_api==2.0.124",
     "geopy==2.2.0"
   ],
   "codeowners": ["@Ludy87"],
