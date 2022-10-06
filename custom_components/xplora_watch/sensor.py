@@ -66,11 +66,15 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
             if "=" in _wuid:
                 friendly_name = _wuid.split("=")
                 if friendly_name[0] == wuid:
-                    self._attr_name = f"{friendly_name[1]} {description.key}".title()
+                    self._attr_name = f'{friendly_name[1]} {description.key.replace("_", " ")}'.title()
                 else:
-                    self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {wuid}".title()
+                    self._attr_name = (
+                        f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key.replace("_", " ")} {wuid}'.title()
+                    )
             else:
-                self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {wuid}".title()
+                self._attr_name = (
+                    f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key.replace("_", " ")} {wuid}'.title()
+                )
 
         self._attr_unique_id = f"{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{wuid}"
         _LOGGER.debug(
