@@ -3,12 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-    SensorEntityDescription,
-    SensorStateClass,
-)
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, CONF_NAME, PERCENTAGE
 from homeassistant.core import HomeAssistant
@@ -64,19 +59,22 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         wuid: str,
         description: SensorEntityDescription,
     ) -> None:
-        super().__init__(coordinator, ward, sw_version, wuid)
-        self.entity_description = description
+        super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
 
         for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
             _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
             if "=" in _wuid:
                 friendly_name = _wuid.split("=")
                 if friendly_name[0] == wuid:
-                    self._attr_name = f"{friendly_name[1]} {description.key}".title()
+                    self._attr_name = f'{friendly_name[1]} {description.key.replace("_", " ")}'.title()
                 else:
-                    self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {wuid}".title()
+                    self._attr_name = (
+                        f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key.replace("_", " ")} {wuid}'.title()
+                    )
             else:
-                self._attr_name = f"{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {wuid}".title()
+                self._attr_name = (
+                    f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} {description.key.replace("_", " ")} {wuid}'.title()
+                )
 
         self._attr_unique_id = f"{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{wuid}"
         _LOGGER.debug(

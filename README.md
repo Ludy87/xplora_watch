@@ -69,6 +69,13 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 ---
 
+## Multilanguage (v2.1.0)
+
+- DE
+- EN
+
+---
+
 ## Manually update (v2.0.8 & v2.0.9)
 
 Manually update all information from your watch

@@ -62,8 +62,12 @@ class XploraSeeService(XploraService):
         super().__init__(hass, coordinator)
 
     async def async_see(self, targets: list[str] = None, **kwargs):
+        if not targets:
+            _LOGGER.warning("No watch id!")
+            return
         if "all" in targets[0]:
             targets = self._controller.getWatchUserIDs()
+            _LOGGER.debug(targets)
         await self._coordinator._async_update_watch_data(targets)
         self._coordinator._schedule_refresh()
         self._coordinator.async_update_listeners()
@@ -79,6 +83,10 @@ class XploraMessageService(XploraService):
         _LOGGER.debug(f"sent message '{msg}' to {target}")
         if not target:
             _LOGGER.warning("No watch id!")
+            return
+        if "all" in target:
+            target = self._controller.getWatchUserIDs()
+            _LOGGER.debug(target)
         if len(msg) > 0:
             for watch_id in target:
                 if not await self._controller.sendText(text=msg, wuid=watch_id):

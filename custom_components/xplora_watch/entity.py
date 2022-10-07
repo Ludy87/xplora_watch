@@ -3,10 +3,11 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
+from homeassistant.config_entries import ConfigEntry
 
 from homeassistant.core import callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity import DeviceInfo, EntityDescription
 from homeassistant.helpers.restore_state import RestoreEntity
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -22,10 +23,21 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     _attr_attribution = ATTRIBUTION
 
     def __init__(
-        self, coordinator: XploraDataUpdateCoordinator, ward: dict[str, any], sw_version: dict[str, any], wuid: str
+        self,
+        config_entry: ConfigEntry,
+        description: EntityDescription,
+        coordinator: XploraDataUpdateCoordinator,
+        ward: dict[str, any],
+        sw_version: dict[str, any],
+        wuid: str,
     ) -> None:
         """Initialize entity."""
         super().__init__(coordinator)
+        if description is not None:
+            self.entity_description = description
+        self._data = config_entry.data
+        self._option = config_entry.options
+
         self._coordinator = coordinator
         self._ward: dict[str, any] = ward
         self.sw_version: dict[str, any] = sw_version

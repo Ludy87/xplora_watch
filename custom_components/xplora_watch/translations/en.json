@@ -16,6 +16,7 @@
                 "title": "Set up Xplora® Watch",
                 "description": "Account Authentication",
                 "data": {
+                    "language": "Language",
                     "country_code": "Countrycode (+49)",
                     "phonenumber": "phonenumber without Countrycode",
                     "password": "Password",
@@ -37,8 +38,9 @@
                 "title": "further settings for Xplora® Watch",
                 "data": {
                     "watches": "Watches",
-                    "watches_1": "Friendly Name watch 1",
-                    "watches_2": "Friendly Name watch 2",
+                    "watches_1": "Friendly Name Watch 1",
+                    "watches_2": "Friendly Name Watch 2",
+                    "language": "Language",
                     "maps": "Maps",
                     "opencage_apikey": "OpenCage API KEY",
                     "scan_interval": "Scan Intervall (s)",

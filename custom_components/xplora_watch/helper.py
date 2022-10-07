@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import logging
 from geopy import distance
+from homeassistant.config_entries import ConfigEntry
 
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.core import HomeAssistant
 
-from .const import HOME
+from .const import CONF_LANGUAGE, DEFAULT_LANGUAGE, HOME, STR_SEE, STR_SEND_MESSAGE
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,45 +30,17 @@ def get_location_distance(home_lat_lng: tuple[float, float], lat_lng: tuple[floa
         return False
 
 
-def set_service_yaml(hass: HomeAssistant, watches: list[str]) -> None:
+def set_service_yaml(hass: HomeAssistant, entry: ConfigEntry, watches: list[str]) -> None:
     path = hass.config.path("custom_components/xplora_watch/services.yaml")
     _LOGGER.debug("services.yaml path: %s", path)
     try:
+        language = entry.options.get(CONF_LANGUAGE, entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         with open(path, "w+") as f:
-            f.write("# Please do not change the file, it will be overwritten!\n\n")
-            f.write("send_message:\n")
-            f.write("  name: Send message\n")
-            f.write("  description: Send a notification.\n")
-            f.write("  fields:\n")
-            f.write("    message:\n")
-            f.write("      name: Message\n")
-            f.write("      description: Message body of the notification.\n")
-            f.write("      required: true\n")
-            f.write("      example: The window has been open for 10 minutes.\n")
-            f.write("      selector:\n")
-            f.write("        text:\n")
-            f.write("    target:\n")
-            f.write("      name: Watch\n")
-            f.write("      description: Choose your watch to receive the message.\n")
-            f.write("      required: true\n")
-            f.write("      selector:\n")
-            f.write("        select:\n")
-            f.write("          options:\n")
+            f.write(STR_SEND_MESSAGE.get(language))
             for watch in watches:
                 f.write(f'            - "{watch}"\n')
-            f.write("see:\n")
-            f.write("  name: Track Watch\n")
-            f.write("  description: Manually update all information from your watch\n")
-            f.write("  fields:\n")
-            f.write("    target:\n")
-            f.write("      name: Watch\n")
-            f.write("      description: Select your watch to update data.\n")
-            f.write("      required: true\n")
-            f.write('      default: "all"\n')
-            f.write("      selector:\n")
-            f.write("        select:\n")
-            f.write("          options:\n")
-            f.write("            - all\n")
+
+            f.write(STR_SEE.get(language))
             for watch in watches:
                 f.write(f'            - "{watch}"\n')
 

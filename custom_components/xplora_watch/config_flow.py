@@ -20,6 +20,7 @@ from .const import (
     CONF_HOME_LONGITUDE,
     CONF_HOME_RADIUS,
     CONF_HOME_SAFEZONE,
+    CONF_LANGUAGE,
     CONF_MAPS,
     CONF_OPENCAGE_APIKEY,
     CONF_PHONENUMBER,
@@ -27,10 +28,12 @@ from .const import (
     CONF_TYPES,
     CONF_USERLANG,
     CONF_WATCHES,
+    DEFAULT_LANGUAGE,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     HOME,
     HOME_SAFEZONE,
+    LANGUAGES,
     MANUFACTURER,
     MAPS,
     SENSORS,
@@ -45,6 +48,7 @@ DATA_SCHEMA = {
     vol.Required(CONF_PASSWORD): cv.string,
     vol.Required(CONF_TIMEZONE, default="Europe/Berlin"): cv.string,
     vol.Required(CONF_USERLANG, default="de-DE"): cv.string,
+    vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): vol.In(LANGUAGES),
 }
 
 
@@ -159,18 +163,21 @@ class XploraOptionsFlowHandler(OptionsFlow):
             schema[vol.Optional(f"{CONF_WATCHES}_{i}", default=_options.get(f"{CONF_WATCHES}_{i}", watch))] = cv.string
             i += 1
 
+        language = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+
         _home_zone = self.hass.states.get(HOME).attributes
         options = vol.Schema(
             {
                 **schema,
+                vol.Required(CONF_LANGUAGE, default=language): vol.In(LANGUAGES),
                 vol.Required(CONF_MAPS, default=_options.get(CONF_MAPS, MAPS[0])): vol.In(MAPS),
                 vol.Optional(CONF_OPENCAGE_APIKEY, default=_options.get(CONF_OPENCAGE_APIKEY, "")): cv.string,
                 vol.Required(CONF_SCAN_INTERVAL, default=_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): vol.All(
                     vol.Coerce(int), vol.Range(min=1, max=9999)
                 ),
-                vol.Required(
-                    CONF_HOME_SAFEZONE, default=_options.get(CONF_HOME_SAFEZONE, HOME_SAFEZONE.get(STATE_OFF))
-                ): vol.In(HOME_SAFEZONE),
+                vol.Required(CONF_HOME_SAFEZONE, default=_options.get(CONF_HOME_SAFEZONE, STATE_OFF)): vol.In(
+                    HOME_SAFEZONE.get(language)
+                ),
                 vol.Required(
                     CONF_HOME_LATITUDE, default=_options.get(CONF_HOME_LATITUDE, _home_zone[ATTR_LATITUDE])
                 ): cv.latitude,
@@ -180,7 +187,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
                 vol.Required(
                     CONF_HOME_RADIUS, default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS])
                 ): cv.positive_int,
-                vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): cv.multi_select(SENSORS),
+                vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): cv.multi_select(SENSORS.get(language)),
             }
         )
 
