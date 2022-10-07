@@ -65,6 +65,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_watch_data(self, targets: list[str] = None) -> dict[str, any]:
         """Fetch data from Xplora®."""
         await self.init()
+        _LOGGER.debug("pyxplora_api Lib version: %s", self.controller.version())
         self.watch_entry: dict[str, any] = {}
         if self.data:
             self.watch_entry.update(self.data)
