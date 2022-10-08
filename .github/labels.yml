@@ -67,4 +67,4 @@
 - name: "PR: rejected"
   color: "ff0000"
 - name: "in progress"
-  color: "DF89E"
+  color: "FDF89E"
