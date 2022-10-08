@@ -128,8 +128,8 @@ logger:
 ---
 
 <!-- START ./CHANGELOG.md -->
-## Changelog
+# Changelog
 
-### [v2] - 2022-09-18
+## [v2] - 2022-09-18
 
 <!-- END ./CHANGELOG.md -->
