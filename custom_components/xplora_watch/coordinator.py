@@ -6,7 +6,7 @@ import logging
 from datetime import datetime, timedelta
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -41,12 +41,13 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
         self.controller = PXA.PyXploraApi(
-            countrycode=entry.data[CONF_COUNTRY_CODE],
-            phoneNumber=entry.data[CONF_PHONENUMBER],
+            countrycode=entry.data.get(CONF_COUNTRY_CODE, None),
+            phoneNumber=entry.data.get(CONF_PHONENUMBER, None),
             password=entry.data[CONF_PASSWORD],
             userLang=entry.data[CONF_USERLANG],
             timeZone=entry.data[CONF_TIMEZONE],
             wuid=entry.options.get(CONF_WATCHES, None),
+            email=entry.data.get(CONF_EMAIL, None),
         )
         self._entry = entry
         self.opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
@@ -54,7 +55,9 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            name="{}-{}".format(DOMAIN, entry.data[CONF_PHONENUMBER][5:]),
+            name="{}-{}".format(
+                DOMAIN, entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""
+            ),
             update_method=self._async_update_watch_data,
             update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
         )
