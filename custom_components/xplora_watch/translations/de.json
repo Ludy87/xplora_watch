@@ -12,7 +12,18 @@
             "default": "Xplora® Watch Integration wurde erstellt!"
         },
         "step": {
-            "user": {
+            "user_email": {
+                "title": "Xplora® Watch einrichten",
+                "description": "Kontoauthentifizierung",
+                "data": {
+                    "language": "Sprache",
+                    "email": "E-Mail-Adresse",
+                    "password": "Passwort",
+                    "timezone": "Zeitzone",
+                    "userlang": "Benutzersprache (de-DE)"
+                }
+            },
+            "user_phone": {
                 "title": "Xplora® Watch einrichten",
                 "description": "Kontoauthentifizierung",
                 "data": {
@@ -22,6 +33,12 @@
                     "password": "Passwort",
                     "timezone": "Zeitzone",
                     "userlang": "Benutzersprache (de-DE)"
+                }
+            },
+            "user": {
+                "menu_options": {
+                    "user_email": "Einloggen mit E-mail-Adresse (experimentell)",
+                    "user_phone": "Einloggen mit Telefonnummer"
                 }
             }
         }

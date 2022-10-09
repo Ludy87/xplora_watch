@@ -12,7 +12,18 @@
             "default": "Xplora® Watch Integration was created!"
         },
         "step": {
-            "user": {
+            "user_email": {
+                "title": "Set up Xplora® Watch",
+                "description": "Account Authentication",
+                "data": {
+                    "language": "Language",
+                    "email": "E-Mail-Adresse",
+                    "password": "Password",
+                    "timezone": "Timezone",
+                    "userlang": "Language (en-EN)"
+                }
+            },
+            "user_phone": {
                 "title": "Set up Xplora® Watch",
                 "description": "Account Authentication",
                 "data": {
@@ -22,6 +33,12 @@
                     "password": "Password",
                     "timezone": "Timezone",
                     "userlang": "Language (en-EN)"
+                }
+            },
+            "user": {
+                "menu_options": {
+                    "user_email": "sign in with E-mail address (experimental)",
+                    "user_phone": "sign in with Phonenumber"
                 }
             }
         }
