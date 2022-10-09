@@ -55,9 +55,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            name="{}-{}".format(
-                DOMAIN, entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""
-            ),
+            name="{}-{}".format(DOMAIN, entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""),
             update_method=self._async_update_watch_data,
             update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
         )
