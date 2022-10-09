@@ -3,5 +3,5 @@
   "country": ["DE", "US"],
   "render_readme": true,
   "homeassistant": "2022.10.0",
-  "hacs": "1.27.2"
+  "hacs": "1.28.0"
 }
