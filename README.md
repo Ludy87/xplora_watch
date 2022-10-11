@@ -23,21 +23,21 @@ Xplora® Watch Version 2 integration for Home Assistant
 
 ## Features
 
-Features | Type
----|---
-Battery | Sensor
-Watch-Xcoin | Sensor
-Watch Step per Day | Sensor
-Watch Online state | Binary Sensor
-Watch is in Safezone | Binary Sensor
-charging state | Binary Sensor
-Watch silent(s) | Switch
-Watch alarm(s) | Switch
-Send Message | Notify
-Send Message | Service
-Manually update | Service
-Watch Tracking | Device Tracker
-Watch Show Safezone(s) | Device Tracker
+| Features                                                                             | Type           |
+| ------------------------------------------------------------------------------------ | -------------- |
+| Battery                                                                              | Sensor         |
+| Watch-Xcoin                                                                          | Sensor         |
+| Watch Step per Day                                                                   | Sensor         |
+| Watch Online state                                                                   | Binary Sensor  |
+| Watch is in Safezone                                                                 | Binary Sensor  |
+| charging state                                                                       | Binary Sensor  |
+| Watch silent(s)                                                                      | Switch         |
+| Watch alarm(s)                                                                       | Switch         |
+| [Send Message](https://github.com/Ludy87/xplora_watch#send-message)                  | Notify         |
+| [Send Message](https://github.com/Ludy87/xplora_watch#send-message-via-service-v203) | Service        |
+| [Manually update](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209) | Service        |
+| Watch Tracking                                                                       | Device Tracker |
+| Watch Show Safezone(s)                                                               | Device Tracker |
 
 ---
 
@@ -65,7 +65,9 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 
 Xplora® should now appear as a card under the HA Integrations page with "Configure" selection available at the bottom of the card.
 
-![integration image](./images/integration.png)
+| add in Version 2.2.0                 | add in Version 2                               |
+| ------------------------------------ | ---------------------------------------------- |
+| ![signin image](./images/signin.png) | ![integration image](./images/integration.png) |
 
 ---
 

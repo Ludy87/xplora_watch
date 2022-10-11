@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from typing import Final
 
+from homeassistant.const import CONF_EMAIL
+
 DOMAIN: Final = "xplora_watch"
 MANUFACTURER: Final = "Xplora®"
 DEVICE_NAME: Final = "Xplora® Watch"
@@ -36,6 +38,7 @@ CONF_LANGUAGE: Final = "language"
 CONF_MAPS: Final = "maps"
 CONF_OPENCAGE_APIKEY: Final = "opencage_apikey"
 CONF_PHONENUMBER: Final = "phonenumber"
+CONF_SIGNIN_TYP: Final = "signin_typ"
 CONF_TIMEZONE: Final = "timezone"
 CONF_TYPES: Final = "types"
 CONF_USERLANG: Final = "userlang"
@@ -85,6 +88,17 @@ DAYS: Final[dict[str, list[str]]] = {
 HOME_SAFEZONE: Final[dict[str, dict[str, str]]] = {
     "en": {"off": "off", "on": "on"},
     "de": {"off": "aus", "on": "an"},
+}
+
+SIGNIN: Final[dict[str, dict[str, str]]] = {
+    "en": {
+        CONF_EMAIL: "Signed up with an email address",
+        CONF_PHONENUMBER: "Signed up with a phone number",
+    },
+    "de": {
+        CONF_EMAIL: "Mit E-Mail-Adresse angemeldet",
+        CONF_PHONENUMBER: "Mit Telefonnummer angemeldet",
+    },
 }
 
 SENSORS: Final[dict[str, dict[str, str]]] = {

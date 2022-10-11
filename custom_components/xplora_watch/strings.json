@@ -13,7 +13,18 @@
             "default": "[%key:common::config_flow::error::default%]"
         },
         "step": {
-            "user": {
+            "user_email": {
+                "title": "[%key:common::config_flow::title%]",
+                "description": "[%key:common::config_flow::description%]",
+                "data": {
+                    "language": "[%key:common::config_flow::data::language%]",
+                    "email": "[%key:common::config_flow::data::email%]",
+                    "password": "[%key:common::config_flow::data::password%]",
+                    "timezone": "[%key:common::config_flow::data::timezone%]",
+                    "userlang": "[%key:common::config_flow::data::userlang%]"
+                }
+            },
+            "user_phone": {
                 "title": "[%key:common::config_flow::title%]",
                 "description": "[%key:common::config_flow::description%]",
                 "data": {
@@ -23,6 +34,12 @@
                     "password": "[%key:common::config_flow::data::password%]",
                     "timezone": "[%key:common::config_flow::data::timezone%]",
                     "userlang": "[%key:common::config_flow::data::userlang%]"
+                }
+            },
+            "user": {
+                "menu_options": {
+                    "user_email": "[%key:common::config_flow::data::user_email%]",
+                    "user_phone": "[%key:common::config_flow::data::user_phone%]"
                 }
             }
         }

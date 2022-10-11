@@ -108,14 +108,14 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        alarms = await self._coordinator.controller.setEnableAlarmTime(alarmId=self._alarm[ATTR_ID], wuid=self.watch_uid)
+        alarms = await self._coordinator.controller.setEnableAlarmTime(alarmId=self._alarm[ATTR_ID])
         if alarms:
             self._attr_is_on = True
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
-        alarms = await self._coordinator.controller.setDisableAlarmTime(alarmId=self._alarm[ATTR_ID], wuid=self.watch_uid)
+        alarms = await self._coordinator.controller.setDisableAlarmTime(alarmId=self._alarm[ATTR_ID])
         if alarms:
             self._attr_is_on = False
         await self.coordinator.async_request_refresh()
@@ -184,14 +184,14 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        silents = await self._coordinator.controller.setEnableSilentTime(silentId=self._silent[ATTR_ID], wuid=self.watch_uid)
+        silents = await self._coordinator.controller.setEnableSilentTime(silentId=self._silent[ATTR_ID])
         if silents:
             self._attr_is_on = True
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
-        silents = await self._coordinator.controller.setDisableSilentTime(silentId=self._silent[ATTR_ID], wuid=self.watch_uid)
+        silents = await self._coordinator.controller.setDisableSilentTime(silentId=self._silent[ATTR_ID])
         if silents:
             self._attr_is_on = False
         await self.coordinator.async_request_refresh()

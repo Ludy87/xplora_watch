@@ -5,9 +5,17 @@ import logging
 import voluptuous as vol
 from collections import OrderedDict
 
-from homeassistant import config_entries, core, exceptions
+from homeassistant import config_entries, core
 from homeassistant.config_entries import ConfigEntry, OptionsFlow
-from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, CONF_PASSWORD, CONF_RADIUS, CONF_SCAN_INTERVAL, STATE_OFF
+from homeassistant.const import (
+    ATTR_LATITUDE,
+    ATTR_LONGITUDE,
+    CONF_EMAIL,
+    CONF_PASSWORD,
+    CONF_RADIUS,
+    CONF_SCAN_INTERVAL,
+    STATE_OFF,
+)
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
@@ -24,6 +32,7 @@ from .const import (
     CONF_MAPS,
     CONF_OPENCAGE_APIKEY,
     CONF_PHONENUMBER,
+    CONF_SIGNIN_TYP,
     CONF_TIMEZONE,
     CONF_TYPES,
     CONF_USERLANG,
@@ -37,14 +46,22 @@ from .const import (
     MANUFACTURER,
     MAPS,
     SENSORS,
+    SIGNIN,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
 
-DATA_SCHEMA = {
+DATA_SCHEMA_PHONE = {
     vol.Required(CONF_COUNTRY_CODE, default="+"): cv.string,
     vol.Required(CONF_PHONENUMBER): cv.string,
+    vol.Required(CONF_PASSWORD): cv.string,
+    vol.Required(CONF_TIMEZONE, default="Europe/Berlin"): cv.string,
+    vol.Required(CONF_USERLANG, default="de-DE"): cv.string,
+    vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): vol.In(LANGUAGES),
+}
+DATA_SCHEMA_EMAIL = {
+    vol.Required(CONF_EMAIL): cv.string,
     vol.Required(CONF_PASSWORD): cv.string,
     vol.Required(CONF_TIMEZONE, default="Europe/Berlin"): cv.string,
     vol.Required(CONF_USERLANG, default="de-DE"): cv.string,
@@ -57,13 +74,18 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
     account = PXA.PyXploraApi(
-        data[CONF_COUNTRY_CODE], data[CONF_PHONENUMBER], data[CONF_PASSWORD], data[CONF_USERLANG], data[CONF_TIMEZONE]
+        countrycode=data.get(CONF_COUNTRY_CODE, None),
+        phoneNumber=data.get(CONF_PHONENUMBER, None),
+        password=data[CONF_PASSWORD],
+        userLang=data[CONF_USERLANG],
+        timeZone=data[CONF_TIMEZONE],
+        email=data.get(CONF_EMAIL, None),
     )
 
     try:
         await account.init(True)
     except PXA.LoginError as err:
-        raise CannotConnect from err
+        raise PXA.LoginError(err.message, err.res)
 
     # Return info that you want to store in the config entry.
     return {"title": f"{MANUFACTURER}"}
@@ -111,7 +133,11 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Get the options flow for this handler."""
         return XploraOptionsFlowHandler(config_entry)
 
-    async def async_step_user(self, user_input: dict[str, any] = None) -> FlowResult:
+    async def async_step_user(self, user_input=None):
+        """Handle the initial step."""
+        return self.async_show_menu(step_id="user", menu_options=["user_email", "user_phone"])
+
+    async def async_step_user_phone(self, user_input: dict[str, any] = None) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
@@ -131,7 +157,33 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if info:
                 return self.async_create_entry(title=info["title"], data=user_input)
 
-        return self.async_show_form(step_id="user", data_schema=vol.Schema(DATA_SCHEMA), errors=errors, last_step=False)
+        return self.async_show_form(
+            step_id="user_phone", data_schema=vol.Schema(DATA_SCHEMA_PHONE), errors=errors, last_step=False
+        )
+
+    async def async_step_user_email(self, user_input: dict[str, any] = None) -> FlowResult:
+        """Handle the initial step."""
+        errors: dict[str, str] = {}
+        if user_input is not None:
+
+            unique_id = f"{user_input[CONF_EMAIL]}"
+
+            self.entry = await self.async_set_unique_id(unique_id)
+            self._abort_if_unique_id_configured()
+
+            info = None
+            try:
+                info = await validate_input(self.hass, user_input)
+            except PXA.LoginError as e:
+                _LOGGER.error(e)
+                errors["base"] = "cannot_connect"
+
+            if info:
+                return self.async_create_entry(title=info["title"], data=user_input)
+
+        return self.async_show_form(
+            step_id="user_email", data_schema=vol.Schema(DATA_SCHEMA_EMAIL), errors=errors, last_step=False
+        )
 
 
 class XploraOptionsFlowHandler(OptionsFlow):
@@ -146,11 +198,12 @@ class XploraOptionsFlowHandler(OptionsFlow):
         """Handle options flow."""
         errors: dict[str, str] = {}
         controller = PXA.PyXploraApi(
-            self.config_entry.data.get(CONF_COUNTRY_CODE),
-            self.config_entry.data.get(CONF_PHONENUMBER),
+            self.config_entry.data.get(CONF_COUNTRY_CODE, None),
+            self.config_entry.data.get(CONF_PHONENUMBER, None),
             self.config_entry.data.get(CONF_PASSWORD),
             self.config_entry.data.get(CONF_USERLANG),
             self.config_entry.data.get(CONF_TIMEZONE),
+            email=self.config_entry.data.get(CONF_EMAIL, None),
         )
         await controller.init(True)
         watches = await controller.setDevices()
@@ -165,9 +218,16 @@ class XploraOptionsFlowHandler(OptionsFlow):
 
         language = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
 
+        signin_typ = [
+            SIGNIN.get(language).get(CONF_EMAIL)
+            if CONF_EMAIL in self.config_entry.data
+            else SIGNIN.get(language).get(CONF_PHONENUMBER)
+        ]
+
         _home_zone = self.hass.states.get(HOME).attributes
         options = vol.Schema(
             {
+                vol.Optional(CONF_SIGNIN_TYP, default=signin_typ[0]): vol.In(signin_typ),
                 **schema,
                 vol.Required(CONF_LANGUAGE, default=language): vol.In(LANGUAGES),
                 vol.Required(CONF_MAPS, default=_options.get(CONF_MAPS, MAPS[0])): vol.In(MAPS),
@@ -198,7 +258,3 @@ class XploraOptionsFlowHandler(OptionsFlow):
                 return self.async_create_entry(title="", data=user_input)
 
         return self.async_show_form(step_id="init", data_schema=options, errors=errors)
-
-
-class CannotConnect(exceptions.HomeAssistantError):
-    """Error to indicate we cannot connect."""
