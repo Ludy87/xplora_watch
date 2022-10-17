@@ -10,7 +10,7 @@ jobs:
     steps:
       - if: contains(github.event.issue.title, 'Logout') || contains(github.event.issue.title, 'app')
         name: Close Issue
-        uses: peter-evans/close-issue@v2.1.0
+        uses: peter-evans/close-issue@v2.1.1
         with:
           comment: |
             [# Workaround for logout in the Xplora® App](https://github.com/Ludy87/xplora_watch/issues/24)
