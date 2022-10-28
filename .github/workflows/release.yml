@@ -37,7 +37,7 @@ jobs:
           version="$(python3 ./.github/actions/get_version.py)"
           echo "::set-output name=version::$version"
       - name: Is Tag exists
-        uses: mukunku/tag-exists-action@v1.0.0
+        uses: mukunku/tag-exists-action@v1.1.0
         id: checkTag
         with: 
           tag: ${{ steps.version.outputs.version }}
