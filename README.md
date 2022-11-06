@@ -64,9 +64,9 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 
 Xplora® should now appear as a card under the HA Integrations page with "Configure" selection available at the bottom of the card.
 
-| add in Version 2.2.0                 | add in Version 2                               |
-| ------------------------------------ | ---------------------------------------------- |
-| ![signin image](./images/signin.png) | ![integration image](./images/integration.png) |
+| add in Version 2.2.0                                                                          | add in Version 2                                                                                        |
+| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| ![signin image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/signin.png) | ![integration image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/integration.png) |
 
 ---
 
@@ -81,7 +81,7 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 Manually update all information from your watch
 
-![manually_refresh image](./images/manually_refresh.png)
+![manually_refresh image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/manually_refresh.png)
 
 ---
 
@@ -92,7 +92,7 @@ Please note that this can also change the entry_id!
 
 Rule format: ```watchID=New Name``` Notice the equals sign
 
-![friendly_name image](./images/friendly_name.png)
+![friendly_name image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/friendly_name.png)
 
 ---
 
@@ -100,13 +100,13 @@ Rule format: ```watchID=New Name``` Notice the equals sign
 
 Set Target with the WatchID for the receiver watch
 
-![notify image](./images/notify.png)
+![notify image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/notify.png)
 
 ---
 
 ## Send Message via Service (v2.0.3)
 
-![message_service image](./images/message_service.png)
+![message_service image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/message_service.png)
 
 ---
 
