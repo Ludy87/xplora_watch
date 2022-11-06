@@ -6,6 +6,7 @@
         },
         "error": {
             "cannot_connect": "Connection Failed",
+            "phone_email_invalid": "Phone Number or Email address not exist",
             "invalid_auth": "Invalid authentication"
         },
         "create_entry": {
