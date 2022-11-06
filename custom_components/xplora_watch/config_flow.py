@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import logging
 import voluptuous as vol
+
 from collections import OrderedDict
+from typing import Any
 
 from homeassistant import config_entries, core
 from homeassistant.config_entries import ConfigEntry, OptionsFlow
@@ -21,6 +23,7 @@ from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
 
 from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.status import UserContactType
 
 from .const import (
     CONF_COUNTRY_CODE,
@@ -69,10 +72,21 @@ DATA_SCHEMA_EMAIL = {
 }
 
 
-async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict[str, str]:
+async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
+
+    account = PXA.PyXploraApi()
+    await account.init(signup=False)
+    if not await account.checkEmailOrPhoneExist(
+        UserContactType.EMAIL if data.get(CONF_EMAIL, None) else UserContactType.PHONE,
+        email=data.get(CONF_EMAIL, None),
+        countryCode=data.get(CONF_COUNTRY_CODE, None),
+        phoneNumber=data.get(CONF_PHONENUMBER, None),
+    ):
+        raise PXA.PhoneOrEmailFail()
+
     account = PXA.PyXploraApi(
         countrycode=data.get(CONF_COUNTRY_CODE, None),
         phoneNumber=data.get(CONF_PHONENUMBER, None),
@@ -85,13 +99,13 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict
     try:
         await account.init(True)
     except PXA.LoginError as err:
-        raise PXA.LoginError(err.message, err.res)
+        raise PXA.LoginError(err.message)
 
     # Return info that you want to store in the config entry.
     return {"title": f"{MANUFACTURER}"}
 
 
-def validate_options_input(user_input: dict[str, any]) -> dict[str, str]:
+def validate_options_input(user_input: dict[str, Any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
@@ -137,7 +151,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         return self.async_show_menu(step_id="user", menu_options=["user_email", "user_phone"])
 
-    async def async_step_user_phone(self, user_input: dict[str, any] = None) -> FlowResult:
+    async def async_step_user_phone(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
@@ -150,6 +164,9 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             info = None
             try:
                 info = await validate_input(self.hass, user_input)
+            except PXA.PhoneOrEmailFail as e:
+                _LOGGER.error(e)
+                errors["base"] = "phone_email_invalid"
             except Exception as e:
                 _LOGGER.error(e)
                 errors["base"] = "cannot_connect"
@@ -161,7 +178,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user_phone", data_schema=vol.Schema(DATA_SCHEMA_PHONE), errors=errors, last_step=False
         )
 
-    async def async_step_user_email(self, user_input: dict[str, any] = None) -> FlowResult:
+    async def async_step_user_email(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
@@ -174,6 +191,9 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             info = None
             try:
                 info = await validate_input(self.hass, user_input)
+            except PXA.PhoneOrEmailFail as e:
+                _LOGGER.error(e)
+                errors["base"] = "phone_email_invalid"
             except PXA.LoginError as e:
                 _LOGGER.error(e)
                 errors["base"] = "cannot_connect"
@@ -194,15 +214,15 @@ class XploraOptionsFlowHandler(OptionsFlow):
         super().__init__()
         self.config_entry = config_entry
 
-    async def async_step_init(self, user_input: dict[str, any] | None = None) -> FlowResult:
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle options flow."""
         errors: dict[str, str] = {}
         controller = PXA.PyXploraApi(
             self.config_entry.data.get(CONF_COUNTRY_CODE, None),
             self.config_entry.data.get(CONF_PHONENUMBER, None),
-            self.config_entry.data.get(CONF_PASSWORD),
-            self.config_entry.data.get(CONF_USERLANG),
-            self.config_entry.data.get(CONF_TIMEZONE),
+            self.config_entry.data.get(CONF_PASSWORD, None),
+            self.config_entry.data.get(CONF_USERLANG, None),
+            self.config_entry.data.get(CONF_TIMEZONE, None),
             email=self.config_entry.data.get(CONF_EMAIL, None),
         )
         await controller.init(True)

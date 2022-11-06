@@ -61,7 +61,7 @@ class XploraSeeService(XploraService):
     def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
         super().__init__(hass, coordinator)
 
-    async def async_see(self, targets: list[str] = None, **kwargs):
+    async def async_see(self, targets: list[str] | None = None, **kwargs):
         if not targets:
             _LOGGER.warning("No watch id!")
             return

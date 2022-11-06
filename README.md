@@ -38,7 +38,6 @@ Xplora® Watch Version 2 integration for Home Assistant
 | [Manually update](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209) | Service        |
 | Watch Tracking                                                                       | Device Tracker |
 | Watch Show Safezone(s)                                                               | Device Tracker |
-
 ---
 
 ## Installation
@@ -130,8 +129,8 @@ logger:
 ---
 
 <!-- START ./CHANGELOG.md -->
-# Changelog
+## Changelog
 
-## [v2] - 2022-09-18
+### [v2] - 2022-09-18
 
 <!-- END ./CHANGELOG.md -->

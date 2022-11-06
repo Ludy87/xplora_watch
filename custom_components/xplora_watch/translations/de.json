@@ -6,6 +6,7 @@
         },
         "error": {
             "cannot_connect": "Verbindung fehlgeschlagen",
+            "phone_email_invalid": "Telefonnummer oder E-Mail-Adresse ist nicht registriert",
             "invalid_auth": "Ung\u00fcltige Authentifizierung"
         },
         "create_entry": {
