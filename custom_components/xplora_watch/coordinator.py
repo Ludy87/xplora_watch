@@ -3,7 +3,9 @@ from __future__ import annotations
 
 import aiohttp
 import logging
+
 from datetime import datetime, timedelta
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
@@ -63,11 +65,11 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     async def init(self) -> None:
         await self.controller.init(True)
 
-    async def _async_update_watch_data(self, targets: list[str] = None) -> dict[str, any]:
+    async def _async_update_watch_data(self, targets: list[str] | None = None) -> dict[str, Any]:
         """Fetch data from Xplora®."""
         await self.init()
         _LOGGER.debug("pyxplora_api Lib version: %s", self.controller.version())
-        self.watch_entry: dict[str, any] = {}
+        self.watch_entry: dict[str, Any] = {}
         if self.data:
             self.watch_entry.update(self.data)
         if targets:
@@ -76,9 +78,9 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             wuids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
         for wuid in wuids:
             _LOGGER.debug("Fetch data from Xplora®: %s", wuid[25:])
-            device: dict[str, any] = self.controller.getDevice(wuid=wuid)
+            device: dict[str, Any] = self.controller.getDevice(wuid=wuid)
 
-            watchLocate: dict[str, any] = device.get("loadWatchLocation", {})
+            watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
 
             self.battery = watchLocate.get("watch_battery", -1)
             self.isCharging = watchLocate.get("watch_charging", False)
@@ -101,7 +103,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.alarm = device.get("getWatchAlarm", [])
             self.silent = device.get("getSilentTime", [])
 
-            sw_version: dict[str, any] = device.get("getWatches", {})
+            sw_version: dict[str, Any] = device.get("getWatches", {})
             self.imei = sw_version.get(ATTR_TRACKER_IMEI, wuid)
             self.watch_id = wuid
             self.os_version = sw_version.get("osVersion", "n/a")
@@ -109,12 +111,12 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.entity_picture = device.get("getWatchUserIcons", "")
 
             self._step_day = device.get("getWatchUserSteps", {}).get("day")
-            self._xcoin = device.get("getWatchUserXcoins", any)
+            self._xcoin = device.get("getWatchUserXcoins", Any)
             timeout = aiohttp.ClientTimeout(total=2)
             licence = None
             if self.maps == MAPS[1]:
                 async with OpenCageGeocodeUA(self.opencage_apikey) as geocoder:
-                    results: list[any] = await geocoder.reverse_geocode_async(
+                    results: list[Any] = await geocoder.reverse_geocode_async(
                         self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
                     )
                     self.location_name = "{}".format(results[0]["formatted"])
@@ -123,7 +125,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 async with aiohttp.ClientSession(timeout=timeout) as session:
                     async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng)) as response:
                         await session.close()
-                        res: dict[str, any] = await response.json()
+                        res: dict[str, Any] = await response.json()
                         licence = res.get(ATTR_TRACKER_LICENCE, None)
                         address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, [])
                         if address:

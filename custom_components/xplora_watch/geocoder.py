@@ -4,11 +4,13 @@ Geocoder module.
 https://github.com/OpenCageData/python-opencage-geocoder/
 https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt
 """
+from __future__ import annotations
+
+from collections import abc
 from datetime import datetime
 from decimal import Decimal
-import collections
-
 from random import randint
+
 import requests
 
 try:
@@ -272,7 +274,7 @@ def floatify_latlng(input_value):
     If the API returns the lat/lng as strings, and not numbers, then this
     function will 'clean them up' to be floats.
     """
-    if isinstance(input_value, collections.abc.Mapping):
+    if isinstance(input_value, abc.Mapping):
         if len(input_value) == 2 and sorted(input_value.keys()) == ["lat", "lng"]:
             # This dict has only 2 keys 'lat' & 'lon'
             return {
@@ -281,7 +283,7 @@ def floatify_latlng(input_value):
             }
         else:
             return dict((key, floatify_latlng(value)) for key, value in input_value.items())
-    elif isinstance(input_value, collections.abc.MutableSequence):
+    elif isinstance(input_value, abc.MutableSequence):
         return [floatify_latlng(x) for x in input_value]
     else:
         return input_value
