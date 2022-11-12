@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-
 from typing import Any
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
@@ -58,7 +57,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                                     XploraSilentSwitch(config_entry, silent, coordinator, ward, sw_version, wuid, description)
                                 )
             else:
-                _LOGGER.debug(f"{watch} {config_entry.entry_id}")
+                _LOGGER.debug(f"{watch} {config_entry.entry_id} - no config options")
     async_add_entities(entities, True)
 
 
@@ -130,8 +129,8 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         weekDays = []
         for day in range(len(weekRepeat)):
             if weekRepeat[day] == "1":
-                weekDays.append(DAYS.get(language)[day])
-        return {STR_DAYS.get(language): ", ".join(weekDays)}
+                weekDays.append(DAYS.get(language, DEFAULT_LANGUAGE)[day])
+        return {STR_DAYS.get(language, DEFAULT_LANGUAGE): ", ".join(weekDays)}
 
 
 class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
@@ -206,5 +205,5 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         weekDays = []
         for day in range(len(weekRepeat)):
             if weekRepeat[day] == "1":
-                weekDays.append(DAYS.get(language)[day])
-        return {STR_DAYS.get(language): ", ".join(weekDays)}
+                weekDays.append(DAYS.get(language, DEFAULT_LANGUAGE)[day])
+        return {STR_DAYS.get(language, DEFAULT_LANGUAGE): ", ".join(weekDays)}

@@ -23,21 +23,22 @@ Xplora® Watch Version 2 integration for Home Assistant
 
 ## Features
 
-| Features                                                                             | Type           |
-| ------------------------------------------------------------------------------------ | -------------- |
-| Battery                                                                              | Sensor         |
-| Watch-Xcoin                                                                          | Sensor         |
-| Watch Step per Day                                                                   | Sensor         |
-| Watch Online state                                                                   | Binary Sensor  |
-| Watch is in Safezone                                                                 | Binary Sensor  |
-| charging state                                                                       | Binary Sensor  |
-| Watch silent(s)                                                                      | Switch         |
-| Watch alarm(s)                                                                       | Switch         |
-| [Send Message](https://github.com/Ludy87/xplora_watch#send-message)                  | Notify         |
-| [Send Message](https://github.com/Ludy87/xplora_watch#send-message-via-service-v203) | Service        |
-| [Manually update](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209) | Service        |
-| Watch Tracking                                                                       | Device Tracker |
-| Watch Show Safezone(s)                                                               | Device Tracker |
+| Features                                                                                        | Type           |
+| ----------------------------------------------------------------------------------------------- | -------------- |
+| Battery                                                                                         | Sensor         |
+| Watch-Xcoin                                                                                     | Sensor         |
+| Watch Step per Day                                                                              | Sensor         |
+| Watch Online state                                                                              | Binary Sensor  |
+| Watch is in Safezone                                                                            | Binary Sensor  |
+| charging state                                                                                  | Binary Sensor  |
+| Watch silent(s)                                                                                 | Switch         |
+| Watch alarm(s)                                                                                  | Switch         |
+| [Send Message](https://github.com/Ludy87/xplora_watch#send-message)                             | Notify         |
+| [Send Message](https://github.com/Ludy87/xplora_watch#send-message-via-service-v203)            | Service        |
+| [Read Messages from Account](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209) | Service        |
+| [Manually update](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209)            | Service        |
+| Watch Tracking                                                                                  | Device Tracker |
+| Watch Show Safezone(s)                                                                          | Device Tracker |
 ---
 
 ## Installation
@@ -67,6 +68,18 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 | add in Version 2.2.0                                                                          | add in Version 2                                                                                        |
 | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | ![signin image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/signin.png) | ![integration image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/integration.png) |
+
+---
+
+## Read Messages from Account (v2.4.0)
+
+- A new (message) sensor has been added, default: disabled
+- new service added, (message) sensor will be updated
+- change Number of Messages option find in "Configure"
+- [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md)
+- [Automation Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/automation-read-messages.yaml)
+
+![markdown sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/markdown_sample.png)
 
 ---
 

@@ -1,18 +1,17 @@
 """Coordinator for Xplora® Watch Version 2"""
 from __future__ import annotations
 
-import aiohttp
 import logging
-
 from datetime import datetime, timedelta
 from typing import Any
+
+import aiohttp
+from pyxplora_api import pyxplora_api_async as PXA
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-
-from pyxplora_api import pyxplora_api_async as PXA
 
 from .const import (
     ATTR_TRACKER_ADDR,
@@ -24,6 +23,7 @@ from .const import (
     ATTR_TRACKER_RAD,
     CONF_COUNTRY_CODE,
     CONF_MAPS,
+    CONF_MESSAGE,
     CONF_OPENCAGE_APIKEY,
     CONF_PHONENUMBER,
     CONF_TIMEZONE,
@@ -79,6 +79,10 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         for wuid in wuids:
             _LOGGER.debug("Fetch data from Xplora®: %s", wuid[25:])
             device: dict[str, Any] = self.controller.getDevice(wuid=wuid)
+
+            chats: dict[str, Any] = (
+                await self.controller.getWatchChatsRaw(wuid, limit=self._entry.options.get(CONF_MESSAGE, 10))
+            ).get("chatsNew", {"list: []"})
 
             watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
 
@@ -155,6 +159,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                         "locateType": self.locateType,
                         "lastTrackTime": self.lastTrackTime,
                         ATTR_TRACKER_LICENCE: licence,
+                        "message": chats,
                     }
                 }
             )
@@ -163,3 +168,8 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         else:
             self.data = self.watch_entry
         return self.data
+
+    # @callback
+    # def async_set_updated_data(self, data: dict) -> None:
+    #     """Manually update data, notify listeners and reset refresh interval, and remember."""
+    #     super().async_set_updated_data(data)

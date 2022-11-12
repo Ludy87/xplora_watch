@@ -1,0 +1,11 @@
+alias: Read Message from Watch
+description: ""
+trigger:
+  - platform: time_pattern
+    seconds: /30
+condition: []
+action:
+  - service: xplora_watch.read_message
+    data:
+      target: 01102xxxxxxxxxxxxxxxxxxxxxxxxxxx
+mode: single
