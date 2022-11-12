@@ -2,11 +2,14 @@
 from __future__ import annotations
 
 import logging
-import voluptuous as vol
-
 from collections import OrderedDict
 from typing import Any
 
+import voluptuous as vol
+from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.status import UserContactType
+
+import homeassistant.helpers.config_validation as cv
 from homeassistant import config_entries, core
 from homeassistant.config_entries import ConfigEntry, OptionsFlow
 from homeassistant.const import (
@@ -20,10 +23,6 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
-import homeassistant.helpers.config_validation as cv
-
-from pyxplora_api import pyxplora_api_async as PXA
-from pyxplora_api.status import UserContactType
 
 from .const import (
     CONF_COUNTRY_CODE,
@@ -33,6 +32,7 @@ from .const import (
     CONF_HOME_SAFEZONE,
     CONF_LANGUAGE,
     CONF_MAPS,
+    CONF_MESSAGE,
     CONF_OPENCAGE_APIKEY,
     CONF_PHONENUMBER,
     CONF_SIGNIN_TYP,
@@ -239,9 +239,9 @@ class XploraOptionsFlowHandler(OptionsFlow):
         language = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
 
         signin_typ = [
-            SIGNIN.get(language).get(CONF_EMAIL)
+            SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_EMAIL)
             if CONF_EMAIL in self.config_entry.data
-            else SIGNIN.get(language).get(CONF_PHONENUMBER)
+            else SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_PHONENUMBER)
         ]
 
         _home_zone = self.hass.states.get(HOME).attributes
@@ -256,7 +256,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
                     vol.Coerce(int), vol.Range(min=1, max=9999)
                 ),
                 vol.Required(CONF_HOME_SAFEZONE, default=_options.get(CONF_HOME_SAFEZONE, STATE_OFF)): vol.In(
-                    HOME_SAFEZONE.get(language)
+                    HOME_SAFEZONE.get(language, DEFAULT_LANGUAGE)
                 ),
                 vol.Required(
                     CONF_HOME_LATITUDE, default=_options.get(CONF_HOME_LATITUDE, _home_zone[ATTR_LATITUDE])
@@ -267,7 +267,10 @@ class XploraOptionsFlowHandler(OptionsFlow):
                 vol.Required(
                     CONF_HOME_RADIUS, default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS])
                 ): cv.positive_int,
-                vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): cv.multi_select(SENSORS.get(language)),
+                vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): cv.multi_select(
+                    SENSORS.get(language, DEFAULT_LANGUAGE)
+                ),
+                vol.Required(CONF_MESSAGE, default=_options.get(CONF_MESSAGE, 10)): cv.positive_int,
             }
         )
 

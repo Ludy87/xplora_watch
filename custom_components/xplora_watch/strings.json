@@ -66,7 +66,8 @@
                     "home_latitude": "[%key:common::config_flow::data::home_latitude%]",
                     "home_longitude": "[%key:common::config_flow::data::home_longitude%]",
                     "home_radius": "[%key:common::config_flow::data::home_radius%]",
-                    "types": "[%key:common::config_flow::data::types%]"
+                    "types": "[%key:common::config_flow::data::types%]",
+                    "message": "[%key:common::config_flow::data::message%]"
                 }
             }
         }

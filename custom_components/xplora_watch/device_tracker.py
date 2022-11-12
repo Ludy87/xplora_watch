@@ -11,7 +11,6 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 
-from .coordinator import XploraDataUpdateCoordinator
 from .const import (
     ATTR_TRACKER_ADDR,
     ATTR_TRACKER_DISTOHOME,
@@ -28,6 +27,7 @@ from .const import (
     DEVICE_TRACKER_WATCH,
     DOMAIN,
 )
+from .coordinator import XploraDataUpdateCoordinator
 from .entity import XploraBaseEntity
 from .helper import get_location_distance_meter
 
@@ -79,7 +79,7 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
 
         for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
             _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
-            if "=" in _wuid:
+            if _wuid.find("=") != -1:
                 friendly_name = _wuid.split("=")
                 if friendly_name[0] == wuid:
                     self._attr_name = f"{friendly_name[1]} Safezone {safezone[CONF_NAME]}"
@@ -145,7 +145,7 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
 
         for i in range(1, len(config_entry.options.get(CONF_WATCHES)) + 1):
             _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
-            if "=" in _wuid:
+            if _wuid.find("=") != -1:
                 friendly_name = _wuid.split("=")
                 if friendly_name[0] == wuid:
                     self._attr_name = f"{friendly_name[1]} Watch Tracker"

@@ -66,7 +66,8 @@
                     "home_latitude": "Home Latitude",
                     "home_longitude": "Home Longitude",
                     "home_radius": "Home Radius",
-                    "types": "Sensortypen"
+                    "types": "Sensortypen",
+                    "message": "Anzahl der Nachrichten"
                 }
             }
         }

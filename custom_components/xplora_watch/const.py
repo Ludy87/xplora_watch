@@ -15,6 +15,7 @@ URL_OPENSTREETMAP = "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&f
 ATTR_SERVICE_MSG: Final = "message"
 ATTR_SERVICE_SEE: Final = "see"
 ATTR_SERVICE_SEND_MSG: Final = "send_message"
+ATTR_SERVICE_READ_MSG: Final = "read_message"
 ATTR_SERVICE_TARGET: Final = "target"
 
 ATTR_TRACKER_ADDR: Final = "address"
@@ -36,6 +37,7 @@ CONF_HOME_LONGITUDE: Final = "home_longitude"
 CONF_HOME_RADIUS: Final = "home_radius"
 CONF_LANGUAGE: Final = "language"
 CONF_MAPS: Final = "maps"
+CONF_MESSAGE: Final = "message"
 CONF_OPENCAGE_APIKEY: Final = "opencage_apikey"
 CONF_PHONENUMBER: Final = "phonenumber"
 CONF_SIGNIN_TYP: Final = "signin_typ"
@@ -45,6 +47,7 @@ CONF_USERLANG: Final = "userlang"
 CONF_WATCHES: Final = "watches"
 
 SENSOR_BATTERY: Final = "battery"
+SENSOR_MESSAGE: Final = "message"
 SENSOR_STEP_DAY: Final = "step_day"
 SENSOR_XCOIN: Final = "xcoin"
 
@@ -109,6 +112,7 @@ SENSORS: Final[dict[str, dict[str, str]]] = {
         DEVICE_TRACKER_SAFZONES: "show Safezone",
         DEVICE_TRACKER_WATCH: "Watch tracking",
         SENSOR_BATTERY: "Battery state",
+        SENSOR_MESSAGE: "Read Message(s) from Account",
         SENSOR_STEP_DAY: "Steps per Day",
         SENSOR_XCOIN: "XCoins",
         SWITCH_ALARMS: "Alarms",
@@ -121,6 +125,7 @@ SENSORS: Final[dict[str, dict[str, str]]] = {
         DEVICE_TRACKER_SAFZONES: "Sicherheitszone(n) anzeigen",
         DEVICE_TRACKER_WATCH: "Watch Tracking",
         SENSOR_BATTERY: "Batterie-Status",
+        SENSOR_MESSAGE: "Nachricht(en) vom Account",
         SENSOR_STEP_DAY: "Schritte pro Tag",
         SENSOR_XCOIN: "XCoins",
         SWITCH_ALARMS: "Wecker",
@@ -181,7 +186,6 @@ see:
       name: Watch
       description: Select your watch to update data.
       required: true
-      default: all
       selector:
         select:
           options:
@@ -196,7 +200,37 @@ see:
       name: Uhr(en)
       description: W\u00e4hle deine Uhr aus, um die Daten zu aktualisieren.
       required: true
-      default: all
+      selector:
+        select:
+          options:
+            - all
+""",
+}
+
+STR_READ_MESSAGE: Final[dict[str, str]] = {
+    "en": """
+read_message:
+  name: Read messages
+  description: Read messages from Watch
+  fields:
+    target:
+      name: Watch
+      description: Select your watch to read the messages.
+      required: true
+      selector:
+        select:
+          options:
+            - all
+""",
+    "de": """
+read_message:
+  name: Nachrichten lesen
+  description: Nachrichten von Watch lesen
+  fields:
+    target:
+      name: Uhr(en)
+      description: W\u00e4hle deine Uhr aus, von der die Nachricht abgerufen werden soll.
+      required: true
       selector:
         select:
           options:

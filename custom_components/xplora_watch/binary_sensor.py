@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-
 from typing import Any
 
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass, BinarySensorEntity, BinarySensorEntityDescription
@@ -79,7 +78,7 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
         _wuid: str = ""
         for i in range(1, len(config_entry.options.get(CONF_WATCHES, [])) + 1):
             _wuid = config_entry.options.get(f"{CONF_WATCHES}_{i}", "")
-            if "=" in _wuid:
+            if _wuid.find("=") != -1:
                 friendly_name = _wuid.split("=")
                 if friendly_name[0] == wuid:
                     self._attr_name: str = f"{friendly_name[1]} {description.key}".title()
