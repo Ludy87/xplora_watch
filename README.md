@@ -23,22 +23,23 @@ Xplora® Watch Version 2 integration for Home Assistant
 
 ## Features
 
-| Features                                                                                        | Type           |
-| ----------------------------------------------------------------------------------------------- | -------------- |
-| Battery                                                                                         | Sensor         |
-| Watch-Xcoin                                                                                     | Sensor         |
-| Watch Step per Day                                                                              | Sensor         |
-| Watch Online state                                                                              | Binary Sensor  |
-| Watch is in Safezone                                                                            | Binary Sensor  |
-| charging state                                                                                  | Binary Sensor  |
-| Watch silent(s)                                                                                 | Switch         |
-| Watch alarm(s)                                                                                  | Switch         |
-| [Send Message](https://github.com/Ludy87/xplora_watch#send-message)                             | Notify         |
-| [Send Message](https://github.com/Ludy87/xplora_watch#send-message-via-service-v203)            | Service        |
-| [Read Messages from Account](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209) | Service        |
-| [Manually update](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209)            | Service        |
-| Watch Tracking                                                                                  | Device Tracker |
-| Watch Show Safezone(s)                                                                          | Device Tracker |
+| Features                                                                                             | Type           |
+| ---------------------------------------------------------------------------------------------------- | -------------- |
+| Battery                                                                                              | Sensor         |
+| Watch-Xcoin                                                                                          | Sensor         |
+| Watch Step per Day                                                                                   | Sensor         |
+| Watch Online state                                                                                   | Binary Sensor  |
+| Watch is in Safezone                                                                                 | Binary Sensor  |
+| charging state                                                                                       | Binary Sensor  |
+| Watch silent(s)                                                                                      | Switch         |
+| Watch alarm(s)                                                                                       | Switch         |
+| [Send Message](https://github.com/Ludy87/xplora_watch#send-message)                                  | Notify         |
+| [Send Message](https://github.com/Ludy87/xplora_watch#send-message-via-service-v203)                 | Service        |
+| [Read Messages from Account](https://github.com/Ludy87/xplora_watch#read-messages-from-account-v240) | Service        |
+| [Manually update](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209)                 | Service        |
+| turn off Watch                                                                                       | Service        |
+| Watch Tracking                                                                                       | Device Tracker |
+| Watch Show Safezone(s)                                                                               | Device Tracker |
 ---
 
 ## Installation

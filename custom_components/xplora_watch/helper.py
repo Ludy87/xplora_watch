@@ -9,7 +9,15 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.core import HomeAssistant
 
-from .const import CONF_LANGUAGE, DEFAULT_LANGUAGE, HOME, STR_READ_MESSAGE, STR_SEE, STR_SEND_MESSAGE
+from .const import (
+    CONF_LANGUAGE,
+    DEFAULT_LANGUAGE,
+    HOME,
+    STR_READ_MESSAGE_SERVICE,
+    STR_SEE_SERVICE,
+    STR_SEND_MESSAGE_SERVICE,
+    STR_SHUTDOWN_SERVICE,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -37,15 +45,19 @@ def set_service_yaml(hass: HomeAssistant, entry: ConfigEntry, watches: list[str]
     try:
         language = entry.options.get(CONF_LANGUAGE, entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         with open(path, "w+") as f:
-            f.write(STR_SEND_MESSAGE.get(language, DEFAULT_LANGUAGE))
+            f.write(STR_SEND_MESSAGE_SERVICE.get(language, DEFAULT_LANGUAGE))
             for watch in watches:
                 f.write(f'            - "{watch}"\n')
 
-            f.write(STR_SEE.get(language, DEFAULT_LANGUAGE))
+            f.write(STR_SEE_SERVICE.get(language, DEFAULT_LANGUAGE))
             for watch in watches:
                 f.write(f'            - "{watch}"\n')
 
-            f.write(STR_READ_MESSAGE.get(language, DEFAULT_LANGUAGE))
+            f.write(STR_READ_MESSAGE_SERVICE.get(language, DEFAULT_LANGUAGE))
+            for watch in watches:
+                f.write(f'            - "{watch}"\n')
+
+            f.write(STR_SHUTDOWN_SERVICE.get(language, DEFAULT_LANGUAGE))
             for watch in watches:
                 f.write(f'            - "{watch}"\n')
 

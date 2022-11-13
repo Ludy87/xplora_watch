@@ -14,8 +14,9 @@ URL_OPENSTREETMAP = "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&f
 
 ATTR_SERVICE_MSG: Final = "message"
 ATTR_SERVICE_SEE: Final = "see"
-ATTR_SERVICE_SEND_MSG: Final = "send_message"
 ATTR_SERVICE_READ_MSG: Final = "read_message"
+ATTR_SERVICE_SEND_MSG: Final = "send_message"
+ATTR_SERVICE_SHUTDOWN: Final = "shutdown"
 ATTR_SERVICE_TARGET: Final = "target"
 
 ATTR_TRACKER_ADDR: Final = "address"
@@ -76,6 +77,7 @@ MAPS: Final[list[str]] = ["openstreetmap.org (free)", "opencagedata.com (with Li
 ##########################
 
 DEFAULT_LANGUAGE: Final = "en"
+
 LANGUAGES: Final[list[str]] = ["de", "en"]
 
 STR_DAYS: Final[dict[str, str]] = {
@@ -133,7 +135,8 @@ SENSORS: Final[dict[str, dict[str, str]]] = {
     },
 }
 
-STR_SEND_MESSAGE: Final[dict[str, str]] = {
+
+STR_SEND_MESSAGE_SERVICE: Final[dict[str, str]] = {
     "en": """# Please do not change the file, it will be overwritten!
 send_message:
   name: Send message
@@ -176,7 +179,7 @@ send_message:
 """,
 }
 
-STR_SEE: Final[dict[str, str]] = {
+STR_SEE_SERVICE: Final[dict[str, str]] = {
     "en": """
 see:
   name: Track Watch
@@ -207,7 +210,7 @@ see:
 """,
 }
 
-STR_READ_MESSAGE: Final[dict[str, str]] = {
+STR_READ_MESSAGE_SERVICE: Final[dict[str, str]] = {
     "en": """
 read_message:
   name: Read messages
@@ -230,6 +233,37 @@ read_message:
     target:
       name: Uhr(en)
       description: W\u00e4hle deine Uhr aus, von der die Nachricht abgerufen werden soll.
+      required: true
+      selector:
+        select:
+          options:
+            - all
+""",
+}
+
+STR_SHUTDOWN_SERVICE: Final[dict[str, str]] = {
+    "en": """
+shutdown:
+  name: Shutdown Watch
+  description: Turn off the Watch
+  fields:
+    target:
+      name: Watch
+      description: Select your watch to turn off.
+      required: true
+      selector:
+        select:
+          options:
+            - all
+""",
+    "de": """
+shutdown:
+  name: Uhr ausschalten
+  description: Uhr herunterfahren
+  fields:
+    target:
+      name: Uhr(en)
+      description: W\u00e4hle deine Uhr aus, die ausgeschaltet werden soll.
       required: true
       selector:
         select:
