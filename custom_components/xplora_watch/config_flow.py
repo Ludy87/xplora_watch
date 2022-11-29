@@ -7,6 +7,7 @@ from typing import Any
 
 import voluptuous as vol
 from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.exception_classes import LoginError, PhoneOrEmailFail
 from pyxplora_api.status import UserContactType
 
 import homeassistant.helpers.config_validation as cv
@@ -85,7 +86,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
         countryCode=data.get(CONF_COUNTRY_CODE, None),
         phoneNumber=data.get(CONF_PHONENUMBER, None),
     ):
-        raise PXA.PhoneOrEmailFail()
+        raise PhoneOrEmailFail()
 
     account = PXA.PyXploraApi(
         countrycode=data.get(CONF_COUNTRY_CODE, None),
@@ -98,8 +99,8 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
 
     try:
         await account.init(True)
-    except PXA.LoginError as err:
-        raise PXA.LoginError(err.message)
+    except LoginError as err:
+        raise LoginError(err.message)
 
     # Return info that you want to store in the config entry.
     return {"title": f"{MANUFACTURER}"}
@@ -164,9 +165,12 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             info = None
             try:
                 info = await validate_input(self.hass, user_input)
-            except PXA.PhoneOrEmailFail as e:
+            except PhoneOrEmailFail as e:
                 _LOGGER.error(e)
                 errors["base"] = "phone_email_invalid"
+            except LoginError as e:
+                _LOGGER.error(e)
+                errors["base"] = "pass_invalid"
             except Exception as e:
                 _LOGGER.error(e)
                 errors["base"] = "cannot_connect"
@@ -191,10 +195,10 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             info = None
             try:
                 info = await validate_input(self.hass, user_input)
-            except PXA.PhoneOrEmailFail as e:
+            except PhoneOrEmailFail as e:
                 _LOGGER.error(e)
                 errors["base"] = "phone_email_invalid"
-            except PXA.LoginError as e:
+            except LoginError as e:
                 _LOGGER.error(e)
                 errors["base"] = "cannot_connect"
 
