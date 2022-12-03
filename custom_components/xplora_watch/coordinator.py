@@ -8,6 +8,7 @@ from typing import Any
 import aiohttp
 from pyxplora_api import pyxplora_api_async as PXA
 
+from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
@@ -22,6 +23,7 @@ from .const import (
     ATTR_TRACKER_POI,
     ATTR_TRACKER_RAD,
     CONF_COUNTRY_CODE,
+    CONF_LANGUAGE,
     CONF_MAPS,
     CONF_MESSAGE,
     CONF_OPENCAGE_APIKEY,
@@ -29,6 +31,7 @@ from .const import (
     CONF_TIMEZONE,
     CONF_USERLANG,
     CONF_WATCHES,
+    DEFAULT_LANGUAGE,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAPS,
@@ -63,7 +66,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         )
 
     async def init(self) -> None:
-        await self.controller.init(True)
+        await self.controller.init()
 
     async def _async_update_watch_data(self, targets: list[str] | None = None) -> dict[str, Any]:
         """Fetch data from Xplora®."""
@@ -85,7 +88,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             ).get("chatsNew", {"list: []"})
 
             watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
-
+            self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
             self.battery = watchLocate.get("watch_battery", -1)
             self.isCharging = watchLocate.get("watch_charging", False)
             self.lat = float(watchLocate.get(ATTR_TRACKER_LAT, 0.0))
@@ -116,7 +119,6 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
             self._step_day = device.get("getWatchUserSteps", {}).get("day")
             self._xcoin = device.get("getWatchUserXcoins", Any)
-            timeout = aiohttp.ClientTimeout(total=2)
             licence = None
             if self.maps == MAPS[1]:
                 async with OpenCageGeocodeUA(self.opencage_apikey) as geocoder:
@@ -126,19 +128,22 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                     self.location_name = "{}".format(results[0]["formatted"])
                 _LOGGER.debug("load address from opencagedata.com")
             else:
+                language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+                timeout = aiohttp.ClientTimeout(total=2)
                 async with aiohttp.ClientSession(timeout=timeout) as session:
-                    async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng)) as response:
+                    async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
                         await session.close()
                         res: dict[str, Any] = await response.json()
                         licence = res.get(ATTR_TRACKER_LICENCE, None)
-                        address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, [])
+                        address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
                         if address:
                             self.location_name = "{}".format(res.get("display_name", ""))
                             _LOGGER.debug("load address from openstreetmap.org")
             self.watch_entry.update(
                 {
                     wuid: {
-                        "battery": self.battery if self.battery != -1 else None,
+                        "unreadMsg": self.unreadMsg,
+                        ATTR_BATTERY: self.battery if self.battery != -1 else None,
                         "isCharging": self.isCharging if self.battery != -1 else None,
                         "isOnline": self.isOnline,
                         "isSafezone": self.isSafezone,
@@ -148,8 +153,8 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                         "xcoin": self._xcoin,
                         ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
                         ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
-                        ATTR_TRACKER_POI: self.poi,
-                        "location_name": self.location_name,
+                        ATTR_TRACKER_POI: self.poi if self.poi else None,
+                        ATTR_LOCATION_NAME: self.location_name,
                         ATTR_TRACKER_IMEI: self.imei,
                         "location_accuracy": self.location_accuracy,
                         "entity_picture": self.entity_picture,

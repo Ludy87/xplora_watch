@@ -21,6 +21,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     """Common base for Xplora® entities."""
 
     _attr_attribution = ATTRIBUTION
+    _attr_force_update = False
 
     def __init__(
         self,
@@ -36,9 +37,8 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         if description is not None:
             self.entity_description = description
         self._data = config_entry.data
-        self._option = config_entry.options
+        self._options = config_entry.options
 
-        self._coordinator = coordinator
         self._ward: dict[str, any] = ward
         self.sw_version: dict[str, any] = sw_version
         self.watch_uid = wuid
@@ -47,7 +47,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, wuid)},
             manufacturer=MANUFACTURER,
-            model=self._coordinator.data[wuid]["model"],
+            model=self.coordinator.data[wuid]["model"],
             name=f"{DEVICE_NAME} {wuid}",
             sw_version=self.sw_version.get("osVersion", "n/a"),
             via_device=(DOMAIN, wuid),

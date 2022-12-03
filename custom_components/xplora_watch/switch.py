@@ -4,7 +4,7 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity, SwitchEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, CONF_NAME
 from homeassistant.core import HomeAssistant, callback
@@ -28,8 +28,16 @@ from .entity import XploraBaseEntity
 _LOGGER = logging.getLogger(__name__)
 
 SENSOR_TYPES: tuple[SwitchEntityDescription, ...] = (
-    SwitchEntityDescription(key=SWITCH_ALARMS, icon="mdi:alarm"),
-    SwitchEntityDescription(key=SWITCH_SILENTS, icon="mdi:school"),
+    SwitchEntityDescription(
+        key=SWITCH_ALARMS,
+        icon="mdi:alarm",
+        device_class=SwitchDeviceClass.SWITCH,
+    ),
+    SwitchEntityDescription(
+        key=SWITCH_SILENTS,
+        icon="mdi:school",
+        device_class=SwitchDeviceClass.SWITCH,
+    ),
 )
 
 
@@ -62,9 +70,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
 
 
 class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
-
-    _attr_force_update = False
-
     def __init__(
         self,
         config_entry: ConfigEntry,
@@ -77,17 +82,18 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     ) -> None:
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         self._alarm = alarm
-        _wuid: str = ""
-        for i in range(1, len(self._option.get(CONF_WATCHES, -1)) + 1):
-            _wuid = self._option.get(f"{CONF_WATCHES}_{i}", "")
-            if _wuid.find("=") != -1:
-                friendly_name = _wuid.split("=")
-                if friendly_name[0] == wuid:
-                    self._attr_name: str = f'{friendly_name[1]} Alarm {alarm["start"]}'.title()
-                else:
-                    self._attr_name: str = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Alarm {alarm["start"]} {wuid}'.title()
+        i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
+        if i == -1:
+            return
+        _wuid = self._options.get(f"{CONF_WATCHES}_{i}", "")
+        if _wuid.find("=") != -1:
+            friendly_name = _wuid.split("=")
+            if friendly_name[0] == wuid:
+                self._attr_name: str = f'{friendly_name[1]} Alarm {alarm["start"]}'.title()
             else:
                 self._attr_name: str = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Alarm {alarm["start"]} {wuid}'.title()
+        else:
+            self._attr_name: str = f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Alarm {alarm["start"]} {wuid}'.title()
 
         self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Alarm-{alarm["start"]}-{wuid}'
         self._attr_is_on = self._states(alarm["status"])
@@ -95,7 +101,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         _LOGGER.debug(
             "Updating switch: %s | %s | Watch_ID %s",
             self._attr_name[:-33] if _wuid.find("=") == -1 else self._attr_name,
-            self.entity_description.key,
+            description.key,
             self.watch_uid[25:],
         )
 
@@ -109,14 +115,14 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        alarms = await self._coordinator.controller.setEnableAlarmTime(alarmId=self._alarm[ATTR_ID])
+        alarms = await self.coordinator.controller.setEnableAlarmTime(alarmId=self._alarm[ATTR_ID])
         if alarms:
             self._attr_is_on = True
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
-        alarms = await self._coordinator.controller.setDisableAlarmTime(alarmId=self._alarm[ATTR_ID])
+        alarms = await self.coordinator.controller.setDisableAlarmTime(alarmId=self._alarm[ATTR_ID])
         if alarms:
             self._attr_is_on = False
         await self.coordinator.async_request_refresh()
@@ -124,7 +130,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return supported attributes."""
-        language = self._option.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+        language = self._options.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         weekRepeat = self._alarm["weekRepeat"]
         weekDays = []
         for day in range(len(weekRepeat)):
@@ -134,9 +140,6 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
 
 
 class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
-
-    _attr_force_update = False
-
     def __init__(
         self,
         config_entry: ConfigEntry,
@@ -149,29 +152,31 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     ) -> None:
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         self._silent = silent
-        self._silents: list[dict[str, Any]] = self._coordinator.data[wuid]["silent"]
-        _wuid: str = ""
-        for i in range(1, len(self._option.get(CONF_WATCHES, -1)) + 1):
-            _wuid: str = self._option.get(f"{CONF_WATCHES}_{i}", "")
-            if _wuid.find("=") != -1:
-                friendly_name = _wuid.split("=")
-                if friendly_name[0] == wuid:
-                    self._attr_name: str = f'{friendly_name[1]} Silent {silent["start"]}-{silent["end"]}'.title()
-                else:
-                    self._attr_name: str = (
-                        f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Silent {silent["start"]}-{silent["end"]} {wuid}'.title()
-                    )
+        self._silents: list[dict[str, Any]] = self.coordinator.data[wuid]["silent"]
+        i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
+        if i == -1:
+            return
+        _wuid: str = self._options.get(f"{CONF_WATCHES}_{i}", "")
+        if _wuid.find("=") != -1:
+            friendly_name = _wuid.split("=")
+            if friendly_name[0] == wuid:
+                self._attr_name: str = f'{friendly_name[1]} Silent {silent["start"]}-{silent["end"]}'.title()
             else:
                 self._attr_name: str = (
                     f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Silent {silent["start"]}-{silent["end"]} {wuid}'.title()
                 )
+        else:
+            self._attr_name: str = (
+                f'{self._ward.get(CONF_NAME)} {ATTR_WATCH} Silent {silent["start"]}-{silent["end"]} {wuid}'.title()
+            )
 
         self._attr_is_on = self._states(silent["status"])
         self._attr_unique_id = f'{self._ward.get(CONF_NAME)}-{ATTR_WATCH}-Silent-{silent["start"]}-{silent["end"]}-{wuid}'
         _LOGGER.debug(
-            "Updating switch: %s | %s | Watch_ID %s",
+            "Updating switch: %s | %s | %s Watch_ID %s",
             self._attr_name[:-33] if _wuid.find("=") == -1 else self._attr_name,
-            self.entity_description.key,
+            description.key,
+            i,
             wuid[25:],
         )
 
@@ -185,14 +190,14 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        silents = await self._coordinator.controller.setEnableSilentTime(silentId=self._silent[ATTR_ID])
+        silents = await self.coordinator.controller.setEnableSilentTime(silentId=self._silent[ATTR_ID])
         if silents:
             self._attr_is_on = True
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
-        silents = await self._coordinator.controller.setDisableSilentTime(silentId=self._silent[ATTR_ID])
+        silents = await self.coordinator.controller.setDisableSilentTime(silentId=self._silent[ATTR_ID])
         if silents:
             self._attr_is_on = False
         await self.coordinator.async_request_refresh()
@@ -200,7 +205,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     @property
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return supported attributes."""
-        language = self._option.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+        language = self._options.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         weekRepeat = self._silent["weekRepeat"]
         weekDays = []
         for day in range(len(weekRepeat)):
