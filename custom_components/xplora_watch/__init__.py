@@ -11,10 +11,10 @@ from homeassistant.helpers.typing import ConfigType
 
 from .const import DATA_HASS_CONFIG, DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
-from .helper import set_service_yaml
+from .helper import create_service_yaml_file
 from .services import async_setup_services, async_unload_services
 
-PLATFORMS = [Platform.DEVICE_TRACKER, Platform.BINARY_SENSOR, Platform.NOTIFY, Platform.SENSOR, Platform.SWITCH]
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.DEVICE_TRACKER, Platform.NOTIFY, Platform.SENSOR, Platform.SWITCH]
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = coordinator
     watches = await coordinator.controller.setDevices()
 
-    set_service_yaml(hass, entry, watches)
+    create_service_yaml_file(hass, entry, watches)
 
     for platform in PLATFORMS:
         if platform != Platform.NOTIFY:

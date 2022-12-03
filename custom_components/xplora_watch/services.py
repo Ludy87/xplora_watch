@@ -162,6 +162,6 @@ class XploraShutdownService(XploraService):
                 try:
                     _LOGGER.debug(await self._controller.shutdown(watch))
                 except NoAdminError as err:
-                    _LOGGER.warning(f" Shutdown fail! You have '{err}' Account!")
+                    _LOGGER.exception(f" Shutdown fail! You have '{err}' Account!")
         else:
             _LOGGER.warning(f"No watch id or type '{type(targets)}' not allow!")

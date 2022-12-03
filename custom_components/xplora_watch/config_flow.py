@@ -98,7 +98,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
     )
 
     try:
-        await account.init(True)
+        await account.init()
     except LoginError as err:
         raise LoginError(err.message)
 
@@ -166,13 +166,13 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 info = await validate_input(self.hass, user_input)
             except PhoneOrEmailFail as e:
-                _LOGGER.error(e)
+                _LOGGER.exception(e)
                 errors["base"] = "phone_email_invalid"
             except LoginError as e:
-                _LOGGER.error(e)
+                _LOGGER.exception(e)
                 errors["base"] = "pass_invalid"
             except Exception as e:
-                _LOGGER.error(e)
+                _LOGGER.exception(e)
                 errors["base"] = "cannot_connect"
 
             if info:
@@ -196,10 +196,13 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 info = await validate_input(self.hass, user_input)
             except PhoneOrEmailFail as e:
-                _LOGGER.error(e)
+                _LOGGER.exception(e)
                 errors["base"] = "phone_email_invalid"
             except LoginError as e:
-                _LOGGER.error(e)
+                _LOGGER.exception(e)
+                errors["base"] = "pass_invalid"
+            except Exception as e:
+                _LOGGER.exception(e)
                 errors["base"] = "cannot_connect"
 
             if info:
@@ -229,7 +232,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
             self.config_entry.data.get(CONF_TIMEZONE, None),
             email=self.config_entry.data.get(CONF_EMAIL, None),
         )
-        await controller.init(True)
+        await controller.init()
         watches = await controller.setDevices()
         _options = self.config_entry.options
 

@@ -10,7 +10,7 @@ MANUFACTURER: Final = "Xplora®"
 DEVICE_NAME: Final = "Xplora® Watch"
 ATTRIBUTION: Final = "Data provided by Xplora®"
 
-URL_OPENSTREETMAP = "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=jsonv2"
+URL_OPENSTREETMAP = "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=jsonv2&accept-language={}"
 
 ATTR_SERVICE_MSG: Final = "message"
 ATTR_SERVICE_SEE: Final = "see"
@@ -48,6 +48,7 @@ CONF_USERLANG: Final = "userlang"
 CONF_WATCHES: Final = "watches"
 
 SENSOR_BATTERY: Final = "battery"
+SENSOR_DISTANCE: Final = "distance"
 SENSOR_MESSAGE: Final = "message"
 SENSOR_STEP_DAY: Final = "step_day"
 SENSOR_XCOIN: Final = "xcoin"
@@ -114,6 +115,7 @@ SENSORS: Final[dict[str, dict[str, str]]] = {
         DEVICE_TRACKER_SAFZONES: "show Safezone",
         DEVICE_TRACKER_WATCH: "Watch tracking",
         SENSOR_BATTERY: "Battery state",
+        SENSOR_DISTANCE: "Distance",
         SENSOR_MESSAGE: "Read Message(s) from Account",
         SENSOR_STEP_DAY: "Steps per Day",
         SENSOR_XCOIN: "XCoins",
@@ -127,6 +129,7 @@ SENSORS: Final[dict[str, dict[str, str]]] = {
         DEVICE_TRACKER_SAFZONES: "Sicherheitszone(n) anzeigen",
         DEVICE_TRACKER_WATCH: "Watch Tracking",
         SENSOR_BATTERY: "Batterie-Status",
+        SENSOR_DISTANCE: "Distanz",
         SENSOR_MESSAGE: "Nachricht(en) vom Account",
         SENSOR_STEP_DAY: "Schritte pro Tag",
         SENSOR_XCOIN: "XCoins",

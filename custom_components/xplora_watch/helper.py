@@ -32,14 +32,14 @@ def get_location_distance_meter(hass: HomeAssistant, lat_lng: tuple[float, float
     )
 
 
-def get_location_distance(home_lat_lng: tuple[float, float], lat_lng: tuple[float, float], radius: int) -> bool:
+def is_distance_in_radius(home_lat_lng: tuple[float, float], lat_lng: tuple[float, float], radius: int) -> bool:
     if radius >= int(distance.distance(home_lat_lng, lat_lng).m):
         return True
     else:
         return False
 
 
-def set_service_yaml(hass: HomeAssistant, entry: ConfigEntry, watches: list[str]) -> None:
+def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watches: list[str]) -> None:
     path = hass.config.path("custom_components/xplora_watch/services.yaml")
     _LOGGER.debug("services.yaml path: %s", path)
     try:
