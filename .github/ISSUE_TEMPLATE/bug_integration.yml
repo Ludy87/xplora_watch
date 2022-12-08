@@ -9,8 +9,17 @@ body:
       Before you open a new issue, search through the existing issues to see if others have had the same problem.
 - type: textarea
   attributes:
+    label: "What version of Integration has the issue?"
+    description: "[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/releases)"
+  validations:
+    required: true
+- type: textarea
+  attributes:
     label: "System Health details"
-    description: "Paste the data from the System Health card in Home Assistant (https://www.home-assistant.io/more-info/system-health#github-issues)"
+    description: >
+        Can be found in: [Settings -> System-> Repairs -> Three Dots in Upper Right -> System information](https://my.home-assistant.io/redirect/system_health/).
+
+        [![Open your Home Assistant instance and show health information about your system.](https://my.home-assistant.io/badges/system_health.svg)](https://my.home-assistant.io/redirect/system_health/)
   validations:
     required: true
 - type: checkboxes
