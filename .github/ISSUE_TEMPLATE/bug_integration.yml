@@ -10,7 +10,7 @@ body:
 - type: textarea
   attributes:
     label: "What version of Integration has the issue?"
-    description: "[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/releases)"
+    description: "last release is [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/releases)"
   validations:
     required: true
 - type: textarea
