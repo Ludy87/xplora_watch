@@ -100,7 +100,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
     try:
         await account.init()
     except LoginError as err:
-        raise LoginError(err.message)
+        raise LoginError(err.error_message)
 
     # Return info that you want to store in the config entry.
     return {"title": f"{MANUFACTURER}"}

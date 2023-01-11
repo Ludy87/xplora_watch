@@ -129,6 +129,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 *.txt
+codiga.*
 
 # Home Assistant Core
 /homeassistant
