@@ -72,7 +72,6 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         await self.controller.init(forceLogin=True)
         return self.controller
 
-    # codiga-disable
     async def _async_update_watch_data(self, targets: list[str] | None = None) -> dict[str, Any]:
         """Fetch data from Xplora®."""
         await self.init()
@@ -92,16 +91,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 await self.controller.getWatchChatsRaw(wuid, limit=self._entry.options.get(CONF_MESSAGE, 10))
             ).get("chatsNew", {"list: []"})
 
-            watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
-            self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
-            self.battery = watchLocate.get("watch_battery", -1)
-            self.isCharging = watchLocate.get("watch_charging", False)
-            self.lat = float(watchLocate.get(ATTR_TRACKER_LAT, 0.0))
-            self.lng = float(watchLocate.get(ATTR_TRACKER_LNG, 0.0))
-            self.poi = watchLocate.get(ATTR_TRACKER_POI, "")
-            self.location_accuracy = watchLocate.get(ATTR_TRACKER_RAD, -1)
-            self.locateType = watchLocate.get("locateType", PXA.LocationType.UNKNOWN.value)
-            self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            await self.get_watch_locate(wuid, device)
 
             self.isSafezone = False if device.get("isInSafeZone", False) else True
 
@@ -151,6 +141,18 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         else:
             self.data = self.watch_entry
         return self.data
+
+    async def get_watch_locate(self, wuid, device):
+        watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
+        self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
+        self.battery = watchLocate.get("watch_battery", -1)
+        self.isCharging = watchLocate.get("watch_charging", False)
+        self.lat = float(watchLocate.get(ATTR_TRACKER_LAT, 0.0))
+        self.lng = float(watchLocate.get(ATTR_TRACKER_LNG, 0.0))
+        self.poi = watchLocate.get(ATTR_TRACKER_POI, "")
+        self.location_accuracy = watchLocate.get(ATTR_TRACKER_RAD, -1)
+        self.locateType = watchLocate.get("locateType", PXA.LocationType.UNKNOWN.value)
+        self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     def set_wuid_dict(self, wuid, chats, licence):
         return {
