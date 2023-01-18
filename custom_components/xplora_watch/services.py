@@ -164,7 +164,7 @@ class XploraShutdownService(XploraService):
             for watch in targets:
                 await _controller.init(True)
                 try:
-                    _LOGGER.debug(await _controller.shutdown(watch))
+                    _LOGGER.debug(f"Shutdown: {await _controller.shutdown(watch)}")
                 except NoAdminError as err:
                     _LOGGER.exception(f" Shutdown fail! You have '{err}' Account!")
         else:
