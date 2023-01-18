@@ -5,6 +5,7 @@ import logging
 from typing import Any
 
 import voluptuous as vol
+from pyxplora_api import pyxplora_api_async as PXA
 from pyxplora_api.exception_classes import NoAdminError
 
 import homeassistant.helpers.config_validation as cv
@@ -83,7 +84,6 @@ def async_unload_services(hass: HomeAssistant) -> None:
 class XploraService:
     def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
         self._hass = hass
-        self._controller = coordinator.controller
         self._coordinator = coordinator
 
 
@@ -93,9 +93,10 @@ class XploraSeeService(XploraService):
 
     async def async_see(self, targets: list[str] | None = None, **kwargs):
         """Update all information from Watch"""
+        _controller: PXA.PyXploraApi = await self._coordinator.init()
         if isinstance(targets, list):
             if "all" in targets:
-                targets = self._controller.getWatchUserIDs()
+                targets = _controller.getWatchUserIDs()
             _LOGGER.debug(f"update all information for '{targets}'")
             await self._coordinator._async_update_watch_data(targets)
             self._coordinator._schedule_refresh()
@@ -110,14 +111,15 @@ class XploraMessageService(XploraService):
 
     async def async_send_message(self, message="", targets: list[str] | None = None, **kwargs):
         """Send a message to one Watch."""
+        _controller: PXA.PyXploraApi = await self._coordinator.init()
         if isinstance(targets, list):
             msg = message.strip()
             if "all" in targets:
-                targets = self._controller.getWatchUserIDs()
+                targets = _controller.getWatchUserIDs()
             _LOGGER.debug(f"sent message '{msg}' to '{targets}'")
             if len(msg) > 0:
                 for watch_id in targets:
-                    if not await self._controller.sendText(text=msg, wuid=watch_id):
+                    if not await _controller.sendText(text=msg, wuid=watch_id):
                         _LOGGER.error("Message cannot send!")
             else:
                 _LOGGER.warning("Your message is empty!")
@@ -131,17 +133,18 @@ class XploraMessageSensorUpdateService(XploraService):
 
     async def async_read_message(self, targets: list[str] | None = None, **kwargs):
         """Read the messages from account"""
+        _controller: PXA.PyXploraApi = await self._coordinator.init()
         if isinstance(targets, list):
             old_state: dict[str, Any] = self._coordinator.data
             options = self._coordinator.config_entry.options
             limit = options.get(CONF_MESSAGE, 10)
             if "all" in targets:
-                targets = self._controller.getWatchUserIDs()
+                targets = _controller.getWatchUserIDs()
             for watch in targets:
                 w: dict[str, Any] = old_state.get(watch, None)
                 if w:
-                    await self._controller.init(True)
-                    w.update({SENSOR_MESSAGE: (await self._controller.getWatchChatsRaw(watch, limit=limit)).get("chatsNew")})
+                    await _controller.init(True)
+                    w.update({SENSOR_MESSAGE: (await _controller.getWatchChatsRaw(watch, limit=limit)).get("chatsNew")})
                 old_state.update({watch: w})
             self._coordinator.async_set_updated_data(old_state)
         else:
@@ -154,13 +157,14 @@ class XploraShutdownService(XploraService):
 
     async def async_shutdown(self, targets: list[str] | None = None, **kwargs):
         """turn off watch"""
+        _controller: PXA.PyXploraApi = await self._coordinator.init()
         if isinstance(targets, list):
             if "all" in targets:
-                targets = self._controller.getWatchUserIDs()
+                targets = _controller.getWatchUserIDs()
             for watch in targets:
-                await self._controller.init(True)
+                await _controller.init(True)
                 try:
-                    _LOGGER.debug(await self._controller.shutdown(watch))
+                    _LOGGER.debug(await _controller.shutdown(watch))
                 except NoAdminError as err:
                     _LOGGER.exception(f" Shutdown fail! You have '{err}' Account!")
         else:
