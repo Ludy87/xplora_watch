@@ -44,18 +44,10 @@ _LOGGER = logging.getLogger(__name__)
 
 class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     location_name: str = None
+    controller: PXA.PyXploraApi
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
-        self.controller: PXA.PyXploraApi = PXA.PyXploraApi(
-            countrycode=entry.data.get(CONF_COUNTRY_CODE, None),
-            phoneNumber=entry.data.get(CONF_PHONENUMBER, None),
-            password=entry.data[CONF_PASSWORD],
-            userLang=entry.data[CONF_USERLANG],
-            timeZone=entry.data[CONF_TIMEZONE],
-            wuid=entry.options.get(CONF_WATCHES, None),
-            email=entry.data.get(CONF_EMAIL, None),
-        )
         self._entry = entry
         self.opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
         self.maps = entry.options.get(CONF_MAPS, MAPS[0])
@@ -67,7 +59,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
         )
 
-    async def init(self) -> None:
+    async def init(self) -> PXA.PyXploraApi:
         self.controller: PXA.PyXploraApi = PXA.PyXploraApi(
             countrycode=self._entry.data.get(CONF_COUNTRY_CODE, None),
             phoneNumber=self._entry.data.get(CONF_PHONENUMBER, None),
@@ -78,6 +70,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             email=self._entry.data.get(CONF_EMAIL, None),
         )
         await self.controller.init(forceLogin=True)
+        return self.controller
 
     async def _async_update_watch_data(self, targets: list[str] | None = None) -> dict[str, Any]:
         """Fetch data from Xplora®."""
