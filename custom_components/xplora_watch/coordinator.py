@@ -134,7 +134,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                     results: list[Any] = await geocoder.reverse_geocode_async(
                         self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
                     )
-                    self.location_name = f'{results[0]["formatted"]}'
+                    self.location_name = results[0]["formatted"]
                 _LOGGER.debug("load address from opencagedata.com")
             else:
                 language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
@@ -147,7 +147,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                         licence = res.get(ATTR_TRACKER_LICENCE, None)
                         address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
                         if address:
-                            self.location_name = f'{res.get("display_name","")}'
+                            self.location_name = res.get("display_name", "")
                             _LOGGER.debug("load address from openstreetmap.org")
             self.watch_entry.update(
                 {
