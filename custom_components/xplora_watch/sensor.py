@@ -69,7 +69,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     """Set up the Xplora® Watch Version 2 sensors from config entry."""
     coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
     entities: list[XploraSensor] = []
-
     for description in SENSOR_TYPES:
         for watch in coordinator.controller.watchs:
             if config_entry.options:

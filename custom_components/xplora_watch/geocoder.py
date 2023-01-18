@@ -62,7 +62,7 @@ class RateLimitExceededError(OpenCageGeocodeError):
 
     def __unicode__(self):
         """Convert exception to a string."""
-        return "Your rate limit has expired. It will reset to {0} on {1}".format(self.reset_to, self.reset_time.isoformat())
+        return f"Your rate limit has expired. It will reset to {self.reset_to} on {self.reset_time.isoformat()}"
 
     __str__ = __unicode__
 
@@ -248,6 +248,7 @@ def _query_for_reverse_geocoding(lat, lng):
     # have to do some stupid f/Decimal/str stuff to (a) ensure we get as much
     # decimal places as the user already specified and (b) to ensure we don't
     # get e-5 stuff
+    # codiga-disable
     return "{0:f},{1:f}".format(Decimal(str(lat)), Decimal(str(lng)))
 
 

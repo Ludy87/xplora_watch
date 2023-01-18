@@ -47,8 +47,8 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             if wuid in config_entry.options.get(CONF_WATCHES):
                 sw_version = await coordinator.controller.getWatches(wuid)
                 if DEVICE_TRACKER_SAFZONES in config_entry.options.get(CONF_TYPES):
-                    safeZones = await coordinator.controller.getWatchSafeZones(wuid)
-                    for safeZone in safeZones:
+                    safe_zones = await coordinator.controller.getWatchSafeZones(wuid)
+                    for safeZone in safe_zones:
                         entities.append(
                             XploraSafezoneTracker(hass, config_entry, safeZone, coordinator, ward, sw_version, wuid)
                         )
@@ -191,14 +191,14 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         return self.coordinator.data[self.watch_uid][ATTR_LOCATION_NAME]
 
     @property
-    def entity_picture(self) -> str:
+    def entity_picture(self) -> str | None:
         """Return the entity picture to use in the frontend, if any."""
         return self.coordinator.data[self.watch_uid]["entity_picture"]
 
     @property
     def extra_state_attributes(self) -> dict[str, any]:
         data = super().extra_state_attributes or {}
-        distanceToHome = None
+        distance_to_home = None
         if (
             self.coordinator.data[self.watch_uid][ATTR_TRACKER_LAT] is not None
             and self.coordinator.data[self.watch_uid][ATTR_TRACKER_LNG] is not None
@@ -207,13 +207,13 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
                 float(self.coordinator.data[self.watch_uid][ATTR_TRACKER_LAT]),
                 float(self.coordinator.data[self.watch_uid][ATTR_TRACKER_LNG]),
             )
-            distanceToHome = get_location_distance_meter(self._hass, lat_lng)
+            distance_to_home = get_location_distance_meter(self._hass, lat_lng)
         return dict(
             data,
             **{
-                ATTR_TRACKER_DISTOHOME: distanceToHome,
-                ATTR_TRACKER_ADDR: self.address if distanceToHome else None,
-                ATTR_TRACKER_LAST_TRACK: self.coordinator.data[self.watch_uid]["lastTrackTime"] if distanceToHome else None,
+                ATTR_TRACKER_DISTOHOME: distance_to_home,
+                ATTR_TRACKER_ADDR: self.address if distance_to_home else None,
+                ATTR_TRACKER_LAST_TRACK: self.coordinator.data[self.watch_uid]["lastTrackTime"] if distance_to_home else None,
                 ATTR_TRACKER_IMEI: self.coordinator.data[self.watch_uid][ATTR_TRACKER_IMEI],
                 ATTR_TRACKER_POI: self.coordinator.data[self.watch_uid][ATTR_TRACKER_POI],
                 ATTR_TRACKER_LICENCE: self.coordinator.data[self.watch_uid][ATTR_TRACKER_LICENCE],
