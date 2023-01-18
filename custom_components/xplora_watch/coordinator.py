@@ -72,6 +72,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         await self.controller.init(forceLogin=True)
         return self.controller
 
+    # codiga-disable
     async def _async_update_watch_data(self, targets: list[str] | None = None) -> dict[str, Any]:
         """Fetch data from Xplora®."""
         await self.init()
