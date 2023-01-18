@@ -98,15 +98,8 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 await self.controller.getWatchChatsRaw(wuid, limit=self._entry.options.get(CONF_MESSAGE, 10))
             ).get("chatsNew", {"list: []"})
 
-            watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
             self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
-            self.battery = watchLocate.get("watch_battery", -1)
-            self.isCharging = watchLocate.get("watch_charging", False)
-            self.lat = float(watchLocate.get(ATTR_TRACKER_LAT, 0.0))
-            self.lng = float(watchLocate.get(ATTR_TRACKER_LNG, 0.0))
-            self.poi = watchLocate.get(ATTR_TRACKER_POI, "")
-            self.location_accuracy = watchLocate.get(ATTR_TRACKER_RAD, -1)
-            self.locateType = watchLocate.get("locateType", PXA.LocationType.UNKNOWN.value)
+            self.setWatchLocateItems(device)
             self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
             self.isSafezone = False if device.get("isInSafeZone", False) else True
@@ -185,6 +178,16 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         else:
             self.data = self.watch_entry
         return self.data
+
+    def setWatchLocateItems(self, device: dict):
+        watch_locate: dict[str, Any] = device.get("loadWatchLocation", {})
+        self.battery = watch_locate.get("watch_battery", -1)
+        self.isCharging = watch_locate.get("watch_charging", False)
+        self.lat = float(watch_locate.get(ATTR_TRACKER_LAT, 0.0))
+        self.lng = float(watch_locate.get(ATTR_TRACKER_LNG, 0.0))
+        self.poi = watch_locate.get(ATTR_TRACKER_POI, "")
+        self.location_accuracy = watch_locate.get(ATTR_TRACKER_RAD, -1)
+        self.locateType = watch_locate.get("locateType", PXA.LocationType.UNKNOWN.value)
 
     # @callback
     # def async_set_updated_data(self, data: dict) -> None:
