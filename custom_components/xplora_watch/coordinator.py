@@ -11,7 +11,7 @@ from pyxplora_api import pyxplora_api_async as PXA
 from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
@@ -186,7 +186,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.data = self.watch_entry
         return self.data
 
-    # @callback
-    # def async_set_updated_data(self, data: dict) -> None:
-    #     """Manually update data, notify listeners and reset refresh interval, and remember."""
-    #     super().async_set_updated_data(data)
+    @callback
+    def async_set_updated_data(self, data: dict) -> None:
+        """Manually update data, notify listeners and reset refresh interval, and remember."""
+        super().async_set_updated_data(data)
