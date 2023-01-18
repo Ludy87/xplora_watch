@@ -43,6 +43,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class XploraDataUpdateCoordinator(DataUpdateCoordinator):
+    location_name: str = None
+
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
         self.controller: PXA.PyXploraApi = PXA.PyXploraApi(
