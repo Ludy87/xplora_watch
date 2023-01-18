@@ -144,42 +144,43 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                         if address:
                             self.location_name = res.get("display_name", "")
                             _LOGGER.debug("load address from openstreetmap.org")
-            self.watch_entry.update(
-                {
-                    wuid: {
-                        "unreadMsg": self.unreadMsg,
-                        ATTR_BATTERY: self.battery if self.battery != -1 else None,
-                        "isCharging": self.isCharging if self.battery != -1 else None,
-                        "isOnline": self.isOnline,
-                        "isSafezone": self.isSafezone,
-                        "alarm": self.alarm,
-                        "silent": self.silent,
-                        "step_day": self._step_day,
-                        "xcoin": self._xcoin,
-                        ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
-                        ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
-                        ATTR_TRACKER_POI: self.poi if self.poi else None,
-                        ATTR_LOCATION_NAME: self.location_name,
-                        ATTR_TRACKER_IMEI: self.imei,
-                        "location_accuracy": self.location_accuracy,
-                        "entity_picture": self.entity_picture,
-                        "os_version": self.os_version,
-                        "model": self.model,
-                        "watch_id": self.watch_id,
-                        "locateType": self.locateType,
-                        "lastTrackTime": self.lastTrackTime,
-                        ATTR_TRACKER_LICENCE: licence,
-                        "message": chats,
-                    }
-                }
-            )
+            self.watch_entry.update(self.set_wuid_dict(wuid, chats, licence))
         if self.data:
             self.data.update(self.watch_entry)
         else:
             self.data = self.watch_entry
         return self.data
 
-    @callback
-    def async_set_updated_data(self, data: dict) -> None:
-        """Manually update data, notify listeners and reset refresh interval, and remember."""
-        super().async_set_updated_data(data)
+    def set_wuid_dict(self, wuid, chats, licence):
+        return {
+            wuid: {
+                "unreadMsg": self.unreadMsg,
+                ATTR_BATTERY: self.battery if self.battery != -1 else None,
+                "isCharging": self.isCharging if self.battery != -1 else None,
+                "isOnline": self.isOnline,
+                "isSafezone": self.isSafezone,
+                "alarm": self.alarm,
+                "silent": self.silent,
+                "step_day": self._step_day,
+                "xcoin": self._xcoin,
+                ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
+                ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
+                ATTR_TRACKER_POI: self.poi if self.poi else None,
+                ATTR_LOCATION_NAME: self.location_name,
+                ATTR_TRACKER_IMEI: self.imei,
+                "location_accuracy": self.location_accuracy,
+                "entity_picture": self.entity_picture,
+                "os_version": self.os_version,
+                "model": self.model,
+                "watch_id": self.watch_id,
+                "locateType": self.locateType,
+                "lastTrackTime": self.lastTrackTime,
+                ATTR_TRACKER_LICENCE: licence,
+                "message": chats,
+            }
+        }
+
+    # @callback
+    # def async_set_updated_data(self, data: dict) -> None:
+    #     """Manually update data, notify listeners and reset refresh interval, and remember."""
+    #     super().async_set_updated_data(data)
