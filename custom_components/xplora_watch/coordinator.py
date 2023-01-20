@@ -11,7 +11,7 @@ from pyxplora_api import pyxplora_api_async as PXA
 from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
@@ -43,30 +43,34 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class XploraDataUpdateCoordinator(DataUpdateCoordinator):
+    location_name: str = None
+    controller: PXA.PyXploraApi
+
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
-        self.controller = PXA.PyXploraApi(
-            countrycode=entry.data.get(CONF_COUNTRY_CODE, None),
-            phoneNumber=entry.data.get(CONF_PHONENUMBER, None),
-            password=entry.data[CONF_PASSWORD],
-            userLang=entry.data[CONF_USERLANG],
-            timeZone=entry.data[CONF_TIMEZONE],
-            wuid=entry.options.get(CONF_WATCHES, None),
-            email=entry.data.get(CONF_EMAIL, None),
-        )
         self._entry = entry
         self.opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
         self.maps = entry.options.get(CONF_MAPS, MAPS[0])
         super().__init__(
             hass,
             _LOGGER,
-            name="{}-{}".format(DOMAIN, entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""),
+            name=f'{DOMAIN}-{entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""}',
             update_method=self._async_update_watch_data,
             update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
         )
 
-    async def init(self) -> None:
-        await self.controller.init()
+    async def init(self) -> PXA.PyXploraApi:
+        self.controller: PXA.PyXploraApi = PXA.PyXploraApi(
+            countrycode=self._entry.data.get(CONF_COUNTRY_CODE, None),
+            phoneNumber=self._entry.data.get(CONF_PHONENUMBER, None),
+            password=self._entry.data[CONF_PASSWORD],
+            userLang=self._entry.data[CONF_USERLANG],
+            timeZone=self._entry.data[CONF_TIMEZONE],
+            wuid=self._entry.options.get(CONF_WATCHES, None),
+            email=self._entry.data.get(CONF_EMAIL, None),
+        )
+        await self.controller.init(forceLogin=True)
+        return self.controller
 
     async def _async_update_watch_data(self, targets: list[str] | None = None) -> dict[str, Any]:
         """Fetch data from Xplora®."""
@@ -125,19 +129,20 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                     results: list[Any] = await geocoder.reverse_geocode_async(
                         self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
                     )
-                    self.location_name = "{}".format(results[0]["formatted"])
+                    self.location_name = results[0]["formatted"]
                 _LOGGER.debug("load address from opencagedata.com")
             else:
                 language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
                 timeout = aiohttp.ClientTimeout(total=2)
                 async with aiohttp.ClientSession(timeout=timeout) as session:
+                    # codiga-disable
                     async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
                         await session.close()
                         res: dict[str, Any] = await response.json()
                         licence = res.get(ATTR_TRACKER_LICENCE, None)
                         address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
                         if address:
-                            self.location_name = "{}".format(res.get("display_name", ""))
+                            self.location_name = res.get("display_name", "")
                             _LOGGER.debug("load address from openstreetmap.org")
             self.watch_entry.update(
                 {

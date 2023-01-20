@@ -7,7 +7,7 @@ from typing import Any
 
 import voluptuous as vol
 from pyxplora_api import pyxplora_api_async as PXA
-from pyxplora_api.exception_classes import LoginError, PhoneOrEmailFail
+from pyxplora_api.exception_classes import Error, LoginError, PhoneOrEmailFail
 from pyxplora_api.status import UserContactType
 
 import homeassistant.helpers.config_validation as cv
@@ -171,7 +171,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except LoginError as e:
                 _LOGGER.exception(e)
                 errors["base"] = "pass_invalid"
-            except Exception as e:
+            except Error as e:
                 _LOGGER.exception(e)
                 errors["base"] = "cannot_connect"
 
@@ -201,7 +201,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             except LoginError as e:
                 _LOGGER.exception(e)
                 errors["base"] = "pass_invalid"
-            except Exception as e:
+            except Error as e:
                 _LOGGER.exception(e)
                 errors["base"] = "cannot_connect"
 

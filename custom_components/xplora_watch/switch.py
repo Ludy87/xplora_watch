@@ -131,12 +131,12 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return supported attributes."""
         language = self._options.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
-        weekRepeat = self._alarm["weekRepeat"]
-        weekDays = []
-        for day in range(len(weekRepeat)):
-            if weekRepeat[day] == "1":
-                weekDays.append(DAYS.get(language, DEFAULT_LANGUAGE)[day])
-        return {STR_DAYS.get(language, DEFAULT_LANGUAGE): ", ".join(weekDays)}
+        week_repeat = self._alarm["weekRepeat"]
+        week_days = []
+        for day in range(len(week_repeat)):
+            if week_repeat[day] == "1":
+                week_days.append(DAYS.get(language, DEFAULT_LANGUAGE)[day])
+        return {STR_DAYS.get(language, DEFAULT_LANGUAGE): ", ".join(week_days)}
 
 
 class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
@@ -206,9 +206,9 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return supported attributes."""
         language = self._options.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
-        weekRepeat = self._silent["weekRepeat"]
-        weekDays = []
-        for day in range(len(weekRepeat)):
-            if weekRepeat[day] == "1":
-                weekDays.append(DAYS.get(language, DEFAULT_LANGUAGE)[day])
-        return {STR_DAYS.get(language, DEFAULT_LANGUAGE): ", ".join(weekDays)}
+        week_repeat = self._silent["weekRepeat"]
+        week_days = []
+        for day in range(len(week_repeat)):
+            if week_repeat[day] == "1":
+                week_days.append(DAYS.get(language, DEFAULT_LANGUAGE)[day])
+        return {STR_DAYS.get(language, DEFAULT_LANGUAGE): ", ".join(week_days)}

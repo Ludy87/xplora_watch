@@ -76,7 +76,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     @callback
     def _async_receive_data(self, device, location, location_name) -> None:
         """Update device data."""
-        _LOGGER.debug("Update device data.\n{}\n{}".format(device, self._name))
+        _LOGGER.debug("Update device data.\n%s\n%s" % device, self._name)
         if device != self._name:
             return
         self._location_name = location_name
