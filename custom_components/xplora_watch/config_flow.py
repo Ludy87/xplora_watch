@@ -160,7 +160,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             unique_id = f"{user_input[CONF_PHONENUMBER]}"
 
-            self.entry = await self.async_set_unique_id(unique_id)
+            await self.async_set_unique_id(unique_id)
             self._abort_if_unique_id_configured()
 
             info = None
@@ -190,7 +190,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             unique_id = f"{user_input[CONF_EMAIL]}"
 
-            self.entry = await self.async_set_unique_id(unique_id)
+            await self.async_set_unique_id(unique_id)
             self._abort_if_unique_id_configured()
 
             info = None
