@@ -7,8 +7,15 @@
   {% set sender = item.sender %}
   {% set receiver = item.receiver %}
   {% set type = item.type %}
+  {% set msgId = item.msgId %}
+  {% set trashs = data.delete_flag | bool(False) %}
+  {% if trashs %}
+    {% set trash = "🗑" %}
+  {% else %}
+    {% set trash = "" %}
+  {% endif %}
   {% if type == "SOS" -%}
-    <ha-alert title="Type: {{ type }}" alert-type="error">***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***</ha-alert>
+    <ha-alert title="Type: {{ type }}" alert-type="error">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
     <details>
@@ -24,17 +31,17 @@
     {{ data.locate_type }}
     </details>
   {%- elif type == "TEXT" -%}
-    <ha-alert title="Type: {{ type }}" alert-type="info">***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***</ha-alert>
+    <ha-alert title="Type: {{ type }}" alert-type="info">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
     Nachricht: ***{{ data.text }}***
   {%- elif type == "LOW_POWER" -%}
-    <ha-alert title="Type: {{ type }}" alert-type="info">***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***</ha-alert>
+    <ha-alert title="Type: {{ type }}" alert-type="warning">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
     Nachricht: ***Battery = {{ data.battery }}%***
   {%- elif type == "ARRIVE_SAFE_ZONE" -%}
-    <ha-alert title="Type: {{ type }}" alert-type="success">***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***</ha-alert>
+    <ha-alert title="Type: {{ type }}" alert-type="success">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
     <details>
@@ -50,7 +57,7 @@
     {{ data.locate_type }}
     </details>
   {%- elif type == "LEAVE_SAFE_ZONE" -%}
-    <ha-alert title="Type: {{ type }}" alert-type="warning">***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***</ha-alert>
+    <ha-alert title="Type: {{ type }}" alert-type="warning">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
     <details>
@@ -66,15 +73,20 @@
     {{ data.locate_type }}
     </details>
   {%- elif type == "CALL_LOG" -%}
-    <ha-alert title="Type: {{ type }}" alert-type="warning">***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***</ha-alert>
+    <ha-alert title="Type: {{ type }}" alert-type="success">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
     Angerufen wurde: {{ data.call_name }}
     Angerufen am/um: {{ data.call_time | timestamp_custom('%Y-%m-%d %H:%M:%S') }}
-  {%- else -%}
-    <ha-alert title="Type: {{ type }}">***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***</ha-alert>
+  {%- elif type == "EMOTICON" -%}
+    <ha-alert title="Type: {{ type }}" alert-type="info">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
-  {%- endif %}  
+    Nachricht: {{ data.emoticon_id }}
+  {%- else -%}
+    <ha-alert title="Type: {{ type }}">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
+    Sender: {{ sender.name }}
+    Empfänger: {{ receiver.name }}
+  {%- endif %}
 {% endfor %}
 ```

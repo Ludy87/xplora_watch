@@ -7,11 +7,12 @@ from typing import Any
 
 import aiohttp
 from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.model import ChatsNew,
 
 from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
@@ -28,6 +29,7 @@ from .const import (
     CONF_MESSAGE,
     CONF_OPENCAGE_APIKEY,
     CONF_PHONENUMBER,
+    CONF_REMOVE_MESSAGE,
     CONF_TIMEZONE,
     CONF_USERLANG,
     CONF_WATCHES,
@@ -35,6 +37,8 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAPS,
+    SENSOR_MESSAGE,
+    SENSOR_XCOIN,
     URL_OPENSTREETMAP,
 )
 from .geocoder import OpenCageGeocodeUA
@@ -83,13 +87,17 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             wuids = await self.controller.setDevices(targets)
         else:
             wuids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
+
+        limit = self._entry.options.get(CONF_MESSAGE, 10)
+        show_remove_msg = self._entry.options.get(CONF_REMOVE_MESSAGE, False)
+
         for wuid in wuids:
             _LOGGER.debug("Fetch data from Xplora®: %s", wuid[25:])
             device: dict[str, Any] = self.controller.getDevice(wuid=wuid)
 
-            chats: dict[str, Any] = (
-                await self.controller.getWatchChatsRaw(wuid, limit=self._entry.options.get(CONF_MESSAGE, 10))
-            ).get("chatsNew", {"list: []"})
+            res_chats = await self.controller.getWatchChatsRaw(wuid, limit=limit, show_del_msg=show_remove_msg)
+
+            chats = ChatsNew.from_dict(res_chats).to_dict()
 
             watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
             self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
@@ -122,7 +130,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.entity_picture = device.get("getWatchUserIcons", "")
 
             self._step_day = device.get("getWatchUserSteps", {}).get("day")
-            self._xcoin = device.get("getWatchUserXcoins", Any)
+            self._xcoin = device.get("getWatchUserXcoins", 0)
             licence = None
             if self.maps == MAPS[1]:
                 async with OpenCageGeocodeUA(self.opencage_apikey) as geocoder:
@@ -155,7 +163,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                         "alarm": self.alarm,
                         "silent": self.silent,
                         "step_day": self._step_day,
-                        "xcoin": self._xcoin,
+                        SENSOR_XCOIN: self._xcoin,
                         ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
                         ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
                         ATTR_TRACKER_POI: self.poi if self.poi else None,
@@ -169,7 +177,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                         "locateType": self.locateType,
                         "lastTrackTime": self.lastTrackTime,
                         ATTR_TRACKER_LICENCE: licence,
-                        "message": chats,
+                        SENSOR_MESSAGE: chats,
                     }
                 }
             )

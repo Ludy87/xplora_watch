@@ -13,7 +13,9 @@ ATTRIBUTION: Final = "Data provided by Xplora®"
 URL_OPENSTREETMAP = "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=jsonv2&accept-language={}"
 
 ATTR_SERVICE_MSG: Final = "message"
+ATTR_SERVICE_MSGID: Final = "message_id"
 ATTR_SERVICE_SEE: Final = "see"
+ATTR_SERVICE_DELETE_MSG: Final = "delete_message_from_app"
 ATTR_SERVICE_READ_MSG: Final = "read_message"
 ATTR_SERVICE_SEND_MSG: Final = "send_message"
 ATTR_SERVICE_SHUTDOWN: Final = "shutdown"
@@ -41,6 +43,7 @@ CONF_MAPS: Final = "maps"
 CONF_MESSAGE: Final = "message"
 CONF_OPENCAGE_APIKEY: Final = "opencage_apikey"
 CONF_PHONENUMBER: Final = "phonenumber"
+CONF_REMOVE_MESSAGE: Final = "remove_message"
 CONF_SIGNIN_TYP: Final = "signin_typ"
 CONF_TIMEZONE: Final = "timezone"
 CONF_TYPES: Final = "types"
@@ -264,6 +267,49 @@ shutdown:
   name: Uhr ausschalten
   description: Uhr herunterfahren
   fields:
+    target:
+      name: Uhr(en)
+      description: W\u00e4hle deine Uhr aus, die ausgeschaltet werden soll.
+      required: true
+      selector:
+        select:
+          options:
+            - all
+""",
+}
+
+STR_DELETE_MESSAGE_FROM_APP: Final[dict[str, str]] = {
+    "en": """
+delete_message_from_app:
+  name: Remove Message
+  description: Delete message in the Xplora® app
+  fields:
+    message_id:
+      name: Message ID
+      description: Enter the message ID to be deleted in the app, does not affect the messages in the watch.
+      required: true
+      selector:
+        text:
+    target:
+      name: Uhr(en)
+      description: Select your clock to turn off.
+      required: true
+      selector:
+        select:
+          options:
+            - all
+""",
+    "de": """
+delete_message_from_app:
+  name: Nachricht löschen
+  description: Nachricht in der Xplora® App löschen
+  fields:
+    message_id:
+      name: Nachrichten ID
+      description: Trage die Nachrichten ID ein, die in der App gelöscht werden soll, hat keinen einfluß auf die Nachrichten in der Uhr.
+      required: true
+      selector:
+        text:
     target:
       name: Uhr(en)
       description: W\u00e4hle deine Uhr aus, die ausgeschaltet werden soll.

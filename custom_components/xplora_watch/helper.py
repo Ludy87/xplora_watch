@@ -13,6 +13,7 @@ from .const import (
     CONF_LANGUAGE,
     DEFAULT_LANGUAGE,
     HOME,
+    STR_DELETE_MESSAGE_FROM_APP,
     STR_READ_MESSAGE_SERVICE,
     STR_SEE_SERVICE,
     STR_SEND_MESSAGE_SERVICE,
@@ -58,6 +59,10 @@ def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watches: l
                 f.write(f'            - "{watch}"\n')
 
             f.write(STR_SHUTDOWN_SERVICE.get(language, DEFAULT_LANGUAGE))
+            for watch in watches:
+                f.write(f'            - "{watch}"\n')
+
+            f.write(STR_DELETE_MESSAGE_FROM_APP.get(language, DEFAULT_LANGUAGE))
             for watch in watches:
                 f.write(f'            - "{watch}"\n')
 

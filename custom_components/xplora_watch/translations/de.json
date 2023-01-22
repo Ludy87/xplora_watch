@@ -61,6 +61,7 @@
                     "watches_2": "Friendly Name Uhr 2",
                     "language": "Sprache",
                     "maps": "Maps",
+                    "remove_message": "gelöschte Nachrichten anzeigen?",
                     "opencage_apikey": "OpenCage API KEY",
                     "scan_interval": "Scan Intervall (in s)",
                     "home_is_safezone": "Home ist Sicherheitszone",

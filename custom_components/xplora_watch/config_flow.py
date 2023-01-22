@@ -36,6 +36,7 @@ from .const import (
     CONF_MESSAGE,
     CONF_OPENCAGE_APIKEY,
     CONF_PHONENUMBER,
+    CONF_REMOVE_MESSAGE,
     CONF_SIGNIN_TYP,
     CONF_TIMEZONE,
     CONF_TYPES,
@@ -278,6 +279,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
                     SENSORS.get(language, DEFAULT_LANGUAGE)
                 ),
                 vol.Required(CONF_MESSAGE, default=_options.get(CONF_MESSAGE, 10)): cv.positive_int,
+                vol.Required(CONF_REMOVE_MESSAGE, default=_options.get(CONF_REMOVE_MESSAGE, False)): cv.boolean,
             }
         )
 

@@ -61,6 +61,7 @@
                     "watches_2": "[%key:common::config_flow::data::watches_2%]",
                     "language": "[%key:common::config_flow::data::language%]",
                     "maps": "[%key:common::config_flow::data::maps%]",
+                    "remove_message": "[%key:common::config_flow::data::remove_message%]",
                     "opencage_apikey": "[%key:common::config_flow::data::opencage_apikey%]",
                     "scan_interval": "[%key:common::config_flow::data::scan_interval%]",
                     "home_is_safezone": "[%key:common::config_flow::data::home_is_safezone%]",

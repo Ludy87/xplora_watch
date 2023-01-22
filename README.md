@@ -32,8 +32,9 @@ Xplora® Watch Version 2 integration for Home Assistant
 | Watch silent(s)                                                                                      | Switch         |
 | Watch alarm(s)                                                                                       | Switch         |
 | [Send Message](https://github.com/Ludy87/xplora_watch#send-message)                                  | Notify         |
-| [Send Message](https://github.com/Ludy87/xplora_watch#send-message-via-service-v203)                 | Service        |
+| [Send Message Service](https://github.com/Ludy87/xplora_watch#send-message-via-service-v203)         | Service        |
 | [Read Messages from Account](https://github.com/Ludy87/xplora_watch#read-messages-from-account-v240) | Service        |
+| [Delete Messages from App](https://github.com/Ludy87/xplora_watch#delete-messages-from-app-v260)     | Service        |
 | [Manually update](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209)                 | Service        |
 | turn off Watch                                                                                       | Service        |
 | Watch Tracking                                                                                       | Device Tracker |
@@ -70,12 +71,44 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 ---
 
+## Delete Messages from App (v2.6.0)
+
+- new service added - delete only app message
+
+- add Emoji
+  - M1001 = "😄"
+  - M1002 = "😏"
+  - M1003 = "😘"
+  - M1004 = "😅"
+  - M1005 = "😂"
+  - M1006 = "😭"
+  - M1007 = "😍"
+  - M1008 = "😎"
+  - M1009 = "😜"
+  - M1010 = "😳"
+  - M1011 = "🥱"
+  - M1012 = "👏"
+  - M1013 = "😡"
+  - M1014 = "👍"
+  - M1015 = "😏"
+  - M1016 = "😓"
+  - M1017 = "🍧"
+  - M1018 = "😮"
+  - M1019 = "M1019"
+  - M1020 = "🎁"
+  - M1021 = "M1021"
+  - M1022 = "☺️"
+  - M1023 = "M1023"
+  - M1024 = "🌹"
+
+---
+
 ## Read Messages from Account (v2.4.0)
 
 - A new (message) sensor has been added, default: disabled
 - new service added, (message) sensor will be updated
 - change Number of Messages option find in "Configure"
-- [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md)
+- [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) (updated v2.6.0)
 - [Automation Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/automation-read-messages.yaml)
 
 ![markdown sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/markdown_sample.png)
