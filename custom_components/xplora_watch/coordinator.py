@@ -55,6 +55,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self._entry = entry
         self.opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
         self.maps = entry.options.get(CONF_MAPS, MAPS[0])
+        self._xcoin = 0
         super().__init__(
             hass,
             _LOGGER,
