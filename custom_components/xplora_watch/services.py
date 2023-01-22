@@ -109,9 +109,6 @@ class XploraService:
 
 
 class XploraSeeService(XploraService):
-    def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
-        super().__init__(hass, coordinator)
-
     async def async_see(self, targets: list[str] | None = None, **kwargs):
         """Update all information from Watch"""
         _controller: PXA.PyXploraApi = await self._coordinator.init()
@@ -127,9 +124,6 @@ class XploraSeeService(XploraService):
 
 
 class XploraDeleteMessageFromAppService(XploraService):
-    def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
-        super().__init__(hass, coordinator)
-
     async def async_delete_message_from_app(self, message_id="", targets: list[str] | None = None, **kwargs):
         """Delete a message to one Watch."""
         _controller: PXA.PyXploraApi = await self._coordinator.init()
@@ -149,9 +143,6 @@ class XploraDeleteMessageFromAppService(XploraService):
 
 
 class XploraMessageService(XploraService):
-    def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
-        super().__init__(hass, coordinator)
-
     async def async_send_message(self, message="", targets: list[str] | None = None, **kwargs):
         """Send a message to one Watch."""
         _controller: PXA.PyXploraApi = await self._coordinator.init()
@@ -171,9 +162,6 @@ class XploraMessageService(XploraService):
 
 
 class XploraMessageSensorUpdateService(XploraService):
-    def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
-        super().__init__(hass, coordinator)
-
     async def async_read_message(self, targets: list[str] | None = None, **kwargs):
         """Read the messages from account"""
         _controller: PXA.PyXploraApi = await self._coordinator.init()
@@ -197,9 +185,6 @@ class XploraMessageSensorUpdateService(XploraService):
 
 
 class XploraShutdownService(XploraService):
-    def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
-        super().__init__(hass, coordinator)
-
     async def async_shutdown(self, targets: list[str] | None = None, **kwargs):
         """turn off watch"""
         _controller: PXA.PyXploraApi = await self._coordinator.init()
