@@ -11,6 +11,8 @@ Xplora® Watch Version 2 integration for Home Assistant
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=appveyor)](https://github.com/psf/black)
 
 [![Validate with hassfest and HACS](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml)
+![Code Grade](https://api.codiga.io/project/35408/status/svg)
+![Code Quality Score](https://api.codiga.io/project/35408/score/svg)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ludy87)
 
