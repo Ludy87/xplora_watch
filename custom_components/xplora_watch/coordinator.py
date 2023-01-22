@@ -7,7 +7,7 @@ from typing import Any
 
 import aiohttp
 from pyxplora_api import pyxplora_api_async as PXA
-from pyxplora_api.model import ChatsNew,
+from pyxplora_api.model import ChatsNew
 
 from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
 from homeassistant.config_entries import ConfigEntry
