@@ -74,7 +74,8 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 ## Delete Messages from App (v2.6.0)
 
 - new service added - delete only app message
-
+- chats: add ```delete_flag```  `1` = message is deleted
+- updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md)
 - add Emoji
   - M1001 = "😄"
   - M1002 = "😏"
