@@ -133,9 +133,9 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         language = self._options.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         week_repeat = self._alarm["weekRepeat"]
         week_days = []
-        for day in range(len(week_repeat)):
-            if week_repeat[day] == "1":
-                week_days.append(DAYS.get(language, DEFAULT_LANGUAGE)[day])
+        for i, day in enumerate(week_repeat):
+            if week_repeat[i] == "1":
+                week_days.append(DAYS.get(language, DEFAULT_LANGUAGE)[i])
         return {STR_DAYS.get(language, DEFAULT_LANGUAGE): ", ".join(week_days)}
 
 
@@ -208,7 +208,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         language = self._options.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         week_repeat = self._silent["weekRepeat"]
         week_days = []
-        for day in range(len(week_repeat)):
-            if week_repeat[day] == "1":
-                week_days.append(DAYS.get(language, DEFAULT_LANGUAGE)[day])
+        for i, day in enumerate(week_repeat):
+            if week_repeat[i] == "1":
+                week_days.append(DAYS.get(language, DEFAULT_LANGUAGE)[i])
         return {STR_DAYS.get(language, DEFAULT_LANGUAGE): ", ".join(week_days)}
