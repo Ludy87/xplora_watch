@@ -123,7 +123,7 @@ class XploraSeeService(XploraService):
             self._coordinator._schedule_refresh()
             self._coordinator.async_update_listeners()
         else:
-            _LOGGER.warning(f"No watch id or type '{type(targets)}' not allow!")
+            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
 
 
 class XploraDeleteMessageFromAppService(XploraService):
@@ -139,13 +139,13 @@ class XploraDeleteMessageFromAppService(XploraService):
                 targets = _controller.getWatchUserIDs()
             if len(msg_id) > 0:
                 for watch_id in targets:  # HIER GEHTS WEITER
-                    _LOGGER.debug(f"remove message '{msg_id}' from '{watch_id}'")
+                    _LOGGER.debug("remove message %s from %s" % msg_id, watch_id)
                     if not await _controller.deleteMessageFromApp(wuid=watch_id, msgId=msg_id):
                         _LOGGER.error("Message cannot deleted!")
             else:
                 _LOGGER.warning("You must provide an ID!")
         else:
-            _LOGGER.warning(f"No watch id or type '{type(targets)}' not allow!")
+            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
 
 
 class XploraMessageService(XploraService):
@@ -167,7 +167,7 @@ class XploraMessageService(XploraService):
             else:
                 _LOGGER.warning("Your message is empty!")
         else:
-            _LOGGER.warning(f"No watch id or type '{type(targets)}' not allow!")
+            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
 
 
 class XploraMessageSensorUpdateService(XploraService):
@@ -193,7 +193,7 @@ class XploraMessageSensorUpdateService(XploraService):
                 old_state.update({watch: w})
             self._coordinator.async_set_updated_data(old_state)
         else:
-            _LOGGER.warning(f"No watch id or type '{type(targets)}' not allow!")
+            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
 
 
 class XploraShutdownService(XploraService):
@@ -213,4 +213,4 @@ class XploraShutdownService(XploraService):
                 except NoAdminError as err:
                     _LOGGER.exception(f" Shutdown fail! You have '{err}' Account!")
         else:
-            _LOGGER.warning(f"No watch id or type '{type(targets)}' not allow!")
+            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
