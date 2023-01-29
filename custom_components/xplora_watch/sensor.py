@@ -136,6 +136,8 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
                     float(self.coordinator.data[self.watch_uid][ATTR_TRACKER_LNG]),
                 )
                 return get_location_distance_meter(self.hass, lat_lng)
+            else:
+                return -1
         return None
 
     @property

@@ -7,11 +7,12 @@ from typing import Any
 
 import aiohttp
 from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.model import ChatsNew
 
 from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
@@ -28,6 +29,7 @@ from .const import (
     CONF_MESSAGE,
     CONF_OPENCAGE_APIKEY,
     CONF_PHONENUMBER,
+    CONF_REMOVE_MESSAGE,
     CONF_TIMEZONE,
     CONF_USERLANG,
     CONF_WATCHES,
@@ -35,6 +37,8 @@ from .const import (
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     MAPS,
+    SENSOR_MESSAGE,
+    SENSOR_XCOIN,
     URL_OPENSTREETMAP,
 )
 from .geocoder import OpenCageGeocodeUA
@@ -51,11 +55,12 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self._entry = entry
         self.opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
         self.maps = entry.options.get(CONF_MAPS, MAPS[0])
+        self._xcoin = 0
         super().__init__(
             hass,
             _LOGGER,
             name=f'{DOMAIN}-{entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""}',
-            update_method=self._async_update_watch_data,
+            update_method=self.update_watch_data,
             update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
         )
 
@@ -72,34 +77,43 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         await self.controller.init(forceLogin=True)
         return self.controller
 
-    async def _async_update_watch_data(self, targets: list[str] | None = None) -> dict[str, Any]:
-        """Fetch data from Xplora®."""
+    async def update_watch_data(self, targets: list[str] = None):
+        """Fetch data from Xplora."""
         await self.init()
-        _LOGGER.debug("pyxplora_api Lib version: %s", self.controller.version())
-        self.watch_entry: dict[str, Any] = {}
+        _LOGGER.debug("pyxplora_api lib version: %s", self.controller.version())
+
+        # Initialize the watch entry data
+        self.watch_entry = {}
         if self.data:
             self.watch_entry.update(self.data)
+
+        # Get the list of watch UUIDs
         if targets:
             wuids = await self.controller.setDevices(targets)
         else:
             wuids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
+
+        # Get the message limit and remove message option
+        message_limit = self._entry.options.get(CONF_MESSAGE, 10)
+        remove_message = self._entry.options.get(CONF_REMOVE_MESSAGE, False)
+
+        # Loop through the list of watches and fetch data
         for wuid in wuids:
-            _LOGGER.debug("Fetch data from Xplora®: %s", wuid[25:])
-            device: dict[str, Any] = self.controller.getDevice(wuid=wuid)
+            _LOGGER.debug("Fetch data from Xplora: %s", wuid[25:])
+            device = self.controller.getDevice(wuid=wuid)
+            res_chats = await self.controller.getWatchChatsRaw(wuid, limit=message_limit, show_del_msg=remove_message)
+            chats = ChatsNew.from_dict(res_chats).to_dict()
+            watch_location = await self.controller.loadWatchLocation(wuid)
 
-            chats: dict[str, Any] = (
-                await self.controller.getWatchChatsRaw(wuid, limit=self._entry.options.get(CONF_MESSAGE, 10))
-            ).get("chatsNew", {"list: []"})
-
-            watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
+            # Update the watch data
             self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
-            self.battery = watchLocate.get("watch_battery", -1)
-            self.isCharging = watchLocate.get("watch_charging", False)
-            self.lat = float(watchLocate.get(ATTR_TRACKER_LAT, 0.0))
-            self.lng = float(watchLocate.get(ATTR_TRACKER_LNG, 0.0))
-            self.poi = watchLocate.get(ATTR_TRACKER_POI, "")
-            self.location_accuracy = watchLocate.get(ATTR_TRACKER_RAD, -1)
-            self.locateType = watchLocate.get("locateType", PXA.LocationType.UNKNOWN.value)
+            self.battery = watch_location.get("watch_battery", -1)
+            self.isCharging = watch_location.get("watch_charging", False)
+            self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0))
+            self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0))
+            self.poi = watch_location.get(ATTR_TRACKER_POI, "")
+            self.location_accuracy = watch_location.get(ATTR_TRACKER_RAD, -1)
+            self.locateType = watch_location.get("locateType", PXA.LocationType.UNKNOWN.value)
             self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
             self.isSafezone = False if device.get("isInSafeZone", False) else True
@@ -122,7 +136,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.entity_picture = device.get("getWatchUserIcons", "")
 
             self._step_day = device.get("getWatchUserSteps", {}).get("day")
-            self._xcoin = device.get("getWatchUserXcoins", Any)
+            self._xcoin = device.get("getWatchUserXcoins", 0)
             licence = None
             if self.maps == MAPS[1]:
                 async with OpenCageGeocodeUA(self.opencage_apikey) as geocoder:
@@ -155,7 +169,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                         "alarm": self.alarm,
                         "silent": self.silent,
                         "step_day": self._step_day,
-                        "xcoin": self._xcoin,
+                        SENSOR_XCOIN: self._xcoin,
                         ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
                         ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
                         ATTR_TRACKER_POI: self.poi if self.poi else None,
@@ -169,7 +183,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                         "locateType": self.locateType,
                         "lastTrackTime": self.lastTrackTime,
                         ATTR_TRACKER_LICENCE: licence,
-                        "message": chats,
+                        SENSOR_MESSAGE: chats,
                     }
                 }
             )

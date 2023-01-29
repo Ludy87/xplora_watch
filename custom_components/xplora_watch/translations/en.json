@@ -61,6 +61,7 @@
                     "watches_2": "Friendly Name Watch 2",
                     "language": "Language",
                     "maps": "Maps",
+                    "remove_message": "show deleted messages?",
                     "opencage_apikey": "OpenCage API KEY",
                     "scan_interval": "Scan Intervall (s)",
                     "home_is_safezone": "Home is Safezone",
