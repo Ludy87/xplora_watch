@@ -60,7 +60,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=f'{DOMAIN}-{entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""}',
-            update_method=self._async_update_watch_data,
+            update_method=self.update_watch_data,
             update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
         )
 
@@ -77,38 +77,43 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         await self.controller.init(forceLogin=True)
         return self.controller
 
-    async def _async_update_watch_data(self, targets: list[str] | None = None) -> dict[str, Any]:
-        """Fetch data from Xplora®."""
+    async def update_watch_data(self, targets: list[str] = None):
+        """Fetch data from Xplora."""
         await self.init()
-        _LOGGER.debug("pyxplora_api Lib version: %s", self.controller.version())
-        self.watch_entry: dict[str, Any] = {}
+        _LOGGER.debug("pyxplora_api lib version: %s", self.controller.version())
+
+        # Initialize the watch entry data
+        self.watch_entry = {}
         if self.data:
             self.watch_entry.update(self.data)
+
+        # Get the list of watch UUIDs
         if targets:
             wuids = await self.controller.setDevices(targets)
         else:
             wuids = self._entry.options.get(CONF_WATCHES, await self.controller.setDevices())
 
-        limit = self._entry.options.get(CONF_MESSAGE, 10)
-        show_remove_msg = self._entry.options.get(CONF_REMOVE_MESSAGE, False)
+        # Get the message limit and remove message option
+        message_limit = self._entry.options.get(CONF_MESSAGE, 10)
+        remove_message = self._entry.options.get(CONF_REMOVE_MESSAGE, False)
 
+        # Loop through the list of watches and fetch data
         for wuid in wuids:
-            _LOGGER.debug("Fetch data from Xplora®: %s", wuid[25:])
-            device: dict[str, Any] = self.controller.getDevice(wuid=wuid)
-
-            res_chats = await self.controller.getWatchChatsRaw(wuid, limit=limit, show_del_msg=show_remove_msg)
-
+            _LOGGER.debug("Fetch data from Xplora: %s", wuid[25:])
+            device = self.controller.getDevice(wuid=wuid)
+            res_chats = await self.controller.getWatchChatsRaw(wuid, limit=message_limit, show_del_msg=remove_message)
             chats = ChatsNew.from_dict(res_chats).to_dict()
+            watch_location = await self.controller.loadWatchLocation(wuid)
 
-            watchLocate: dict[str, Any] = device.get("loadWatchLocation", {})
+            # Update the watch data
             self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
-            self.battery = watchLocate.get("watch_battery", -1)
-            self.isCharging = watchLocate.get("watch_charging", False)
-            self.lat = float(watchLocate.get(ATTR_TRACKER_LAT, 0.0))
-            self.lng = float(watchLocate.get(ATTR_TRACKER_LNG, 0.0))
-            self.poi = watchLocate.get(ATTR_TRACKER_POI, "")
-            self.location_accuracy = watchLocate.get(ATTR_TRACKER_RAD, -1)
-            self.locateType = watchLocate.get("locateType", PXA.LocationType.UNKNOWN.value)
+            self.battery = watch_location.get("watch_battery", -1)
+            self.isCharging = watch_location.get("watch_charging", False)
+            self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0))
+            self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0))
+            self.poi = watch_location.get(ATTR_TRACKER_POI, "")
+            self.location_accuracy = watch_location.get(ATTR_TRACKER_RAD, -1)
+            self.locateType = watch_location.get("locateType", PXA.LocationType.UNKNOWN.value)
             self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
             self.isSafezone = False if device.get("isInSafeZone", False) else True
