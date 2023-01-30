@@ -116,7 +116,7 @@ class XploraSeeService(XploraService):
             if "all" in targets:
                 targets = _controller.getWatchUserIDs()
             _LOGGER.debug(f"update all information for '{targets}'")
-            await self._coordinator.update_watch_data(targets)
+            await self._coordinator._async_update_watch_data(targets)
             self._coordinator._schedule_refresh()
             self._coordinator.async_update_listeners()
         else:
