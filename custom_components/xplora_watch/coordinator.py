@@ -60,7 +60,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=f'{DOMAIN}-{entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""}',
-            update_method=self.update_watch_data,
+            update_method=self._async_update_watch_data,
             update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
         )
 
@@ -77,7 +77,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         await self.controller.init(forceLogin=True)
         return self.controller
 
-    async def update_watch_data(self, targets: list[str] = None):
+    async def _async_update_watch_data(self, targets: list[str] = None):
         """Fetch data from Xplora."""
         await self.init()
         _LOGGER.debug("pyxplora_api lib version: %s", self.controller.version())
