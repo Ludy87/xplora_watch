@@ -77,7 +77,7 @@ async def create_www_directory(hass: HomeAssistant):
     def mkdir() -> None:
         for path in paths:
             if not os.path.exists(path):
-                _LOGGER.debug(f"Creating directory: {path}")
+                _LOGGER.debug("Creating directory: %s" % path)
                 os.makedirs(path, exist_ok=True)
 
     await hass.async_add_executor_job(mkdir)

@@ -152,7 +152,7 @@ class XploraMessageService(XploraService):
                 _LOGGER.warning("Message is empty!")
             else:
                 for watch_id in targets:
-                    _LOGGER.debug(f"Sending message '{msg}' to '{watch_id}'")
+                    _LOGGER.debug("Sending message '%s' to '%s'" % msg, watch_id)
                     if not await self._controller.sendText(text=msg, wuid=watch_id):
                         _LOGGER.error("Message cannot send!")
         else:
@@ -211,6 +211,6 @@ class XploraShutdownService(XploraService):
                 try:
                     _LOGGER.debug(f"Shutdown result: {await self._controller.shutdown(watch)}")
                 except NoAdminError as error:
-                    _LOGGER.exception(f"Shutdown failed! Error: {error}")
+                    _LOGGER.exception("Shutdown failed! Error: %s" % error)
         else:
             _LOGGER.warning("No watch ID or type %s not allowed!" % type(targets))
