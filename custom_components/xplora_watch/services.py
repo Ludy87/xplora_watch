@@ -209,7 +209,7 @@ class XploraShutdownService(XploraService):
                 targets = self._controller.getWatchUserIDs()
             for watch in targets:
                 try:
-                    _LOGGER.debug(f"Shutdown result: {await self._controller.shutdown(watch)}")
+                    _LOGGER.debug("Shutdown result: %s" % await self._controller.shutdown(watch))
                 except NoAdminError as error:
                     _LOGGER.exception("Shutdown failed! Error: %s" % error)
         else:
