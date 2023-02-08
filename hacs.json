@@ -2,6 +2,6 @@
   "name": "Xplora® Watch",
   "country": ["DE", "US"],
   "render_readme": true,
-  "homeassistant": "2023.1.7",
+  "homeassistant": "2023.2.3",
   "hacs": "1.30.1"
 }

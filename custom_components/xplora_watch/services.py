@@ -26,6 +26,7 @@ from .const import (
     SENSOR_MESSAGE,
 )
 from .coordinator import XploraDataUpdateCoordinator
+from .helper import encoded_base64_string_to_file, encoded_base64_string_to_mp3_file
 
 BASE_SHUTDOWN_SERVICE_SCHEMA = vol.Schema(
     {vol.Required(ATTR_SERVICE_TARGET): vol.All(cv.ensure_list, [cv.string])}, extra=vol.ALLOW_EXTRA
@@ -52,10 +53,10 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @callback
-def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
+async def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
     """Set up services for Xplora® Watch integration."""
 
-    delete_chat_message_from_app_service = XploraDeleteMessageFromAppService(hass, coordinator)
+    delete_message_from_app_service = XploraDeleteMessageFromAppService(hass, coordinator)
     shutdown_service = XploraShutdownService(hass, coordinator)
     sensor_update_service = XploraMessageSensorUpdateService(hass, coordinator)
     notify_service = XploraMessageService(hass, coordinator)
@@ -67,7 +68,7 @@ def async_setup_services(hass: HomeAssistant, coordinator: XploraDataUpdateCoord
 
     async def async_delete_message_from_app(service: ServiceCall) -> None:
         kwargs = dict(service.data)
-        await delete_chat_message_from_app_service.async_delete_message_from_app(
+        await delete_message_from_app_service.async_delete_message_from_app(
             kwargs[ATTR_SERVICE_MSGID], kwargs[ATTR_SERVICE_TARGET]
         )
 
@@ -106,19 +107,18 @@ class XploraService:
     def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
         self._hass = hass
         self._coordinator = coordinator
+        self._controller: PXA.PyXploraApi = coordinator.controller
 
 
 class XploraSeeService(XploraService):
     async def async_see(self, targets: list[str] | None = None, **kwargs):
         """Update all information from Watch"""
-        _controller: PXA.PyXploraApi = await self._coordinator.init()
         if isinstance(targets, list):
             if "all" in targets:
-                targets = _controller.getWatchUserIDs()
-            _LOGGER.debug(f"update all information for '{targets}'")
-            await self._coordinator._async_update_watch_data(targets)
-            self._coordinator._schedule_refresh()
-            self._coordinator.async_update_listeners()
+                targets = self._controller.getWatchUserIDs()
+            _LOGGER.debug("update all information: %s" % {", ".join(targets)})
+            await self._coordinator._async_update_data(targets)
+            await self._coordinator.async_refresh()
         else:
             _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
 
@@ -126,76 +126,91 @@ class XploraSeeService(XploraService):
 class XploraDeleteMessageFromAppService(XploraService):
     async def async_delete_message_from_app(self, message_id="", targets: list[str] | None = None, **kwargs):
         """Delete a message to one Watch."""
-        _controller: PXA.PyXploraApi = await self._coordinator.init()
         if isinstance(targets, list):
             msg_id = message_id.strip()
             if "all" in targets:
-                targets = _controller.getWatchUserIDs()
-            if len(msg_id) > 0:
-                for watch_id in targets:  # HIER GEHTS WEITER
-                    _LOGGER.debug("remove message %s from %s" % msg_id, watch_id)
-                    if not await _controller.deleteMessageFromApp(wuid=watch_id, msgId=msg_id):
-                        _LOGGER.error("Message cannot deleted!")
-            else:
+                targets = self._controller.getWatchUserIDs()
+            if not msg_id:
                 _LOGGER.warning("You must provide an ID!")
+            else:
+                for watch_id in targets:
+                    _LOGGER.debug("remove message %s from %s" % msg_id, watch_id)
+                    if not await self._controller.deleteMessageFromApp(wuid=watch_id, msgId=msg_id):
+                        _LOGGER.error("Message cannot deleted!")
         else:
             _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
 
 
 class XploraMessageService(XploraService):
     async def async_send_message(self, message="", targets: list[str] | None = None, **kwargs):
-        """Send a message to one Watch."""
-        _controller: PXA.PyXploraApi = await self._coordinator.init()
+        """Send message to Watch."""
         if isinstance(targets, list):
             msg = message.strip()
             if "all" in targets:
-                targets = _controller.getWatchUserIDs()
-            _LOGGER.debug(f"sent message '{msg}' to '{targets}'")
-            if len(msg) > 0:
-                for watch_id in targets:
-                    if not await _controller.sendText(text=msg, wuid=watch_id):
-                        _LOGGER.error("Message cannot send!")
+                targets = self._controller.getWatchUserIDs()
+            if not msg:
+                _LOGGER.warning("Message is empty!")
             else:
-                _LOGGER.warning("Your message is empty!")
+                for watch_id in targets:
+                    _LOGGER.debug(f"Sending message '{msg}' to '{watch_id}'")
+                    if not await self._controller.sendText(text=msg, wuid=watch_id):
+                        _LOGGER.error("Message cannot send!")
         else:
-            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
+            _LOGGER.warning("No watch id or type %s not allowed!" % type(targets))
 
 
 class XploraMessageSensorUpdateService(XploraService):
     async def async_read_message(self, targets: list[str] | None = None, **kwargs):
         """Read the messages from account"""
-        _controller: PXA.PyXploraApi = await self._coordinator.init()
         if isinstance(targets, list):
             old_state: dict[str, Any] = self._coordinator.data
             options = self._coordinator.config_entry.options
-            limit = options.get(CONF_MESSAGE, 10)
+            limit: int = options.get(CONF_MESSAGE, 10)
             show_remove_msg = options.get(CONF_REMOVE_MESSAGE, False)
             if "all" in targets:
-                targets = _controller.getWatchUserIDs()
+                targets = self._coordinator.controller.getWatchUserIDs()
             for watch in targets:
                 w: dict[str, Any] = old_state.get(watch, None)
                 if w:
-                    await _controller.init(True)
-                    res_chats = await _controller.getWatchChatsRaw(watch, limit=limit, show_del_msg=show_remove_msg)
-                    w.update({SENSOR_MESSAGE: (res_chats)})
+                    res_chats = await self._coordinator.controller.getWatchChatsRaw(watch, limit, show_del_msg=show_remove_msg)
+                    if res_chats:
+                        for chat in res_chats.get("list"):
+                            chat_type = chat.get("type")
+                            msg_id = chat.get("msgId")
+                            if chat_type == "VOICE":
+                                voice = await self._coordinator.controller._gql_handler.fetchChatVoice_a(watch, msg_id)
+                                encoded_base64_string_to_mp3_file(self._hass, voice.get("fetchChatVoice"), msg_id)
+                            elif chat_type == "SHORT_VIDEO":
+                                video = await self._coordinator.controller._gql_handler.fetchChatShortVideo_a(watch, msg_id)
+                                encoded_base64_string_to_file(
+                                    self._hass, video.get("fetchChatShortVideo"), msg_id, "mp4", "video"
+                                )
+                                thumb = await self._coordinator.controller._gql_handler.fetchChatShortVideoCover_a(
+                                    watch, msg_id
+                                )
+                                encoded_base64_string_to_file(
+                                    self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb"
+                                )
+                            elif chat_type == "IMAGE":
+                                image = await self._coordinator.controller._gql_handler.fetchChatImage_a(watch, msg_id)
+                                encoded_base64_string_to_file(self._hass, image.get("fetchChatImage"), msg_id, "jpeg", "image")
+                        w.update({SENSOR_MESSAGE: (res_chats)})
                 old_state.update({watch: w})
             self._coordinator.async_set_updated_data(old_state)
         else:
-            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
+            _LOGGER.warning("No watch id or type %s not allowed!" % type(targets))
 
 
 class XploraShutdownService(XploraService):
     async def async_shutdown(self, targets: list[str] | None = None, **kwargs):
         """turn off watch"""
-        _controller: PXA.PyXploraApi = await self._coordinator.init()
         if isinstance(targets, list):
             if "all" in targets:
-                targets = _controller.getWatchUserIDs()
+                targets = self._controller.getWatchUserIDs()
             for watch in targets:
-                await _controller.init(True)
                 try:
-                    _LOGGER.debug(f"Shutdown: {await _controller.shutdown(watch)}")
-                except NoAdminError as err:
-                    _LOGGER.exception(f" Shutdown fail! You have '{err}' Account!")
+                    _LOGGER.debug(f"Shutdown result: {await self._controller.shutdown(watch)}")
+                except NoAdminError as error:
+                    _LOGGER.exception(f"Shutdown failed! Error: {error}")
         else:
-            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
+            _LOGGER.warning("No watch ID or type %s not allowed!" % type(targets))

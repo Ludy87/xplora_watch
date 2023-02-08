@@ -83,6 +83,21 @@
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
     Nachricht: {{ data.emoticon_id }}
+  {%- elif type == "IMAGE" -%}
+    <ha-alert title="Type: {{ type }}" alert-type="info">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
+    Sender: {{ sender.name }}
+    Empfänger: {{ receiver.name }}
+    ![](/local/image/{{ msgId }}.jpeg)
+  {%- elif type == "SHORT_VIDEO" -%}
+    <ha-alert title="Type: {{ type }}" alert-type="info">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
+    Sender: {{ sender.name }}
+    Empfänger: {{ receiver.name }}
+    [![{{ msgId }}](/local/video/thumb/{{ msgId }}.jpeg)](/local/video/{{ msgId }}.mp4)
+  {%- elif type == "VOICE" -%}
+    <ha-alert title="Type: {{ type }}" alert-type="info">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
+    Sender: {{ sender.name }}
+    Empfänger: {{ receiver.name }}
+    [{{ msgId }}.mp3](/local/voice/{{ msgId }}.mp3)
   {%- else -%}
     <ha-alert title="Type: {{ type }}">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}

@@ -13,6 +13,7 @@ from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOC
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_EMAIL, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
@@ -48,44 +49,51 @@ _LOGGER = logging.getLogger(__name__)
 
 class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     location_name: str = None
-    controller: PXA.PyXploraApi
+    licence: str = None
+    controller: PXA.PyXploraApi = None
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
         self._entry = entry
-        self.opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
-        self.maps = entry.options.get(CONF_MAPS, MAPS[0])
+        self._opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
+        self._maps = entry.options.get(CONF_MAPS, MAPS[0])
         self._xcoin = 0
+        name = f"{DOMAIN}-"
+        if CONF_PHONENUMBER in entry.data:
+            name += entry.data[CONF_PHONENUMBER][5:]
+        elif CONF_EMAIL in entry.data:
+            name += entry.data[CONF_EMAIL]
         super().__init__(
             hass,
             _LOGGER,
             name=f'{DOMAIN}-{entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""}',
-            update_method=self._async_update_watch_data,
+            update_method=self._async_update_data,
             update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
         )
 
-    async def init(self) -> PXA.PyXploraApi:
-        self.controller: PXA.PyXploraApi = PXA.PyXploraApi(
-            countrycode=self._entry.data.get(CONF_COUNTRY_CODE, None),
-            phoneNumber=self._entry.data.get(CONF_PHONENUMBER, None),
-            password=self._entry.data[CONF_PASSWORD],
-            userLang=self._entry.data[CONF_USERLANG],
-            timeZone=self._entry.data[CONF_TIMEZONE],
-            wuid=self._entry.options.get(CONF_WATCHES, None),
-            email=self._entry.data.get(CONF_EMAIL, None),
+    async def set_controller(self, session) -> None:
+        data = self._entry.data
+        options = self._entry.options
+        self.controller = PXA.PyXploraApi(
+            countrycode=data.get(CONF_COUNTRY_CODE),
+            phoneNumber=data.get(CONF_PHONENUMBER),
+            password=data[CONF_PASSWORD],
+            userLang=data[CONF_USERLANG],
+            timeZone=data[CONF_TIMEZONE],
+            wuid=options.get(CONF_WATCHES),
+            email=data.get(CONF_EMAIL),
+            session=session,
         )
-        await self.controller.init(forceLogin=True)
-        return self.controller
 
-    async def _async_update_watch_data(self, targets: list[str] = None):
+    async def init(self, session=None) -> None:
+        await self.set_controller(session)
+        await self.controller.init(self.controller._gql_handler.getApiKey(), sec=self.controller._gql_handler.getSecret())
+
+    async def _async_update_data(self, targets: list[str] = None):
         """Fetch data from Xplora."""
-        await self.init()
-        _LOGGER.debug("pyxplora_api lib version: %s", self.controller.version())
-
         # Initialize the watch entry data
-        self.watch_entry = {}
-        if self.data:
-            self.watch_entry.update(self.data)
+        await self.init(aiohttp_client.async_create_clientsession(self.hass))
+        _LOGGER.debug("pyxplora_api lib version: %s", self.controller.version())
 
         # Get the list of watch UUIDs
         if targets:
@@ -109,8 +117,8 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
             self.battery = watch_location.get("watch_battery", -1)
             self.isCharging = watch_location.get("watch_charging", False)
-            self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0))
-            self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0))
+            self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0)) if watch_location.get(ATTR_TRACKER_LAT, None) else None
+            self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0)) if watch_location.get(ATTR_TRACKER_LNG, None) else None
             self.poi = watch_location.get(ATTR_TRACKER_POI, "")
             self.location_accuracy = watch_location.get(ATTR_TRACKER_RAD, -1)
             self.locateType = watch_location.get("locateType", PXA.LocationType.UNKNOWN.value)
@@ -137,63 +145,51 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
             self._step_day = device.get("getWatchUserSteps", {}).get("day")
             self._xcoin = device.get("getWatchUserXcoins", 0)
-            licence = None
-            if self.maps == MAPS[1]:
-                async with OpenCageGeocodeUA(self.opencage_apikey) as geocoder:
+            if self._maps == MAPS[1] and self.lat and self.lng:
+                async with OpenCageGeocodeUA(self._opencage_apikey) as geocoder:
                     results: list[Any] = await geocoder.reverse_geocode_async(
                         self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
                     )
                     self.location_name = results[0]["formatted"]
-                _LOGGER.debug("load address from opencagedata.com")
-            else:
+                    self.licence = (await geocoder.licenses_async(self.lat, self.lng))[0]["url"]
+                    _LOGGER.debug("load address from opencagedata.com")
+            elif self._maps == MAPS[0] and self.lat and self.lng:
                 language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
                 timeout = aiohttp.ClientTimeout(total=2)
                 async with aiohttp.ClientSession(timeout=timeout) as session:
                     # codiga-disable
                     async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
-                        await session.close()
                         res: dict[str, Any] = await response.json()
-                        licence = res.get(ATTR_TRACKER_LICENCE, None)
+                        self.licence = res.get(ATTR_TRACKER_LICENCE, None)
                         address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
                         if address:
                             self.location_name = res.get("display_name", "")
                             _LOGGER.debug("load address from openstreetmap.org")
-            self.watch_entry.update(
-                {
-                    wuid: {
-                        "unreadMsg": self.unreadMsg,
-                        ATTR_BATTERY: self.battery if self.battery != -1 else None,
-                        "isCharging": self.isCharging if self.battery != -1 else None,
-                        "isOnline": self.isOnline,
-                        "isSafezone": self.isSafezone,
-                        "alarm": self.alarm,
-                        "silent": self.silent,
-                        "step_day": self._step_day,
-                        SENSOR_XCOIN: self._xcoin,
-                        ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
-                        ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
-                        ATTR_TRACKER_POI: self.poi if self.poi else None,
-                        ATTR_LOCATION_NAME: self.location_name,
-                        ATTR_TRACKER_IMEI: self.imei,
-                        "location_accuracy": self.location_accuracy,
-                        "entity_picture": self.entity_picture,
-                        "os_version": self.os_version,
-                        "model": self.model,
-                        "watch_id": self.watch_id,
-                        "locateType": self.locateType,
-                        "lastTrackTime": self.lastTrackTime,
-                        ATTR_TRACKER_LICENCE: licence,
-                        SENSOR_MESSAGE: chats,
-                    }
+            data = {
+                wuid: {
+                    "unreadMsg": self.unreadMsg,
+                    ATTR_BATTERY: self.battery if self.battery != -1 else None,
+                    "isCharging": self.isCharging if self.battery != -1 else None,
+                    "isOnline": self.isOnline,
+                    "isSafezone": self.isSafezone,
+                    "alarm": self.alarm,
+                    "silent": self.silent,
+                    "step_day": self._step_day,
+                    SENSOR_XCOIN: self._xcoin,
+                    ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
+                    ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
+                    ATTR_TRACKER_POI: self.poi if self.poi else None,
+                    ATTR_LOCATION_NAME: self.location_name,
+                    ATTR_TRACKER_IMEI: self.imei,
+                    "location_accuracy": self.location_accuracy,
+                    "entity_picture": self.entity_picture,
+                    "os_version": self.os_version,
+                    "model": self.model,
+                    "watch_id": self.watch_id,
+                    "locateType": self.locateType,
+                    "lastTrackTime": self.lastTrackTime,
+                    ATTR_TRACKER_LICENCE: self.licence,
+                    SENSOR_MESSAGE: chats,
                 }
-            )
-        if self.data:
-            self.data.update(self.watch_entry)
-        else:
-            self.data = self.watch_entry
-        return self.data
-
-    # @callback
-    # def async_set_updated_data(self, data: dict) -> None:
-    #     """Manually update data, notify listeners and reset refresh interval, and remember."""
-    #     super().async_set_updated_data(data)
+            }
+        return data

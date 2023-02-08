@@ -24,6 +24,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import aiohttp_client
 
 from .const import (
     CONF_COUNTRY_CODE,
@@ -79,7 +80,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
 
-    account = PXA.PyXploraApi()
+    account = PXA.PyXploraApi(session=aiohttp_client.async_create_clientsession(hass))
     await account.init(signup=False)
     if not await account.checkEmailOrPhoneExist(
         UserContactType.EMAIL if data.get(CONF_EMAIL, None) else UserContactType.PHONE,
@@ -96,6 +97,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
         userLang=data[CONF_USERLANG],
         timeZone=data[CONF_TIMEZONE],
         email=data.get(CONF_EMAIL, None),
+        session=aiohttp_client.async_create_clientsession(hass),
     )
 
     try:
@@ -157,7 +159,6 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
-
             unique_id = f"{user_input[CONF_PHONENUMBER]}"
 
             await self.async_set_unique_id(unique_id)
@@ -187,7 +188,6 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
-
             unique_id = f"{user_input[CONF_EMAIL]}"
 
             await self.async_set_unique_id(unique_id)
@@ -232,6 +232,7 @@ class XploraOptionsFlowHandler(OptionsFlow):
             self.config_entry.data.get(CONF_USERLANG, None),
             self.config_entry.data.get(CONF_TIMEZONE, None),
             email=self.config_entry.data.get(CONF_EMAIL, None),
+            session=aiohttp_client.async_create_clientsession(self.hass),
         )
         await controller.init()
         watches = await controller.setDevices()
