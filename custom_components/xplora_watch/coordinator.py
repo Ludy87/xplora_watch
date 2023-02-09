@@ -51,6 +51,8 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     location_name: str = None
     licence: str = None
     controller: PXA.PyXploraApi = None
+    lat = None
+    lng = None
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
@@ -117,8 +119,10 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
             self.battery = watch_location.get("watch_battery", -1)
             self.isCharging = watch_location.get("watch_charging", False)
-            self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0)) if watch_location.get(ATTR_TRACKER_LAT, None) else None
-            self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0)) if watch_location.get(ATTR_TRACKER_LNG, None) else None
+            if watch_location.get(ATTR_TRACKER_LAT, None):
+                self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0))
+            if watch_location.get(ATTR_TRACKER_LNG, None):
+                self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0))
             self.poi = watch_location.get(ATTR_TRACKER_POI, "")
             self.location_accuracy = watch_location.get(ATTR_TRACKER_RAD, -1)
             self.locateType = watch_location.get("locateType", PXA.LocationType.UNKNOWN.value)
