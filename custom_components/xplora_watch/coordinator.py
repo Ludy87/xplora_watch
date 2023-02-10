@@ -134,21 +134,24 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 else False
             )
 
-            self.alarm = device.get("getWatchAlarm", [])
-            self.silent = device.get("getSilentTime", [])
-
-            sw_version: dict[str, Any] = device.get("getWatches", {})
-            self.imei = sw_version.get(ATTR_TRACKER_IMEI, wuid)
-            self.watch_id = wuid
-            self.os_version = sw_version.get("osVersion", "n/a")
-            self.model = sw_version.get("model", "GPS-Watch")
-            self.entity_picture = device.get("getWatchUserIcons", "")
-
-            self._step_day = device.get("getWatchUserSteps", {}).get("day")
-            self._xcoin = device.get("getWatchUserXcoins", 0)
+            self.get_watch_functions(wuid, device)
             await self.get_map()
             data = self.get_data(wuid, chats)
         return data
+
+    def get_watch_functions(self, wuid, device):
+        self.alarm = device.get("getWatchAlarm", [])
+        self.silent = device.get("getSilentTime", [])
+
+        sw_version: dict[str, Any] = device.get("getWatches", {})
+        self.imei = sw_version.get(ATTR_TRACKER_IMEI, wuid)
+        self.watch_id = wuid
+        self.os_version = sw_version.get("osVersion", "n/a")
+        self.model = sw_version.get("model", "GPS-Watch")
+        self.entity_picture = device.get("getWatchUserIcons", "")
+
+        self._step_day = device.get("getWatchUserSteps", {}).get("day")
+        self._xcoin = device.get("getWatchUserXcoins", 0)
 
     def get_location(self, device, watch_location):
         if watch_location.get(ATTR_TRACKER_LAT, None):
