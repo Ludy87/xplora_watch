@@ -57,6 +57,14 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     location_accuracy: int = -1
     locateType: str = PXA.LocationType.UNKNOWN.value
     lastTrackTime: str | None = None
+    alarm: list = []
+    silent: list = []
+    imei: str = ""
+    watch_id: str | None = None
+    os_version: str = "n/a"
+    model: str = "GPS-Watch"
+    entity_picture: str = ""
+    _step_day: dict
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
