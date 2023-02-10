@@ -23,6 +23,8 @@ Xplora® Watch Version 2 integration for Home Assistant
 
 ## Features
 
+**IMPORTANCE: Of a service is activated by automation, the sensors will no longer be updated. Therefore, activate the `xplora_watch.see` service with a corresponding interval.**
+
 | Features                                                                                             | Type           |
 | ---------------------------------------------------------------------------------------------------- | -------------- |
 | Battery                                                                                              | Sensor         |
@@ -52,7 +54,7 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 ### INSTALLATION mit HACS
 
 1. Ensure that [HACS](https://hacs.xyz/) is installed.
-2. Search for and install the "__Xplora® Watch Integration__" integration. [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/releases)
+2. Search for and install the "**Xplora® Watch Integration**" integration. [![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch)](https://github.com/Ludy87/xplora_watch/releases)
 3. [Configuration for the "Xplora® Watch Version 2" integration is now performed via a config flow as opposed to yaml configuration file.](https://github.com/Ludy87/xplora_watch#basis-configuration)
 
 ---
@@ -70,6 +72,16 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 | add in Version 2.2.0                                                                          | add in Version 2                                                                                        |
 | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | ![signin image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/signin.png) | ![integration image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/integration.png) |
+
+---
+
+## Downloaded from voice messages, Videos and Images (v2.7.0)
+
+- All voice messages, videos and images are stored in `config/www/{voice|video|image|}`. [#152](https://github.com/Ludy87/xplora_watch/discussions/152)
+  - The voice message will be downloaded as amr and converted to mp3.
+  - Videos as mp4
+  - Images as jpeg
+- updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) [#155](https://github.com/Ludy87/xplora_watch/issues/155)
 
 ---
 

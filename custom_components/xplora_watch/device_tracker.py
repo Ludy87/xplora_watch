@@ -60,7 +60,6 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
 
 
 class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
-
     _attr_force_update: bool = False
     _attr_icon: str | None = "mdi:crosshairs-gps"
 

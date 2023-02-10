@@ -24,6 +24,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
+from homeassistant.helpers import aiohttp_client
 
 from .const import (
     CONF_COUNTRY_CODE,
@@ -74,12 +75,27 @@ DATA_SCHEMA_EMAIL = {
 }
 
 
+@callback
+async def sign_in(hass: core.HomeAssistant, data: dict[str, Any] = None) -> PXA.PyXploraApi:
+    controller: PXA.PyXploraApi = PXA.PyXploraApi(
+        countrycode=data.get(CONF_COUNTRY_CODE, None),
+        phoneNumber=data.get(CONF_PHONENUMBER, None),
+        password=data.get(CONF_PASSWORD, ""),
+        userLang=data.get(CONF_USERLANG, None),
+        timeZone=data.get(CONF_TIMEZONE, None),
+        email=data.get(CONF_EMAIL, None),
+        session=aiohttp_client.async_create_clientsession(hass),
+    )
+    await controller.init()
+    return controller
+
+
 async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
 
-    account = PXA.PyXploraApi()
+    account = PXA.PyXploraApi(session=aiohttp_client.async_create_clientsession(hass))
     await account.init(signup=False)
     if not await account.checkEmailOrPhoneExist(
         UserContactType.EMAIL if data.get(CONF_EMAIL, None) else UserContactType.PHONE,
@@ -89,17 +105,8 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
     ):
         raise PhoneOrEmailFail()
 
-    account = PXA.PyXploraApi(
-        countrycode=data.get(CONF_COUNTRY_CODE, None),
-        phoneNumber=data.get(CONF_PHONENUMBER, None),
-        password=data[CONF_PASSWORD],
-        userLang=data[CONF_USERLANG],
-        timeZone=data[CONF_TIMEZONE],
-        email=data.get(CONF_EMAIL, None),
-    )
-
     try:
-        await account.init()
+        await sign_in(hass=hass, data=data)
     except LoginError as err:
         raise LoginError(err.error_message)
 
@@ -157,7 +164,6 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
-
             unique_id = f"{user_input[CONF_PHONENUMBER]}"
 
             await self.async_set_unique_id(unique_id)
@@ -187,7 +193,6 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
-
             unique_id = f"{user_input[CONF_EMAIL]}"
 
             await self.async_set_unique_id(unique_id)
@@ -222,38 +227,8 @@ class XploraOptionsFlowHandler(OptionsFlow):
         super().__init__()
         self.config_entry = config_entry
 
-    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
-        """Handle options flow."""
-        errors: dict[str, str] = {}
-        controller = PXA.PyXploraApi(
-            self.config_entry.data.get(CONF_COUNTRY_CODE, None),
-            self.config_entry.data.get(CONF_PHONENUMBER, None),
-            self.config_entry.data.get(CONF_PASSWORD, None),
-            self.config_entry.data.get(CONF_USERLANG, None),
-            self.config_entry.data.get(CONF_TIMEZONE, None),
-            email=self.config_entry.data.get(CONF_EMAIL, None),
-        )
-        await controller.init()
-        watches = await controller.setDevices()
-        _options = self.config_entry.options
-
-        schema = OrderedDict()
-        schema[vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, watches))] = cv.multi_select(watches)
-        i = 1
-        for watch in watches:
-            schema[vol.Optional(f"{CONF_WATCHES}_{i}", default=_options.get(f"{CONF_WATCHES}_{i}", watch))] = cv.string
-            i += 1
-
-        language = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
-
-        signin_typ = [
-            SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_EMAIL)
-            if CONF_EMAIL in self.config_entry.data
-            else SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_PHONENUMBER)
-        ]
-
-        _home_zone = self.hass.states.get(HOME).attributes
-        options = vol.Schema(
+    def get_options(self, signin_typ, schema, language, _options, _home_zone):
+        return vol.Schema(
             {
                 vol.Optional(CONF_SIGNIN_TYP, default=signin_typ[0]): vol.In(signin_typ),
                 **schema,
@@ -282,6 +257,31 @@ class XploraOptionsFlowHandler(OptionsFlow):
                 vol.Required(CONF_REMOVE_MESSAGE, default=_options.get(CONF_REMOVE_MESSAGE, False)): cv.boolean,
             }
         )
+
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+        """Handle options flow."""
+        errors: dict[str, str] = {}
+        controller = await sign_in(self.hass, self.config_entry.data)
+        watches = await controller.setDevices()
+        _options = self.config_entry.options
+
+        schema = OrderedDict()
+        schema[vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, watches))] = cv.multi_select(watches)
+        i = 1
+        for watch in watches:
+            schema[vol.Optional(f"{CONF_WATCHES}_{i}", default=_options.get(f"{CONF_WATCHES}_{i}", watch))] = cv.string
+            i += 1
+
+        language = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+
+        signin_typ = [
+            SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_EMAIL)
+            if CONF_EMAIL in self.config_entry.data
+            else SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_PHONENUMBER)
+        ]
+
+        _home_zone = self.hass.states.get(HOME).attributes
+        options = self.get_options(signin_typ, schema, language, _options, _home_zone)
 
         if user_input is not None:
             errors = validate_options_input(user_input)

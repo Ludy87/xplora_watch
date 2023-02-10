@@ -85,7 +85,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
         if i == -1:
             return
-        _wuid = self._options.get(f"{CONF_WATCHES}_{i}", "")
+        _wuid: str = self._options.get(f"{CONF_WATCHES}_{i}", "")
         if _wuid.find("=") != -1:
             friendly_name = _wuid.split("=")
             if friendly_name[0] == wuid:
@@ -152,7 +152,6 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     ) -> None:
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         self._silent = silent
-        self._silents: list[dict[str, Any]] = self.coordinator.data[wuid]["silent"]
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
         if i == -1:
             return

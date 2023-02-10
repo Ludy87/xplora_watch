@@ -28,15 +28,15 @@ class XploraNotifyService(BaseNotificationService):
         self._controller = coordinator.controller
 
     async def async_send_message(self, message="", **kwargs):
-        """Send a message to a user."""
-        msg = message.strip()
-        target = kwargs[ATTR_TARGET]
-        _LOGGER.debug(f"sent message '{msg}' to {target}")
-        if not target:
+        """Send message to user."""
+        targets = kwargs.get(ATTR_TARGET, None)
+        if not targets:
             _LOGGER.warning("No watch id!")
-        if len(msg) > 0:
-            for watch_id in target:
-                if not await self._controller.sendText(text=msg, wuid=watch_id):
-                    _LOGGER.error("Message cannot send!")
-        else:
-            _LOGGER.warning("Your message is empty!")
+            return
+        msg = message.strip()
+        if not msg:
+            _LOGGER.warning("Message is empty!")
+            return
+        for watch_id in targets:
+            if not await self._controller.sendText(text=msg, wuid=watch_id):
+                _LOGGER.error("Failed to send message '%s' to %s" % msg, watch_id)

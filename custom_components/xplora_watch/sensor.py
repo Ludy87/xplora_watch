@@ -69,16 +69,18 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     """Set up the Xplora® Watch Version 2 sensors from config entry."""
     coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
     entities: list[XploraSensor] = []
-    for description in SENSOR_TYPES:
+    for desc in SENSOR_TYPES:
         for watch in coordinator.controller.watchs:
-            if config_entry.options:
-                ward: dict[str, Any] = watch.get("ward")
-                wuid: str = ward.get(ATTR_ID, "")
-                if wuid in config_entry.options.get(CONF_WATCHES, []):
-                    if description.key in config_entry.options.get(CONF_TYPES, []):
-                        sw_version = await coordinator.controller.getWatches(wuid)
-                        entities.append(XploraSensor(config_entry, coordinator, ward, sw_version, wuid, description))
-            else:
+            ward = watch.get("ward")
+            wuid = ward.get(ATTR_ID, "")
+            if (
+                config_entry.options
+                and wuid in config_entry.options.get(CONF_WATCHES, [])
+                and desc.key in config_entry.options.get(CONF_TYPES, [])
+            ):
+                sw_version = await coordinator.controller.getWatches(wuid)
+                entities.append(XploraSensor(config_entry, coordinator, ward, sw_version, wuid, desc))
+            elif not config_entry.options:
                 _LOGGER.debug(f"{watch} {config_entry.entry_id}")
     async_add_entities(entities)
 
