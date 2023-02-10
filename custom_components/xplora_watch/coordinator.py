@@ -51,8 +51,12 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     location_name: str = None
     licence: str = None
     controller: PXA.PyXploraApi = None
-    lat = None
-    lng = None
+    lat: float | None = None
+    lng: float | None = None
+    poi: str | None = None
+    location_accuracy: int = -1
+    locateType: str = PXA.LocationType.UNKNOWN.value
+    lastTrackTime: str | None = None
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
