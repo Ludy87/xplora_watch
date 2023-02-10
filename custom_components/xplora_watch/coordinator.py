@@ -119,14 +119,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
             self.battery = watch_location.get("watch_battery", -1)
             self.isCharging = watch_location.get("watch_charging", False)
-            if watch_location.get(ATTR_TRACKER_LAT, None):
-                self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0))
-            if watch_location.get(ATTR_TRACKER_LNG, None):
-                self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0))
-            self.poi = watch_location.get(ATTR_TRACKER_POI, "")
-            self.location_accuracy = watch_location.get(ATTR_TRACKER_RAD, -1)
-            self.locateType = watch_location.get("locateType", PXA.LocationType.UNKNOWN.value)
-            self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            self.get_location(device, watch_location)
 
             self.isSafezone = False if device.get("isInSafeZone", False) else True
 
@@ -152,6 +145,16 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             await self.get_map()
             data = self.get_data(wuid, chats)
         return data
+
+    def get_location(self, device, watch_location):
+        if watch_location.get(ATTR_TRACKER_LAT, None):
+            self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0))
+        if watch_location.get(ATTR_TRACKER_LNG, None):
+            self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0))
+        self.poi = watch_location.get(ATTR_TRACKER_POI, "")
+        self.location_accuracy = watch_location.get(ATTR_TRACKER_RAD, -1)
+        self.locateType = watch_location.get("locateType", PXA.LocationType.UNKNOWN.value)
+        self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     async def get_map(self):
         if self._maps == MAPS[1] and self.lat and self.lng:
