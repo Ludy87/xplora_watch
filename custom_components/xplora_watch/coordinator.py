@@ -149,51 +149,57 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
             self._step_day = device.get("getWatchUserSteps", {}).get("day")
             self._xcoin = device.get("getWatchUserXcoins", 0)
-            if self._maps == MAPS[1] and self.lat and self.lng:
-                async with OpenCageGeocodeUA(self._opencage_apikey) as geocoder:
-                    results: list[Any] = await geocoder.reverse_geocode_async(
-                        self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
-                    )
-                    self.location_name = results[0]["formatted"]
-                    self.licence = (await geocoder.licenses_async(self.lat, self.lng))[0]["url"]
-                    _LOGGER.debug("load address from opencagedata.com")
-            elif self._maps == MAPS[0] and self.lat and self.lng:
-                language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
-                timeout = aiohttp.ClientTimeout(total=2)
-                async with aiohttp.ClientSession(timeout=timeout) as session:
-                    # codiga-disable
-                    async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
-                        res: dict[str, Any] = await response.json()
-                        self.licence = res.get(ATTR_TRACKER_LICENCE, None)
-                        address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
-                        if address:
-                            self.location_name = res.get("display_name", "")
-                            _LOGGER.debug("load address from openstreetmap.org")
-            data = {
-                wuid: {
-                    "unreadMsg": self.unreadMsg,
-                    ATTR_BATTERY: self.battery if self.battery != -1 else None,
-                    "isCharging": self.isCharging if self.battery != -1 else None,
-                    "isOnline": self.isOnline,
-                    "isSafezone": self.isSafezone,
-                    "alarm": self.alarm,
-                    "silent": self.silent,
-                    "step_day": self._step_day,
-                    SENSOR_XCOIN: self._xcoin,
-                    ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
-                    ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
-                    ATTR_TRACKER_POI: self.poi if self.poi else None,
-                    ATTR_LOCATION_NAME: self.location_name,
-                    ATTR_TRACKER_IMEI: self.imei,
-                    "location_accuracy": self.location_accuracy,
-                    "entity_picture": self.entity_picture,
-                    "os_version": self.os_version,
-                    "model": self.model,
-                    "watch_id": self.watch_id,
-                    "locateType": self.locateType,
-                    "lastTrackTime": self.lastTrackTime,
-                    ATTR_TRACKER_LICENCE: self.licence,
-                    SENSOR_MESSAGE: chats,
-                }
-            }
+            await self.get_map()
+            data = self.get_data(wuid, chats)
         return data
+
+    async def get_map(self):
+        if self._maps == MAPS[1] and self.lat and self.lng:
+            async with OpenCageGeocodeUA(self._opencage_apikey) as geocoder:
+                results: list[Any] = await geocoder.reverse_geocode_async(
+                    self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
+                )
+                self.location_name = results[0]["formatted"]
+                self.licence = (await geocoder.licenses_async(self.lat, self.lng))[0]["url"]
+                _LOGGER.debug("load address from opencagedata.com")
+        elif self._maps == MAPS[0] and self.lat and self.lng:
+            language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+            timeout = aiohttp.ClientTimeout(total=2)
+            async with aiohttp.ClientSession(timeout=timeout) as session:
+                # codiga-disable
+                async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
+                    res: dict[str, Any] = await response.json()
+                    self.licence = res.get(ATTR_TRACKER_LICENCE, None)
+                    address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
+                    if address:
+                        self.location_name = res.get("display_name", "")
+                        _LOGGER.debug("load address from openstreetmap.org")
+
+    def get_data(self, wuid, chats):
+        return {
+            wuid: {
+                "unreadMsg": self.unreadMsg,
+                ATTR_BATTERY: self.battery if self.battery != -1 else None,
+                "isCharging": self.isCharging if self.battery != -1 else None,
+                "isOnline": self.isOnline,
+                "isSafezone": self.isSafezone,
+                "alarm": self.alarm,
+                "silent": self.silent,
+                "step_day": self._step_day,
+                SENSOR_XCOIN: self._xcoin,
+                ATTR_TRACKER_LAT: self.lat if self.isOnline else None,
+                ATTR_TRACKER_LNG: self.lng if self.isOnline else None,
+                ATTR_TRACKER_POI: self.poi if self.poi else None,
+                ATTR_LOCATION_NAME: self.location_name,
+                ATTR_TRACKER_IMEI: self.imei,
+                "location_accuracy": self.location_accuracy,
+                "entity_picture": self.entity_picture,
+                "os_version": self.os_version,
+                "model": self.model,
+                "watch_id": self.watch_id,
+                "locateType": self.locateType,
+                "lastTrackTime": self.lastTrackTime,
+                ATTR_TRACKER_LICENCE: self.licence,
+                SENSOR_MESSAGE: chats,
+            }
+        }
