@@ -76,7 +76,7 @@ DATA_SCHEMA_EMAIL = {
 
 
 @callback
-async def sign_in(hass: core.HomeAssistant, data: dict[str, Any] = {}) -> PXA.PyXploraApi:
+async def sign_in(hass: core.HomeAssistant, data: dict[str, Any] = None) -> PXA.PyXploraApi:
     controller: PXA.PyXploraApi = PXA.PyXploraApi(
         countrycode=data.get(CONF_COUNTRY_CODE, None),
         phoneNumber=data.get(CONF_PHONENUMBER, None),
