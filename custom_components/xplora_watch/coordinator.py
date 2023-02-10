@@ -120,6 +120,10 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         remove_message = self._entry.options.get(CONF_REMOVE_MESSAGE, False)
 
         # Loop through the list of watches and fetch data
+        data = await self.data_loop(wuids, message_limit, remove_message)
+        return data
+
+    async def data_loop(self, wuids, message_limit, remove_message):
         for wuid in wuids:
             _LOGGER.debug("Fetch data from Xplora: %s", wuid[25:])
             device = self.controller.getDevice(wuid=wuid)
