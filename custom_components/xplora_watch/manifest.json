@@ -1,13 +1,13 @@
 {
   "domain": "xplora_watch",
   "name": "Xplora® Watch",
-  "version": "v2.7.1",
+  "version": "v2.7.2",
   "config_flow": true,
   "documentation": "https://github.com/Ludy87/xplora_watch/tree/main",
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],
   "requirements": [
-    "pyxplora_api==2.5.20",
+    "pyxplora_api==2.5.21",
     "geopy==2.2.0",
     "dataclasses-json",
     "pydub"
