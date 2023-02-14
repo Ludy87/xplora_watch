@@ -106,6 +106,10 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self, targets: list[str] = None):
         """Fetch data from Xplora."""
         # Initialize the watch entry data
+        self.watch_entry = {}
+        if self.data:
+            self.watch_entry.update(self.data)
+
         await self.init(aiohttp_client.async_create_clientsession(self.hass))
         _LOGGER.debug("pyxplora_api lib version: %s", self.controller.version())
 
@@ -120,10 +124,12 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         remove_message = self._entry.options.get(CONF_REMOVE_MESSAGE, False)
 
         # Loop through the list of watches and fetch data
-        data = await self.data_loop(wuids, message_limit, remove_message)
-        return data
+        self.watch_entry.update(await self.data_loop(wuids, message_limit, remove_message))
+        self.data = self.watch_entry
+        return self.data
 
     async def data_loop(self, wuids, message_limit, remove_message):
+        data = {}
         for wuid in wuids:
             _LOGGER.debug("Fetch data from Xplora: %s", wuid[25:])
             device = self.controller.getDevice(wuid=wuid)
@@ -148,7 +154,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
             self.get_watch_functions(wuid, device)
             await self.get_map()
-            data = self.get_data(wuid, chats)
+            data.update(self.get_data(wuid, chats))
         return data
 
     def get_watch_functions(self, wuid, device):
@@ -166,11 +172,9 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self._xcoin = device.get("getWatchUserXcoins", 0)
 
     def get_location(self, device, watch_location):
-        if watch_location.get(ATTR_TRACKER_LAT, None):
-            self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0))
-        if watch_location.get(ATTR_TRACKER_LNG, None):
-            self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0))
-        self.poi = watch_location.get(ATTR_TRACKER_POI, "")
+        self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0)) if watch_location.get(ATTR_TRACKER_LAT, None) else None
+        self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0)) if watch_location.get(ATTR_TRACKER_LNG, None) else None
+        self.poi = watch_location.get(ATTR_TRACKER_POI, None)
         self.location_accuracy = watch_location.get(ATTR_TRACKER_RAD, -1)
         self.locateType = watch_location.get("locateType", PXA.LocationType.UNKNOWN.value)
         self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -225,3 +229,14 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 SENSOR_MESSAGE: chats,
             }
         }
+
+    async def message_data(self, wuid, message_limit, remove_message):
+        self.watch_entry = {}
+        if self.data:
+            self.watch_entry.update(self.data)
+        _LOGGER.debug("Fetch message data from Xplora: %s", wuid[25:])
+        res_chats = await self.controller.getWatchChatsRaw(wuid, limit=message_limit, show_del_msg=remove_message)
+        chats = ChatsNew.from_dict(res_chats).to_dict()
+        self.watch_entry.update({wuid: {SENSOR_MESSAGE: chats}})
+        self.data = self.watch_entry
+        return res_chats

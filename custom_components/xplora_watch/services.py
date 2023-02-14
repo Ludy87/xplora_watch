@@ -170,33 +170,28 @@ class XploraMessageSensorUpdateService(XploraService):
             if "all" in targets:
                 targets = self._coordinator.controller.getWatchUserIDs()
             for watch in targets:
-                w: dict[str, Any] = old_state.get(watch, None)
-                if w:
-                    res_chats = await self._coordinator.controller.getWatchChatsRaw(watch, limit, show_del_msg=show_remove_msg)
-                    if res_chats:
-                        for chat in res_chats.get("list"):
-                            chat_type = chat.get("type")
-                            msg_id = chat.get("msgId")
-                            if chat_type == "VOICE":
-                                voice = await self._coordinator.controller._gql_handler.fetchChatVoice_a(watch, msg_id)
-                                encoded_base64_string_to_mp3_file(self._hass, voice.get("fetchChatVoice"), msg_id)
-                            elif chat_type == "SHORT_VIDEO":
-                                video = await self._coordinator.controller._gql_handler.fetchChatShortVideo_a(watch, msg_id)
-                                encoded_base64_string_to_file(
-                                    self._hass, video.get("fetchChatShortVideo"), msg_id, "mp4", "video"
-                                )
-                                thumb = await self._coordinator.controller._gql_handler.fetchChatShortVideoCover_a(
-                                    watch, msg_id
-                                )
-                                encoded_base64_string_to_file(
-                                    self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb"
-                                )
-                            elif chat_type == "IMAGE":
-                                image = await self._coordinator.controller._gql_handler.fetchChatImage_a(watch, msg_id)
-                                encoded_base64_string_to_file(self._hass, image.get("fetchChatImage"), msg_id, "jpeg", "image")
-                        w.update({SENSOR_MESSAGE: (res_chats)})
-                old_state.update({watch: w})
-            self._coordinator.async_set_updated_data(old_state)
+                w: dict[str, Any] = old_state.get(watch, {})
+                res_chats = await self._coordinator.message_data(watch, limit, show_remove_msg)
+                if res_chats:
+                    for chat in res_chats.get("list"):
+                        chat_type = chat.get("type")
+                        msg_id = chat.get("msgId")
+                        if chat_type == "VOICE":
+                            voice = await self._coordinator.controller._gql_handler.fetchChatVoice_a(watch, msg_id)
+                            encoded_base64_string_to_mp3_file(self._hass, voice.get("fetchChatVoice"), msg_id)
+                        elif chat_type == "SHORT_VIDEO":
+                            video = await self._coordinator.controller._gql_handler.fetchChatShortVideo_a(watch, msg_id)
+                            encoded_base64_string_to_file(self._hass, video.get("fetchChatShortVideo"), msg_id, "mp4", "video")
+                            thumb = await self._coordinator.controller._gql_handler.fetchChatShortVideoCover_a(watch, msg_id)
+                            encoded_base64_string_to_file(
+                                self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb"
+                            )
+                        elif chat_type == "IMAGE":
+                            image = await self._coordinator.controller._gql_handler.fetchChatImage_a(watch, msg_id)
+                            encoded_base64_string_to_file(self._hass, image.get("fetchChatImage"), msg_id, "jpeg", "image")
+                    w.update({watch: {SENSOR_MESSAGE: res_chats}})
+                old_state.update(w)
+            await self._coordinator.async_set_updated_data(old_state)
         else:
             _LOGGER.warning("No watch id or type %s not allowed!" % type(targets))
 
