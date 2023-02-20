@@ -159,20 +159,23 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         self._attr_unique_id = wuid
         self._config_entry = config_entry
 
+        self._latitude = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)
+        self._longitude = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)
+
     @property
     def battery_level(self) -> int | None:
         """Return battery value of the device."""
-        return self.coordinator.data[self.watch_uid][ATTR_BATTERY]
+        return self.coordinator.data[self.watch_uid].get(ATTR_BATTERY, None)
 
     @property
     def latitude(self) -> float | None:
         """Return latitude value of the device."""
-        return self.coordinator.data[self.watch_uid][ATTR_TRACKER_LAT]
+        return self._latitude
 
     @property
     def longitude(self) -> float | None:
         """Return longitude value of the device."""
-        return self.coordinator.data[self.watch_uid][ATTR_TRACKER_LNG]
+        return self._longitude
 
     @property
     def source_type(self) -> SourceType | str:
@@ -182,39 +185,39 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
     @property
     def location_accuracy(self) -> int:
         """Return the gps accuracy of the device."""
-        return self.coordinator.data[self.watch_uid]["location_accuracy"]
+        return self.coordinator.data[self.watch_uid].get("location_accuracy", 0)
 
     @property
     def address(self) -> str | None:
         """Return a location name for the current location of the device."""
-        return self.coordinator.data[self.watch_uid][ATTR_LOCATION_NAME]
+        return self.coordinator.data[self.watch_uid].get(ATTR_LOCATION_NAME, None)
 
     @property
     def entity_picture(self) -> str | None:
         """Return the entity picture to use in the frontend, if any."""
-        return self.coordinator.data[self.watch_uid]["entity_picture"]
+        return self.coordinator.data[self.watch_uid].get("entity_picture", None)
 
     @property
     def extra_state_attributes(self) -> dict[str, any]:
         data = super().extra_state_attributes or {}
         distance_to_home = None
-        if (
-            self.coordinator.data[self.watch_uid][ATTR_TRACKER_LAT] is not None
-            and self.coordinator.data[self.watch_uid][ATTR_TRACKER_LNG] is not None
-        ):
-            lat_lng: tuple[float, float] = (
-                float(self.coordinator.data[self.watch_uid][ATTR_TRACKER_LAT]),
-                float(self.coordinator.data[self.watch_uid][ATTR_TRACKER_LNG]),
-            )
+
+        if self._latitude and self._longitude:
+            lat_lng: tuple[float, float] = (float(self._latitude), float(self._longitude))
             distance_to_home = get_location_distance_meter(self._hass, lat_lng)
+
         return dict(
             data,
             **{
                 ATTR_TRACKER_DISTOHOME: distance_to_home,
-                ATTR_TRACKER_ADDR: self.address if distance_to_home else None,
-                ATTR_TRACKER_LAST_TRACK: self.coordinator.data[self.watch_uid]["lastTrackTime"] if distance_to_home else None,
-                ATTR_TRACKER_IMEI: self.coordinator.data[self.watch_uid][ATTR_TRACKER_IMEI],
-                ATTR_TRACKER_POI: self.coordinator.data[self.watch_uid][ATTR_TRACKER_POI],
-                ATTR_TRACKER_LICENCE: self.coordinator.data[self.watch_uid][ATTR_TRACKER_LICENCE],
+                ATTR_TRACKER_ADDR: self.coordinator.data[self.watch_uid].get(ATTR_LOCATION_NAME, None)
+                if distance_to_home
+                else None,
+                ATTR_TRACKER_LAST_TRACK: self.coordinator.data[self.watch_uid].get("lastTrackTime", None)
+                if distance_to_home
+                else None,
+                ATTR_TRACKER_IMEI: self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_IMEI, None),
+                ATTR_TRACKER_POI: self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_POI, None),
+                ATTR_TRACKER_LICENCE: self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LICENCE, None),
             },
         )

@@ -83,6 +83,7 @@
     Sender: {{ sender.name }}
     Empfänger: {{ receiver.name }}
     Nachricht: {{ data.emoticon_id }}
+    ![data.emoticon_id](/local/xplora_watch/emojis/emoji_{{ data.emoji_id }}.png)
   {%- elif type == "IMAGE" -%}
     <ha-alert title="Type: {{ type }}" alert-type="info">ID: {{ msgId }}<br>***{{ (data.tm / 1000) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}***<br>{{ trash }}</ha-alert>
     Sender: {{ sender.name }}

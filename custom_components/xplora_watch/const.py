@@ -11,6 +11,10 @@ DEVICE_NAME: Final = "Xplora® Watch"
 ATTRIBUTION: Final = "Data provided by Xplora®"
 
 URL_OPENSTREETMAP = "https://nominatim.openstreetmap.org/reverse?lat={}&lon={}&format=jsonv2&accept-language={}"
+URL_MAPBOX = "https://api.mapbox.com/geocoding/v5/mapbox.places/{},{}.json?types=address&limit=1&access_token={}&language={}"
+API_KEY_MAPBOX: Final = (
+    "pk.eyJ1IjoieHBsb3JhdGVjaG5vbG9naWVzIiwiYSI6ImNrenpoYnFodzBhZTUzbG83aTFrNG91aXoifQ.ih4DP1EH9xSrQnzr7QaDvw"
+)
 
 ATTR_SERVICE_MSG: Final = "message"
 ATTR_SERVICE_MSGID: Final = "message_id"
