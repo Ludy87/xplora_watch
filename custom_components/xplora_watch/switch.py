@@ -108,7 +108,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        for alarm in self.coordinator.data[self.watch_uid]["alarm"]:
+        for alarm in self.coordinator.data[self.watch_uid].get("alarm", []):
             if alarm[ATTR_ID] == self._alarm[ATTR_ID]:
                 self._attr_is_on = self._states(alarm["status"])
                 self.async_write_ha_state()
@@ -182,7 +182,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        for silent in self.coordinator.data[self.watch_uid]["silent"]:
+        for silent in self.coordinator.data[self.watch_uid].get("silent", []):
             if silent[ATTR_ID] == self._silent[ATTR_ID]:
                 self._attr_is_on = self._states(silent["status"])
                 self.async_write_ha_state()

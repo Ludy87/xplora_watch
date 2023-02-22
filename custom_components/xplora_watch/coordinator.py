@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Union
 
 import aiohttp
 from pyxplora_api import pyxplora_api_async as PXA
@@ -17,6 +17,7 @@ from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import (
+    API_KEY_MAPBOX,
     ATTR_TRACKER_ADDR,
     ATTR_TRACKER_IMEI,
     ATTR_TRACKER_LAT,
@@ -40,6 +41,7 @@ from .const import (
     MAPS,
     SENSOR_MESSAGE,
     SENSOR_XCOIN,
+    URL_MAPBOX,
     URL_OPENSTREETMAP,
 )
 from .geocoder import OpenCageGeocodeUA
@@ -103,9 +105,17 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         await self.set_controller(session)
         await self.controller.init(self.controller._gql_handler.getApiKey(), sec=self.controller._gql_handler.getSecret())
 
-    async def _async_update_data(self, targets: list[str] = None):
+    async def _async_update_data(self, targets: list[str] = None, new_data: dict = None):
         """Fetch data from Xplora."""
         # Initialize the watch entry data
+        if new_data:
+            _LOGGER.debug("new data from Message Service")
+            if self.data:
+                self.data.update(new_data)
+            else:
+                self.data = new_data
+            self.async_set_updated_data(self.data)
+            return
         self.watch_entry = {}
         if self.data:
             self.watch_entry.update(self.data)
@@ -125,7 +135,10 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
         # Loop through the list of watches and fetch data
         self.watch_entry.update(await self.data_loop(wuids, message_limit, remove_message))
-        self.data = self.watch_entry
+        if not self.data:
+            self.data = self.watch_entry
+        else:
+            self.data.update(self.watch_entry)
         return self.data
 
     async def data_loop(self, wuids, message_limit, remove_message):
@@ -171,7 +184,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self._step_day = device.get("getWatchUserSteps", {}).get("day")
         self._xcoin = device.get("getWatchUserXcoins", 0)
 
-    def get_location(self, device, watch_location):
+    def get_location(self, device: dict, watch_location):
         self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0)) if watch_location.get(ATTR_TRACKER_LAT, None) else None
         self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0)) if watch_location.get(ATTR_TRACKER_LNG, None) else None
         self.poi = watch_location.get(ATTR_TRACKER_POI, None)
@@ -181,6 +194,24 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def get_map(self):
         if self._maps == MAPS[1] and self.lat and self.lng:
+            await self.opencagedata()
+        elif self._maps == MAPS[0] and self.lat and self.lng:
+            await self.openstreetmap()
+
+    async def mapbox(self) -> str:
+        language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+        async with aiohttp.ClientSession() as session:
+            # codiga-disable
+            url = URL_MAPBOX.format(self.lng, self.lat, API_KEY_MAPBOX, language)
+            async with session.get(url) as response:
+                data = await response.json()
+                if data["features"]:
+                    self.location_name = data["features"][0]["place_name"]
+                    self.licence = data["attribution"]
+                self.licence = data["attribution"]
+
+    async def opencagedata(self):
+        try:
             async with OpenCageGeocodeUA(self._opencage_apikey) as geocoder:
                 results: list[Any] = await geocoder.reverse_geocode_async(
                     self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
@@ -188,18 +219,22 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 self.location_name = results[0]["formatted"]
                 self.licence = (await geocoder.licenses_async(self.lat, self.lng))[0]["url"]
                 _LOGGER.debug("load address from opencagedata.com")
-        elif self._maps == MAPS[0] and self.lat and self.lng:
-            language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
-            timeout = aiohttp.ClientTimeout(total=2)
-            async with aiohttp.ClientSession(timeout=timeout) as session:
-                # codiga-disable
-                async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
-                    res: dict[str, Any] = await response.json()
-                    self.licence = res.get(ATTR_TRACKER_LICENCE, None)
-                    address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
-                    if address:
-                        self.location_name = res.get("display_name", "")
-                        _LOGGER.debug("load address from openstreetmap.org")
+        except aiohttp.ContentTypeError:
+            _LOGGER.debug("error about open.com using mapbox.com")
+            await self.mapbox()
+
+    async def openstreetmap(self):
+        language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+        timeout = aiohttp.ClientTimeout(total=2)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            # codiga-disable
+            async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
+                res: dict[str, Any] = await response.json()
+                self.licence = res.get(ATTR_TRACKER_LICENCE, None)
+                address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
+                if address:
+                    self.location_name = res.get("display_name", "")
+                    _LOGGER.debug("load address from openstreetmap.org")
 
     def get_data(self, wuid, chats):
         return {
@@ -230,7 +265,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             }
         }
 
-    async def message_data(self, wuid, message_limit, remove_message):
+    async def message_data(self, wuid, message_limit, remove_message) -> Union[dict, ChatsNew]:
         self.watch_entry = {}
         if self.data:
             self.watch_entry.update(self.data)

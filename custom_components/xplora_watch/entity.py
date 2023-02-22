@@ -47,7 +47,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, wuid)},
             manufacturer=MANUFACTURER,
-            model=self.coordinator.data[wuid]["model"],
+            model=self.coordinator.data[wuid].get("model", DEVICE_NAME),
             name=f"{DEVICE_NAME} {wuid}",
             sw_version=self.sw_version.get("osVersion", "n/a"),
             via_device=(DOMAIN, wuid),

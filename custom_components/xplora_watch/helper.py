@@ -4,6 +4,7 @@ from __future__ import annotations
 import base64
 import logging
 import os
+import shutil
 
 from geopy import distance
 from pydub import AudioSegment
@@ -15,6 +16,7 @@ from homeassistant.core import HomeAssistant
 from .const import (
     CONF_LANGUAGE,
     DEFAULT_LANGUAGE,
+    DOMAIN,
     HOME,
     STR_DELETE_MESSAGE_FROM_APP,
     STR_READ_MESSAGE_SERVICE,
@@ -72,6 +74,7 @@ async def create_www_directory(hass: HomeAssistant):
         hass.config.path("www/video"),  # http://homeassistant.local:8123/local/video/<filename>.mp4
         hass.config.path("www/video/thumb"),  # http://homeassistant.local:8123/local/video/thumb/<filename>.jpeg
         hass.config.path("www/voice"),  # http://homeassistant.local:8123/local/voice/<filename>.mp3
+        hass.config.path(f"www/{DOMAIN}"),
     ]
 
     def mkdir() -> None:
@@ -81,6 +84,15 @@ async def create_www_directory(hass: HomeAssistant):
                 os.makedirs(path, exist_ok=True)
 
     await hass.async_add_executor_job(mkdir)
+
+
+def move_file(hass: HomeAssistant):
+    src_path = hass.config.path("custom_components/xplora_watch/emojis")
+    dst_path = hass.config.path(f"www/{DOMAIN}")
+    if os.path.exists(src_path):
+        if os.path.exists(f"{dst_path}/emojis"):
+            shutil.rmtree(f"{dst_path}/emojis")
+        shutil.move(src_path, dst_path)
 
 
 def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watches: list[str]) -> None:
