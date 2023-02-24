@@ -1,18 +1,18 @@
 {
   "domain": "xplora_watch",
   "name": "Xplora® Watch",
-  "version": "v2.7.5",
+  "codeowners": ["@Ludy87"],
   "config_flow": true,
-  "documentation": "https://github.com/Ludy87/xplora_watch/tree/main",
-  "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "dependencies": [],
+  "documentation": "https://github.com/Ludy87/xplora_watch/tree/main",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "requirements": [
     "pyxplora_api==2.5.21",
     "geopy==2.2.0",
     "dataclasses-json",
     "pydub"
   ],
-  "codeowners": ["@Ludy87"],
-  "iot_class": "local_polling",
-  "integration_type": "device"
+  "version": "v2.7.5"
 }
