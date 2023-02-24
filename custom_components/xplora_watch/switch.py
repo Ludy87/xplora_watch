@@ -189,14 +189,14 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs) -> None:
         """Turn the switch on."""
-        silents = await self.coordinator.controller.setEnableSilentTime(silentId=self._silent[ATTR_ID])
+        silents = await self.coordinator.controller.setEnableSilentTime(silent_id=self._silent[ATTR_ID])
         if silents:
             self._attr_is_on = True
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the switch off."""
-        silents = await self.coordinator.controller.setDisableSilentTime(silentId=self._silent[ATTR_ID])
+        silents = await self.coordinator.controller.setDisableSilentTime(silent_id=self._silent[ATTR_ID])
         if silents:
             self._attr_is_on = False
         await self.coordinator.async_request_refresh()
