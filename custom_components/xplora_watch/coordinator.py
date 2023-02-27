@@ -1,6 +1,7 @@
 """Coordinator for Xplora® Watch Version 2"""
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import datetime, timedelta
 from typing import Any, Union
@@ -120,7 +121,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         if self.data:
             self.watch_entry.update(self.data)
 
-        await self.init(aiohttp_client.async_create_clientsession(self.hass))
+        await self.init(aiohttp_client.async_create_clientsession(self.hass, timeout=aiohttp.ClientTimeout(15)))
         _LOGGER.debug("pyxplora_api lib version: %s", self.controller.version())
 
         # Get the list of watch UUIDs
@@ -139,6 +140,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.data = self.watch_entry
         else:
             self.data.update(self.watch_entry)
+        self.async_set_updated_data(self.data)
         return self.data
 
     async def data_loop(self, wuids, message_limit, remove_message):
@@ -148,6 +150,9 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             device = self.controller.getDevice(wuid=wuid)
             res_chats = await self.controller.getWatchChatsRaw(wuid, limit=message_limit, show_del_msg=remove_message)
             chats = ChatsNew.from_dict(res_chats).to_dict()
+            await self.controller.getStartTrackingWatch(wuid)
+            await asyncio.sleep(5)
+            await self.controller.getEndTrackingWatch(wuid)
             watch_location = await self.controller.loadWatchLocation(wuid)
 
             # Update the watch data
