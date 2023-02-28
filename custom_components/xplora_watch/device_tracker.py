@@ -159,9 +159,6 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         self._attr_unique_id = wuid
         self._config_entry = config_entry
 
-        self._latitude = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)
-        self._longitude = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)
-
     @property
     def battery_level(self) -> int | None:
         """Return battery value of the device."""
@@ -170,12 +167,12 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
     @property
     def latitude(self) -> float | None:
         """Return latitude value of the device."""
-        return self._latitude
+        return self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)
 
     @property
     def longitude(self) -> float | None:
         """Return longitude value of the device."""
-        return self._longitude
+        return self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)
 
     @property
     def source_type(self) -> SourceType | str:
@@ -202,8 +199,13 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         data = super().extra_state_attributes or {}
         distance_to_home = None
 
-        if self._latitude and self._longitude:
-            lat_lng: tuple[float, float] = (float(self._latitude), float(self._longitude))
+        if self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None) and self.coordinator.data[self.watch_uid].get(
+            ATTR_TRACKER_LNG, None
+        ):
+            lat_lng: tuple[float, float] = (
+                float(self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)),
+                float(self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)),
+            )
             distance_to_home = get_location_distance_meter(self._hass, lat_lng)
 
         return dict(
