@@ -5,7 +5,6 @@ import logging
 from typing import Any, Dict
 
 import voluptuous as vol
-from pyxplora_api import pyxplora_api_async as PXA
 from pyxplora_api.exception_classes import NoAdminError
 
 import homeassistant.helpers.config_validation as cv
@@ -107,7 +106,6 @@ class XploraService:
     def __init__(self, hass: HomeAssistant, coordinator: XploraDataUpdateCoordinator) -> None:
         self._hass = hass
         self._coordinator = coordinator
-        self._controller: PXA.PyXploraApi = coordinator.controller
 
 
 class XploraSeeService(XploraService):
@@ -115,10 +113,10 @@ class XploraSeeService(XploraService):
         """Update all information from Watch"""
         if isinstance(targets, list):
             if "all" in targets:
-                targets = self._controller.getWatchUserIDs()
+                targets = self._coordinator.controller.getWatchUserIDs()
             _LOGGER.debug("update all information: %s" % {", ".join(targets)})
             await self._coordinator._async_update_data(targets)
-            await self._coordinator.async_refresh()
+            # await self._coordinator.async_refresh()
         else:
             _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
 
@@ -129,13 +127,13 @@ class XploraDeleteMessageFromAppService(XploraService):
         if isinstance(targets, list):
             msg_id = message_id.strip()
             if "all" in targets:
-                targets = self._controller.getWatchUserIDs()
+                targets = self._coordinator.controller.getWatchUserIDs()
             if not msg_id:
                 _LOGGER.warning("You must provide an ID!")
             else:
                 for watch_id in targets:
-                    _LOGGER.debug("remove message %s from %s" % msg_id, watch_id)
-                    if not await self._controller.deleteMessageFromApp(wuid=watch_id, msgId=msg_id):
+                    _LOGGER.debug(f"remove message {msg_id} from {watch_id}")
+                    if not await self._coordinator.controller.deleteMessageFromApp(wuid=watch_id, msgId=msg_id):
                         _LOGGER.error("Message cannot deleted!")
         else:
             _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
@@ -147,13 +145,13 @@ class XploraMessageService(XploraService):
         if isinstance(targets, list):
             msg = message.strip()
             if "all" in targets:
-                targets = self._controller.getWatchUserIDs()
+                targets = self._coordinator.controller.getWatchUserIDs()
             if not msg:
                 _LOGGER.warning("Message is empty!")
             else:
                 for watch_id in targets:
-                    _LOGGER.debug("Sending message '%s' to '%s'" % msg, watch_id)
-                    if not await self._controller.sendText(text=msg, wuid=watch_id):
+                    _LOGGER.debug(f"Sending message '{msg}' to '{watch_id}'")
+                    if not await self._coordinator.controller.sendText(text=msg, wuid=watch_id):
                         _LOGGER.error("Message cannot send!")
         else:
             _LOGGER.warning("No watch id or type %s not allowed!" % type(targets))
@@ -209,10 +207,10 @@ class XploraShutdownService(XploraService):
         """turn off watch"""
         if isinstance(targets, list):
             if "all" in targets:
-                targets = self._controller.getWatchUserIDs()
+                targets = self._coordinator.controller.getWatchUserIDs()
             for watch in targets:
                 try:
-                    _LOGGER.debug("Shutdown result: %s" % await self._controller.shutdown(watch))
+                    _LOGGER.debug("Shutdown result: %s" % await self._coordinator.controller.shutdown(watch))
                 except NoAdminError as error:
                     _LOGGER.exception("Shutdown failed! Error: %s" % error)
         else:
