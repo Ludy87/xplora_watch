@@ -139,7 +139,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             self.data = self.watch_entry
         else:
             self.data.update(self.watch_entry)
-        # self.async_set_updated_data(self.data)
+        self.async_set_updated_data(self.data)
         return self.data
 
     async def data_loop(self, wuids, message_limit, remove_message):
