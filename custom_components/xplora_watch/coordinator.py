@@ -1,7 +1,6 @@
 """Coordinator for Xplora® Watch Version 2"""
 from __future__ import annotations
 
-import asyncio
 import logging
 from datetime import datetime, timedelta
 from typing import Any, Union
@@ -121,7 +120,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         if self.data:
             self.watch_entry.update(self.data)
 
-        await self.init(aiohttp_client.async_create_clientsession(self.hass, timeout=aiohttp.ClientTimeout(15)))
+        await self.init(aiohttp_client.async_create_clientsession(self.hass))
         _LOGGER.debug("pyxplora_api lib version: %s", self.controller.version())
 
         # Get the list of watch UUIDs
@@ -147,18 +146,15 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         data = {}
         for wuid in wuids:
             _LOGGER.debug("Fetch data from Xplora: %s", wuid[25:])
-            device = self.controller.getDevice(wuid=wuid)
+            device: dict[str, Any] = self.controller.getDevice(wuid=wuid)
             res_chats = await self.controller.getWatchChatsRaw(wuid, limit=message_limit, show_del_msg=remove_message)
             chats = ChatsNew.from_dict(res_chats).to_dict()
-            await self.controller.getStartTrackingWatch(wuid)
-            await asyncio.sleep(5)
-            await self.controller.getEndTrackingWatch(wuid)
             watch_location = await self.controller.loadWatchLocation(wuid)
 
             # Update the watch data
             self.unreadMsg = await self.controller.getWatchUnReadChatMsgCount(wuid)
-            self.battery = watch_location.get("watch_battery", -1)
-            self.isCharging = watch_location.get("watch_charging", False)
+            self.battery = device.get("watch_battery", -1)
+            self.isCharging = device.get("watch_charging", False)
             self.get_location(device, watch_location)
 
             self.isSafezone = False if device.get("isInSafeZone", False) else True
@@ -189,11 +185,11 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self._step_day = device.get("getWatchUserSteps", {}).get("day")
         self._xcoin = device.get("getWatchUserXcoins", 0)
 
-    def get_location(self, device: dict, watch_location):
-        self.lat = float(watch_location.get(ATTR_TRACKER_LAT, 0.0)) if watch_location.get(ATTR_TRACKER_LAT, None) else None
-        self.lng = float(watch_location.get(ATTR_TRACKER_LNG, 0.0)) if watch_location.get(ATTR_TRACKER_LNG, None) else None
+    def get_location(self, device: dict[str, Any], watch_location):
+        self.lat = float(device.get(ATTR_TRACKER_LAT, 0.0)) if device.get(ATTR_TRACKER_LAT, None) else None
+        self.lng = float(device.get(ATTR_TRACKER_LNG, 0.0)) if device.get(ATTR_TRACKER_LNG, None) else None
         self.poi = watch_location.get(ATTR_TRACKER_POI, None)
-        self.location_accuracy = watch_location.get(ATTR_TRACKER_RAD, -1)
+        self.location_accuracy = device.get(ATTR_TRACKER_RAD, -1)
         self.locateType = watch_location.get("locateType", PXA.LocationType.UNKNOWN.value)
         self.lastTrackTime = device.get("lastTrackTime", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
