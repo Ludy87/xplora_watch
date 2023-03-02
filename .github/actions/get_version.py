@@ -3,7 +3,7 @@ import json
 
 
 def main():
-    with open("./custom_components/xplora_watch/manifest.json") as json_file:
+    with open("./custom_components/xplora_watch/manifest.json", encoding="utf8") as json_file:
         data = json.load(json_file)
         print(data["version"])
     return 0
