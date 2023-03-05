@@ -14,5 +14,5 @@
     "dataclasses-json",
     "pydub"
   ],
-  "version": "v2.7.10"
+  "version": "v2.7.11"
 }

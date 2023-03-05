@@ -188,13 +188,13 @@ class XploraMessageSensorUpdateService(XploraService):
         await self._coordinator._async_update_data(new_data=old_state)
 
     async def _fetch_chat_voice(self, watch_id: str, msg_id: str) -> None:
-        voice: Dict[str, Any] = await self._gql_handler.fetchChatVoice_a(watch_id, msg_id)
+        voice: Dict[str, Any] = await self._coordinator.controller._gql_handler.fetchChatVoice_a(watch_id, msg_id)
         encoded_base64_string_to_mp3_file(self._hass, voice.get("fetchChatVoice"), msg_id)
 
     async def _fetch_chat_short_video(self, watch_id: str, msg_id: str) -> None:
-        video: Dict[str, Any] = await self._gql_handler.fetchChatShortVideo_a(watch_id, msg_id)
+        video: Dict[str, Any] = await self._coordinator.controller._gql_handler.fetchChatShortVideo_a(watch_id, msg_id)
         encoded_base64_string_to_file(self._hass, video.get("fetchChatShortVideo"), msg_id, "mp4", "video")
-        thumb: Dict[str, Any] = await self._gql_handler.fetchChatShortVideoCover_a(watch_id, msg_id)
+        thumb: Dict[str, Any] = await self._coordinator.controller._gql_handler.fetchChatShortVideoCover_a(watch_id, msg_id)
         encoded_base64_string_to_file(self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb")
 
     async def _fetch_chat_image(self, watch, msg_id):
