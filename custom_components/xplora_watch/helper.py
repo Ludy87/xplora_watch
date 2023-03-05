@@ -50,7 +50,7 @@ def encoded_base64_string_to_file(hass: HomeAssistant, base64_string: str, file_
     if not os.path.exists(f"{media_path}/{file_name}.{file_type}"):
         try:
             decoded_data = base64.b64decode(base64_string.encode())
-            with open(f"{media_path}/{file_name}.{file_type}", "wb", encoding="utf8") as f:
+            with open(f"{media_path}/{file_name}.{file_type}", "wb") as f:
                 f.write(decoded_data)
         except AttributeError:
             return
@@ -60,7 +60,7 @@ def encoded_base64_string_to_mp3_file(hass: HomeAssistant, base64_string: str, f
     media_path = hass.config.path("www/voice")
     if not os.path.exists(f"{media_path}/{file_name}.mp3"):
         decoded_data = base64.b64decode(base64_string.encode())
-        with open(f"{media_path}/{file_name}.amr", "wb", encoding="utf8") as f:
+        with open(f"{media_path}/{file_name}.amr", "wb") as f:
             f.write(decoded_data)
         if os.path.exists(f"{media_path}/{file_name}.amr"):
             sound = AudioSegment.from_file(f"{media_path}/{file_name}.amr", format="amr")
