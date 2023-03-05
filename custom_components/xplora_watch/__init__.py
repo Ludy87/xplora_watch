@@ -33,6 +33,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = XploraDataUpdateCoordinator(hass, entry)
     await coordinator.init()
     await coordinator.async_config_entry_first_refresh()
+    wuids = coordinator.controller.getWatchUserIDs()
+    for wuid in wuids:
+        if not await coordinator.controller.isAdmin(wuid):
+            _LOGGER.warning(f"You are no admin for Watch {wuid}!")
 
     hass.data.setdefault(DOMAIN, {})
 
