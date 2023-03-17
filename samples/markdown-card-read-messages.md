@@ -23,7 +23,6 @@
     {{ data.poi }}
     {{ data.city }}
     {{ data.province }}
-    {{ data.country_name }}
     Genauigkeit: {{ data.radius }}m
     {{ data.lat }}
     {{ data.lng }}
@@ -49,7 +48,6 @@
     {{ data.poi }}
     {{ data.city }}
     {{ data.province }}
-    {{ data.country_name }}
     Genauigkeit: {{ data.radius }}m
     {{ data.lat }}
     {{ data.lng }}
@@ -65,7 +63,6 @@
     {{ data.poi }}
     {{ data.city }}
     {{ data.province }}
-    {{ data.country_name }}
     Genauigkeit: {{ data.radius }}m
     {{ data.lat }}
     {{ data.lng }}
