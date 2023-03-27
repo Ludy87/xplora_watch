@@ -87,7 +87,7 @@ async def create_www_directory(hass: HomeAssistant):
 
 
 def move_file(hass: HomeAssistant):
-    src_path = hass.config.path("custom_components/xplora_watch/emojis")
+    src_path = hass.config.path(f"custom_components/{DOMAIN}/emojis")
     dst_path = hass.config.path(f"www/{DOMAIN}")
     if os.path.exists(src_path):
         if os.path.exists(f"{dst_path}/emojis"):
@@ -96,7 +96,7 @@ def move_file(hass: HomeAssistant):
 
 
 def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watches: list[str]) -> None:
-    path = hass.config.path("custom_components/xplora_watch/services.yaml")
+    path = hass.config.path(f"custom_components/{DOMAIN}/services.yaml")
     _LOGGER.debug("services.yaml path: %s", path)
     try:
         language = entry.options.get(CONF_LANGUAGE, entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
