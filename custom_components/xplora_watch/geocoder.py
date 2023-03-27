@@ -2,6 +2,7 @@
 Custom Version - Edit by Ludy87
 Geocoder module.
 https://github.com/OpenCageData/python-opencage-geocoder/
+Version: 2.1
 https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt
 """
 from __future__ import annotations
@@ -23,6 +24,8 @@ try:
 except ImportError:
     AIOHTTP_AVAILABLE = False
 
+DEFAULT_TIMEOUT = 60
+
 
 def backoff_max_time():
     return int(os.environ.get("BACKOFF_MAX_TIME", "120"))
@@ -33,6 +36,7 @@ class OpenCageGeocodeError(Exception):
 
 
 class InvalidInputError(OpenCageGeocodeError):
+
     """
     There was a problem with the input you provided.
 
@@ -50,10 +54,12 @@ class InvalidInputError(OpenCageGeocodeError):
 
 
 class UnknownError(OpenCageGeocodeError):
+
     """There was a problem with the OpenCage server."""
 
 
 class RateLimitExceededError(OpenCageGeocodeError):
+
     """
     Exception raised when account has exceeded it's limit.
 
@@ -69,12 +75,14 @@ class RateLimitExceededError(OpenCageGeocodeError):
 
     def __unicode__(self):
         """Convert exception to a string."""
+
         return "Your rate limit has expired. " f"It will reset to {self.reset_to} on {self.reset_time.isoformat()}"
 
     __str__ = __unicode__
 
 
 class NotAuthorizedError(OpenCageGeocodeError):
+
     """
     Exception raised when an unautorized API key is used.
     """
@@ -87,6 +95,7 @@ class NotAuthorizedError(OpenCageGeocodeError):
 
 
 class ForbiddenError(OpenCageGeocodeError):
+
     """
     Exception raised when a blocked or suspended API key is used.
     """
@@ -99,12 +108,14 @@ class ForbiddenError(OpenCageGeocodeError):
 
 
 class AioHttpError(OpenCageGeocodeError):
+
     """
     Exceptions related to async HTTP calls with aiohttp
     """
 
 
 class OpenCageGeocodeUA:
+
     """
     Geocoder object.
 
@@ -116,9 +127,10 @@ class OpenCageGeocodeUA:
 
         >>> geocoder.geocode("London")
 
-    Reverse geocode a latitude & longitude into a point:
+    Reverse geocode a latitude & longitude into a place:
 
         >>> geocoder.reverse_geocode(51.5104, -0.1021)
+
     """
 
     url = "https://api.opencagedata.com/geocode/v1/json"
@@ -152,7 +164,7 @@ class OpenCageGeocodeUA:
 
     def geocode(self, query, **kwargs):
         """
-        Given a string to search for, return the results from OpenCage's Geocoder.
+        Given a string to search for, return the list (array) of results from OpenCage's Geocoder.
 
         :param string query: String to search for
 
@@ -176,13 +188,14 @@ class OpenCageGeocodeUA:
         """
         Aync version of `geocode`.
 
-        Given a string to search for, return the results from OpenCage's Geocoder.
+        Given a string to search for, return the list (array) of results from OpenCage's Geocoder.
 
         :param string query: String to search for
 
         :returns: Dict results
         :raises InvalidInputError: if the query string is not a unicode string
         :raises RateLimitExceededError: if exceeded number of queries you can make. You can try again
+
 
         :raises UnknownError: if something goes wrong with the OpenCage API
         """
@@ -257,7 +270,7 @@ class OpenCageGeocodeUA:
             response = self.session.get(self.url, params=params)
         else:
             # codiga-disable
-            response = requests.get(self.url, params=params)  # pylint: disable=missing-timeout
+            response = requests.get(self.url, params=params, timeout=DEFAULT_TIMEOUT)
 
         try:
             response_json = response.json()
@@ -273,6 +286,7 @@ class OpenCageGeocodeUA:
         if response.status_code in (402, 429):
             # Rate limit exceeded
             reset_time = datetime.utcfromtimestamp(response.json()["rate"]["reset"])
+
             raise RateLimitExceededError(reset_to=int(response.json()["rate"]["limit"]), reset_time=reset_time)
 
         if response.status_code == 500:
@@ -300,7 +314,9 @@ class OpenCageGeocodeUA:
 
             if response.status in (402, 429):
                 # Rate limit exceeded
+
                 reset_time = datetime.utcfromtimestamp(response_json["rate"]["reset"])
+
                 raise RateLimitExceededError(reset_to=int(response_json["rate"]["limit"]), reset_time=reset_time)
 
             if response.status == 500:
@@ -324,7 +340,7 @@ class OpenCageGeocodeUA:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36"
         }
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session:
             async with session.get(url, headers=headers) as response:
                 data: list[dict[str, str]] = await response.json(content_type=None)
                 i = randint(0, len(data) - 1)

@@ -10,13 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: X days stale issues
-        uses: actions/stale@v7.0.0
+        uses: actions/stale@v8.0.0
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           days-before-stale: 30
           days-before-close: 7
           remove-stale-when-updated: true
           stale-issue-label: "stale"
+          labels-to-remove-when-stale: "check for Bug,in progress"
           exempt-issue-labels: "pinned,Bug: Confirmed!,check for Bug,wait"
           stale-issue-message: >
             This issue has been automatically marked as stale because it has
