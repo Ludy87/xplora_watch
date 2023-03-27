@@ -7,6 +7,7 @@ from typing import Any, Union
 
 import aiohttp
 from pyxplora_api import pyxplora_api_async as PXA
+from pyxplora_api.const import DEFAULT_TIMEOUT
 from pyxplora_api.model import ChatsNew
 
 from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
@@ -226,8 +227,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def openstreetmap(self):
         language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
-        timeout = aiohttp.ClientTimeout(total=2)
-        async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session:
             # codiga-disable
             async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
                 res: dict[str, Any] = await response.json()
