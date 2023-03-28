@@ -133,8 +133,7 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
             if lat and lng:
                 lat_lng: tuple[float, float] = (float(lat), float(lng))
                 return get_location_distance_meter(self.hass, lat_lng)
-            else:
-                return -1
+            return -1
         return None
 
     @property
