@@ -69,7 +69,7 @@ async def async_setup_entry(
                         sw_version = await coordinator.controller.getWatches(wuid)
                         entities.append(XploraBinarySensor(config_entry, coordinator, ward, sw_version, wuid, description))
             else:
-                _LOGGER.debug(f"{watch} {config_entry.entry_id}")
+                _LOGGER.debug("%s %s", watch, config_entry.entry_id)
     async_add_entities(entities)
 
 

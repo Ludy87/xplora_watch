@@ -80,7 +80,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 sw_version = await coordinator.controller.getWatches(wuid)
                 entities.append(XploraSensor(config_entry, coordinator, ward, sw_version, wuid, desc))
             elif not config_entry.options:
-                _LOGGER.debug(f"{watch} {config_entry.entry_id}")
+                _LOGGER.debug("%s %s", watch, config_entry.entry_id)
     async_add_entities(entities)
 
 
@@ -128,13 +128,10 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         if self.entity_description.key == SENSOR_MESSAGE:
             return self.coordinator.data[self.watch_uid].get("unreadMsg", 0)
         if self.entity_description.key == SENSOR_DISTANCE:
-            if self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None) and self.coordinator.data[self.watch_uid].get(
-                ATTR_TRACKER_LNG, None
-            ):
-                lat_lng: tuple[float, float] = (
-                    float(self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)),
-                    float(self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)),
-                )
+            lat = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)
+            lng = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)
+            if lat and lng:
+                lat_lng: tuple[float, float] = (float(lat), float(lng))
                 return get_location_distance_meter(self.hass, lat_lng)
             else:
                 return -1

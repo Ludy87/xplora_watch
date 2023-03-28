@@ -36,7 +36,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     wuids = coordinator.controller.getWatchUserIDs()
     for wuid in wuids:
         if not await coordinator.controller.isAdmin(wuid):
-            _LOGGER.warning(f"You are no admin for Watch {wuid}!")
+            _LOGGER.warning("You are no admin for Watch %s!", wuid)
 
     hass.data.setdefault(DOMAIN, {})
 

@@ -114,11 +114,11 @@ class XploraSeeService(XploraService):
         if isinstance(targets, list):
             if "all" in targets:
                 targets = self._coordinator.controller.getWatchUserIDs()
-            _LOGGER.debug("update all information: %s" % {", ".join(targets)})
+            _LOGGER.debug("update all information: %s", {", ".join(targets)})
             await self._coordinator._async_update_data(targets)
             # await self._coordinator.async_refresh()
         else:
-            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
+            _LOGGER.warning("No watch id or type %s not allow!", type(targets))
 
 
 class XploraDeleteMessageFromAppService(XploraService):
@@ -132,11 +132,11 @@ class XploraDeleteMessageFromAppService(XploraService):
                 _LOGGER.warning("You must provide an ID!")
             else:
                 for watch_id in targets:
-                    _LOGGER.debug(f"remove message {msg_id} from {watch_id}")
+                    _LOGGER.debug("remove message %s from %s", msg_id, watch_id)
                     if not await self._coordinator.controller.deleteMessageFromApp(wuid=watch_id, msgId=msg_id):
                         _LOGGER.error("Message cannot deleted!")
         else:
-            _LOGGER.warning("No watch id or type %s not allow!" % type(targets))
+            _LOGGER.warning("No watch id or type %s not allow!", type(targets))
 
 
 class XploraMessageService(XploraService):
@@ -150,18 +150,18 @@ class XploraMessageService(XploraService):
                 _LOGGER.warning("Message is empty!")
             else:
                 for watch_id in targets:
-                    _LOGGER.debug(f"Sending message '{msg}' to '{watch_id}'")
+                    _LOGGER.debug("Sending message '%s' to '%s'", msg, watch_id)
                     if not await self._coordinator.controller.sendText(text=msg, wuid=watch_id):
                         _LOGGER.error("Message cannot send!")
         else:
-            _LOGGER.warning("No watch id or type %s not allowed!" % type(targets))
+            _LOGGER.warning("No watch id or type %s not allowed!", type(targets))
 
 
 class XploraMessageSensorUpdateService(XploraService):
     async def async_read_message(self, targets: list[str] | None = None, **kwargs):
         """Read the messages from account"""
         if not isinstance(targets, list):
-            _LOGGER.warning("No watch id or type %s not allowed!" % type(targets))
+            _LOGGER.warning("No watch id or type %s not allowed!", type(targets))
             return
         old_state: dict[str, Any] = self._coordinator.data
         options = self._coordinator.config_entry.options
@@ -210,8 +210,8 @@ class XploraShutdownService(XploraService):
                 targets = self._coordinator.controller.getWatchUserIDs()
             for watch in targets:
                 try:
-                    _LOGGER.debug("Shutdown result: %s" % await self._coordinator.controller.shutdown(watch))
+                    _LOGGER.debug("Shutdown result: %s", await self._coordinator.controller.shutdown(watch))
                 except NoAdminError as error:
-                    _LOGGER.exception("Shutdown failed! Error: %s" % error)
+                    _LOGGER.exception("Shutdown failed! Error: %s", error)
         else:
-            _LOGGER.warning("No watch ID or type %s not allowed!" % type(targets))
+            _LOGGER.warning("No watch ID or type %s not allowed!", type(targets))

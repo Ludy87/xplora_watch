@@ -39,4 +39,4 @@ class XploraNotifyService(BaseNotificationService):
             return
         for watch_id in targets:
             if not await self._controller.sendText(text=msg, wuid=watch_id):
-                _LOGGER.error("Failed to send message '%s' to %s" % msg, watch_id)
+                _LOGGER.error("Failed to send message '%s' to %s", msg, watch_id)

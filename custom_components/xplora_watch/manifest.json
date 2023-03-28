@@ -9,10 +9,10 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "requirements": [
-    "pyxplora_api==2.6.2",
+    "pyxplora_api==2.6.3",
     "geopy==2.2.0",
     "dataclasses-json",
     "pydub"
   ],
-  "version": "v2.7.13"
+  "version": "v2.7.14"
 }

@@ -55,7 +55,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 if DEVICE_TRACKER_WATCH in config_entry.options.get(CONF_TYPES):
                     entities.append(XploraDeviceTracker(hass, config_entry, coordinator, wuid, ward, sw_version))
         else:
-            _LOGGER.debug(f"{watch} {config_entry.entry_id}")
+            _LOGGER.debug("%s %s", watch, config_entry.entry_id)
     async_add_entities(entities)
 
 
