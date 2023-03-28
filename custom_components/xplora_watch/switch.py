@@ -65,7 +65,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                                     XploraSilentSwitch(config_entry, silent, coordinator, ward, sw_version, wuid, description)
                                 )
             else:
-                _LOGGER.debug(f"{watch} {config_entry.entry_id} - no config options")
+                _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
     async_add_entities(entities, True)
 
 

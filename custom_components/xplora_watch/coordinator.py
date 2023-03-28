@@ -226,16 +226,20 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             await self.mapbox()
 
     async def openstreetmap(self):
-        language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session:
-            # codiga-disable
-            async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
-                res: dict[str, Any] = await response.json()
-                self.licence = res.get(ATTR_TRACKER_LICENCE, None)
-                address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
-                if address:
-                    self.location_name = res.get("display_name", "")
-                    _LOGGER.debug("load address from openstreetmap.org")
+        try:
+            language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session:
+                # codiga-disable
+                async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
+                    res: dict[str, Any] = await response.json()
+                    self.licence = res.get(ATTR_TRACKER_LICENCE, None)
+                    address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
+                    if address:
+                        self.location_name = res.get("display_name", "")
+                        _LOGGER.debug("load address from openstreetmap.org")
+        except aiohttp.ContentTypeError:
+            _LOGGER.debug("error about openstreetmap.org using mapbox.com")
+            await self.mapbox()
 
     def get_data(self, wuid, chats):
         return {
