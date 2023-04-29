@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3.5.0
+        uses: actions/checkout@v3.5.2
         with:
           ref: main
       - name: Set up Python
@@ -39,7 +39,7 @@ jobs:
         run: |
           version="$(python3 ./.github/actions/get_version.py)"
           echo "version=$version" >> $GITHUB_OUTPUT
-      - uses: actions/checkout@v3.5.0
+      - uses: actions/checkout@v3.5.2
       - name: ZIP Component Dir
         run: |
           cd ${{ github.workspace }}/custom_components/xplora_watch
