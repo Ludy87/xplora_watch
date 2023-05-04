@@ -9,7 +9,7 @@ jobs:
       id: codiga
       uses: codiga/github-action@master
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        repo_token: ${{ secrets.TOKEN }}
         codiga_api_token: ${{ secrets.CODIGA_API_TOKEN }}
         force_ref: 'none'
         min_quality_grade: 'CRITICAL'
