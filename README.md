@@ -3,15 +3,15 @@
 Xplora® Watch Version 2 integration for Home Assistant
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Ludy87&repository=xplora_watch&category=integration)\
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge&logo=appveyor)](https://github.com/hacs/integration)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/releases)
-![GitHub Release Date](https://img.shields.io/github/release-date/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)
-[![GitHub license](https://img.shields.io/github/license/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/Ludy87/xplora_watch?style=for-the-badge&logo=appveyor)](https://github.com/Ludy87/xplora_watch/issues)\
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=appveyor)](https://github.com/psf/black)\
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge&logo=home-assistant)](https://github.com/hacs/integration)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Ludy87/xplora_watch?style=for-the-badge&logo=github)](https://github.com/Ludy87/xplora_watch/releases)
+![GitHub Release Date](https://img.shields.io/github/release-date/Ludy87/xplora_watch?style=for-the-badge&logo=github)
+[![GitHub license](https://img.shields.io/github/license/Ludy87/xplora_watch?style=for-the-badge&logo=github)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/Ludy87/xplora_watch?style=for-the-badge&logo=github)](https://github.com/Ludy87/xplora_watch/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/Ludy87/xplora_watch?style=for-the-badge&logo=github)](https://github.com/Ludy87/xplora_watch/issues)\
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=code%20style-black)](https://github.com/psf/black)\
+![Github All Releases](https://img.shields.io/github/downloads/Ludy87/xplora_watch/total.svg?style=for-the-badge&logo=GitHub)\
 [![Validate with hassfest and HACS](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml)
-![Github All Releases](https://img.shields.io/github/downloads/Ludy87/xplora_watch/total.svg)
 ![Code Grade](https://api.codiga.io/project/35996/status/svg)
 ![Code Quality Score](https://api.codiga.io/project/35996/score/svg)
 
