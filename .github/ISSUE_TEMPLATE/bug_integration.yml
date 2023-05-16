@@ -1,5 +1,5 @@
 name: "Bug"
-title: ""
+title: "🐛"
 description: You use this when something is not doing what it's supposed to do.
 labels: ["Bug", "Version 2"]
 body:
