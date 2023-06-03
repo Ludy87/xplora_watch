@@ -156,10 +156,11 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
     def extra_state_attributes(self) -> dict[str, any]:
         data = super().extra_state_attributes or {}
         if (
-            (self.entity_description.key != SENSOR_MESSAGE and not self.coordinator.data)
-            or self.watch_uid not in self.coordinator.data
-            or SENSOR_MESSAGE not in self._watch_data
+            self.entity_description.key is SENSOR_MESSAGE
+            and self.coordinator.data
+            or self.coordinator.data.get(self.watch_uid, None)
+            or SENSOR_MESSAGE in self._watch_data
             or self._watch_data.get(SENSOR_MESSAGE, None)
         ):
-            return dict(data, **{})
-        return dict(data, **self._watch_data.get(SENSOR_MESSAGE))
+            return dict(data, **self._watch_data.get(SENSOR_MESSAGE))
+        return dict(data, **{})
