@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Dict
 
 import voluptuous as vol
 from pyxplora_api.exception_classes import NoAdminError
@@ -163,7 +163,7 @@ class XploraMessageSensorUpdateService(XploraService):
         if not isinstance(targets, list):
             _LOGGER.warning("No watch id or type %s not allowed!", type(targets))
             return
-        old_state: dict[str, Any] = self._coordinator.data
+        old_state: Dict[str, any] = self._coordinator.data
         options = self._coordinator.config_entry.options
         limit: int = options.get(CONF_MESSAGE, 10)
         show_remove_msg = options.get(CONF_REMOVE_MESSAGE, False)
@@ -181,20 +181,20 @@ class XploraMessageSensorUpdateService(XploraService):
                         await self._fetch_chat_short_video(watch, msg_id)
                     elif chat_type == "IMAGE":
                         await self._fetch_chat_image(watch, msg_id)
-                new_data_msg: Dict[str, Any] = old_state.get(watch, {}) if isinstance(old_state, dict) else {}
+                new_data_msg: Dict[str, any] = old_state.get(watch, {}) if isinstance(old_state, dict) else {}
                 if new_data_msg:
                     new_data_msg.update({SENSOR_MESSAGE: res_chats})
                     old_state.update({watch: new_data_msg})
         await self._coordinator._async_update_data(new_data=old_state)
 
     async def _fetch_chat_voice(self, watch_id: str, msg_id: str) -> None:
-        voice: Dict[str, Any] = await self._coordinator.controller._gql_handler.fetchChatVoice_a(watch_id, msg_id)
+        voice: Dict[str, any] = await self._coordinator.controller._gql_handler.fetchChatVoice_a(watch_id, msg_id)
         encoded_base64_string_to_mp3_file(self._hass, voice.get("fetchChatVoice"), msg_id)
 
     async def _fetch_chat_short_video(self, watch_id: str, msg_id: str) -> None:
-        video: Dict[str, Any] = await self._coordinator.controller._gql_handler.fetchChatShortVideo_a(watch_id, msg_id)
+        video: Dict[str, any] = await self._coordinator.controller._gql_handler.fetchChatShortVideo_a(watch_id, msg_id)
         encoded_base64_string_to_file(self._hass, video.get("fetchChatShortVideo"), msg_id, "mp4", "video")
-        thumb: Dict[str, Any] = await self._coordinator.controller._gql_handler.fetchChatShortVideoCover_a(watch_id, msg_id)
+        thumb: Dict[str, any] = await self._coordinator.controller._gql_handler.fetchChatShortVideoCover_a(watch_id, msg_id)
         encoded_base64_string_to_file(self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb")
 
     async def _fetch_chat_image(self, watch, msg_id):

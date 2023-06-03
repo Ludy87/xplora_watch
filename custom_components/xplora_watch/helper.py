@@ -10,11 +10,11 @@ from geopy import distance
 from pydub import AudioSegment
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
+from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, CONF_LANGUAGE
 from homeassistant.core import HomeAssistant
+from homeassistant.loader import DATA_CUSTOM_COMPONENTS
 
 from .const import (
-    CONF_LANGUAGE,
     DEFAULT_LANGUAGE,
     DOMAIN,
     HOME,
@@ -86,8 +86,8 @@ async def create_www_directory(hass: HomeAssistant):
     await hass.async_add_executor_job(mkdir)
 
 
-def move_file(hass: HomeAssistant):
-    src_path = hass.config.path(f"custom_components/{DOMAIN}/emojis")
+def move_emojis_directory(hass: HomeAssistant):
+    src_path = hass.config.path(f"{DATA_CUSTOM_COMPONENTS}/{DOMAIN}/emojis")
     dst_path = hass.config.path(f"www/{DOMAIN}")
     if os.path.exists(src_path):
         if os.path.exists(f"{dst_path}/emojis"):
@@ -96,7 +96,7 @@ def move_file(hass: HomeAssistant):
 
 
 def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watches: list[str]) -> None:
-    path = hass.config.path(f"custom_components/{DOMAIN}/services.yaml")
+    path = hass.config.path(f"{DATA_CUSTOM_COMPONENTS}/{DOMAIN}/services.yaml")
     _LOGGER.debug("services.yaml path: %s", path)
     try:
         language = entry.options.get(CONF_LANGUAGE, entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))

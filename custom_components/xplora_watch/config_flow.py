@@ -3,20 +3,21 @@ from __future__ import annotations
 
 import logging
 from collections import OrderedDict
-from typing import Any
+from typing import Dict
 
 import voluptuous as vol
-from pyxplora_api import pyxplora_api_async as PXA
 from pyxplora_api.exception_classes import Error, LoginError, PhoneOrEmailFail
+from pyxplora_api.pyxplora_api_async import PyXploraApi
 from pyxplora_api.status import UserContactType
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant import config_entries, core
-from homeassistant.config_entries import ConfigEntry, OptionsFlow
+from homeassistant.config_entries import ConfigEntry, OptionsFlow, OptionsFlowWithConfigEntry
 from homeassistant.const import (
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
     CONF_EMAIL,
+    CONF_LANGUAGE,
     CONF_PASSWORD,
     CONF_RADIUS,
     CONF_SCAN_INTERVAL,
@@ -25,6 +26,19 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers import aiohttp_client
+from homeassistant.helpers.selector import (
+    BooleanSelector,
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
+    SelectOptionDict,
+    SelectSelector,
+    SelectSelectorConfig,
+    SelectSelectorMode,
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 
 from .const import (
     CONF_COUNTRY_CODE,
@@ -32,7 +46,6 @@ from .const import (
     CONF_HOME_LONGITUDE,
     CONF_HOME_RADIUS,
     CONF_HOME_SAFEZONE,
-    CONF_LANGUAGE,
     CONF_MAPS,
     CONF_MESSAGE,
     CONF_OPENCAGE_APIKEY,
@@ -48,36 +61,20 @@ from .const import (
     DOMAIN,
     HOME,
     HOME_SAFEZONE,
-    LANGUAGES,
     MANUFACTURER,
     MAPS,
     SENSORS,
     SIGNIN,
+    XPLORA_USER_LANGS,
 )
+from .const_schema import DATA_SCHEMA_EMAIL, DATA_SCHEMA_PHONE
 
 _LOGGER = logging.getLogger(__name__)
 
 
-DATA_SCHEMA_PHONE = {
-    vol.Required(CONF_COUNTRY_CODE, default="+"): cv.string,
-    vol.Required(CONF_PHONENUMBER): cv.string,
-    vol.Required(CONF_PASSWORD): cv.string,
-    vol.Required(CONF_TIMEZONE, default="Europe/Berlin"): cv.string,
-    vol.Required(CONF_USERLANG, default="de-DE"): cv.string,
-    vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): vol.In(LANGUAGES),
-}
-DATA_SCHEMA_EMAIL = {
-    vol.Required(CONF_EMAIL): cv.string,
-    vol.Required(CONF_PASSWORD): cv.string,
-    vol.Required(CONF_TIMEZONE, default="Europe/Berlin"): cv.string,
-    vol.Required(CONF_USERLANG, default="de-DE"): cv.string,
-    vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): vol.In(LANGUAGES),
-}
-
-
 @callback
-async def sign_in(hass: core.HomeAssistant, data: dict[str, Any] = None) -> PXA.PyXploraApi:
-    controller: PXA.PyXploraApi = PXA.PyXploraApi(
+async def sign_in(hass: core.HomeAssistant, data: Dict[str, any] = None) -> PyXploraApi:
+    controller: PyXploraApi = PyXploraApi(
         countrycode=data.get(CONF_COUNTRY_CODE, None),
         phoneNumber=data.get(CONF_PHONENUMBER, None),
         password=data.get(CONF_PASSWORD, ""),
@@ -90,12 +87,12 @@ async def sign_in(hass: core.HomeAssistant, data: dict[str, Any] = None) -> PXA.
     return controller
 
 
-async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict[str, str]:
+async def validate_input(hass: core.HomeAssistant, data: Dict[str, any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
 
-    account = PXA.PyXploraApi(session=aiohttp_client.async_create_clientsession(hass))
+    account = PyXploraApi(session=aiohttp_client.async_create_clientsession(hass))
     await account.init(signup=False)
     if not await account.checkEmailOrPhoneExist(
         UserContactType.EMAIL if data.get(CONF_EMAIL, None) else UserContactType.PHONE,
@@ -114,7 +111,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
     return {"title": f"{MANUFACTURER}"}
 
 
-def validate_options_input(user_input: dict[str, Any]) -> dict[str, str]:
+def validate_options_input(user_input: Dict[str, any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
@@ -160,9 +157,9 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         return self.async_show_menu(step_id="user", menu_options=["user_email", "user_phone"])
 
-    async def async_step_user_phone(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_user_phone(self, user_input: Dict[str, any] | None = None) -> FlowResult:
         """Handle the initial step."""
-        errors: dict[str, str] = {}
+        errors: Dict[str, str] = {}
         if user_input is not None:
             unique_id = f"{user_input[CONF_PHONENUMBER]}"
 
@@ -189,9 +186,9 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user_phone", data_schema=vol.Schema(DATA_SCHEMA_PHONE), errors=errors, last_step=False
         )
 
-    async def async_step_user_email(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_user_email(self, user_input: Dict[str, any] | None = None) -> FlowResult:
         """Handle the initial step."""
-        errors: dict[str, str] = {}
+        errors: Dict[str, str] = {}
         if user_input is not None:
             unique_id = f"{user_input[CONF_EMAIL]}"
 
@@ -219,27 +216,65 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
 
-class XploraOptionsFlowHandler(OptionsFlow):
+class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
     """Handle a option flow."""
-
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialize options flow."""
-        super().__init__()
-        self.config_entry = config_entry
 
     def get_options(self, signin_typ, schema, language, _options, _home_zone):
         return vol.Schema(
             {
                 vol.Optional(CONF_SIGNIN_TYP, default=signin_typ[0]): vol.In(signin_typ),
                 **schema,
-                vol.Required(CONF_LANGUAGE, default=language): vol.In(LANGUAGES),
-                vol.Required(CONF_MAPS, default=_options.get(CONF_MAPS, MAPS[0])): vol.In(MAPS),
-                vol.Optional(CONF_OPENCAGE_APIKEY, default=_options.get(CONF_OPENCAGE_APIKEY, "")): cv.string,
-                vol.Required(CONF_SCAN_INTERVAL, default=_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): vol.All(
-                    vol.Coerce(int), vol.Range(min=1, max=9999)
+                vol.Required(CONF_LANGUAGE, default=language): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[
+                            SelectOptionDict(
+                                value=language_value,
+                                label=language_key,
+                            )
+                            for language_dict in XPLORA_USER_LANGS
+                            for language_key, language_value in language_dict.items()
+                        ],
+                        multiple=False,
+                        mode=SelectSelectorMode.DROPDOWN,
+                    )
                 ),
-                vol.Required(CONF_HOME_SAFEZONE, default=_options.get(CONF_HOME_SAFEZONE, STATE_OFF)): vol.In(
-                    HOME_SAFEZONE.get(language, DEFAULT_LANGUAGE)
+                vol.Required(CONF_MAPS, default=_options.get(CONF_MAPS, MAPS[0])): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[
+                            SelectOptionDict(
+                                value=value,
+                                label=value,
+                            )
+                            for value in MAPS
+                        ],
+                        multiple=False,
+                        mode=SelectSelectorMode.DROPDOWN,
+                    )
+                ),
+                vol.Optional(CONF_OPENCAGE_APIKEY, default=_options.get(CONF_OPENCAGE_APIKEY, "")): TextSelector(
+                    TextSelectorConfig(type=TextSelectorType.TEXT)
+                ),
+                vol.Required(
+                    CONF_SCAN_INTERVAL, default=_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+                ): NumberSelector(
+                    NumberSelectorConfig(
+                        min=10,
+                        max=9999,
+                        mode=NumberSelectorMode.SLIDER,
+                    ),
+                ),
+                vol.Required(CONF_HOME_SAFEZONE, default=_options.get(CONF_HOME_SAFEZONE, STATE_OFF)): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[
+                            SelectOptionDict(
+                                value=value,
+                                label=label,
+                            )
+                            for value, label in HOME_SAFEZONE.get(language, DEFAULT_LANGUAGE).items()
+                        ],
+                        multiple=False,
+                        mode=SelectSelectorMode.DROPDOWN,
+                    )
                 ),
                 vol.Required(
                     CONF_HOME_LATITUDE, default=_options.get(CONF_HOME_LATITUDE, _home_zone[ATTR_LATITUDE])
@@ -250,23 +285,51 @@ class XploraOptionsFlowHandler(OptionsFlow):
                 vol.Required(
                     CONF_HOME_RADIUS, default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS])
                 ): cv.positive_int,
-                vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): cv.multi_select(
-                    SENSORS.get(language, DEFAULT_LANGUAGE)
+                vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[
+                            SelectOptionDict(
+                                value=value,
+                                label=label,
+                            )
+                            for value, label in SENSORS.get(language, DEFAULT_LANGUAGE).items()
+                        ],
+                        multiple=True,
+                        mode=SelectSelectorMode.DROPDOWN,
+                    )
                 ),
-                vol.Required(CONF_MESSAGE, default=_options.get(CONF_MESSAGE, 10)): cv.positive_int,
-                vol.Required(CONF_REMOVE_MESSAGE, default=_options.get(CONF_REMOVE_MESSAGE, False)): cv.boolean,
+                vol.Required(CONF_MESSAGE, default=_options.get(CONF_MESSAGE, 10)): NumberSelector(
+                    NumberSelectorConfig(
+                        min=0,
+                        max=100,
+                        mode=NumberSelectorMode.SLIDER,
+                    ),
+                ),
+                vol.Required(CONF_REMOVE_MESSAGE, default=_options.get(CONF_REMOVE_MESSAGE, False)): BooleanSelector(),
             }
         )
 
-    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
+    async def async_step_init(self, user_input: Dict[str, any] | None = None) -> FlowResult:
         """Handle options flow."""
-        errors: dict[str, str] = {}
+        errors: Dict[str, str] = {}
         controller = await sign_in(self.hass, self.config_entry.data)
         watches = await controller.setDevices()
         _options = self.config_entry.options
 
         schema = OrderedDict()
-        schema[vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, watches))] = cv.multi_select(watches)
+        schema[vol.Required(CONF_WATCHES, default=_options.get(CONF_WATCHES, watches))] = SelectSelector(
+            SelectSelectorConfig(
+                options=[
+                    SelectOptionDict(
+                        value=watch,
+                        label=watch,
+                    )
+                    for watch in watches
+                ],
+                multiple=True,
+                mode=SelectSelectorMode.LIST,
+            )
+        )
         i = 1
         for watch in watches:
             schema[vol.Optional(f"{CONF_WATCHES}_{i}", default=_options.get(f"{CONF_WATCHES}_{i}", watch))] = cv.string

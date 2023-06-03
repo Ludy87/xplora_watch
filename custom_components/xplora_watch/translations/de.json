@@ -22,7 +22,7 @@
                     "email": "E-Mail-Adresse",
                     "password": "Passwort",
                     "timezone": "Zeitzone",
-                    "userlang": "Benutzersprache (de-DE)"
+                    "userlang": "Benutzersprache (de) der Uhr"
                 }
             },
             "user_phone": {
@@ -34,7 +34,7 @@
                     "phonenumber": "Telefonnummer ohne L\u00E4ndercode",
                     "password": "Passwort",
                     "timezone": "Zeitzone",
-                    "userlang": "Benutzersprache (de-DE)"
+                    "userlang": "Benutzersprache (de) der Uhr"
                 }
             },
             "user": {
