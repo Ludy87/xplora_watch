@@ -221,7 +221,19 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
     def get_options(self, signin_typ, schema, language, _options, _home_zone) -> vol.Schema:
         return vol.Schema(
             {
-                vol.Optional(CONF_SIGNIN_TYP, default=signin_typ[0]): vol.In(signin_typ),
+                vol.Required(CONF_SIGNIN_TYP, default=signin_typ[0]): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[
+                            SelectOptionDict(
+                                value=signin,
+                                label=signin,
+                            )
+                            for signin in signin_typ
+                        ],
+                        multiple=False,
+                        mode=SelectSelectorMode.LIST,
+                    )
+                ),
                 **schema,
                 vol.Required(CONF_LANGUAGE, default=language): SelectSelector(
                     SelectSelectorConfig(
