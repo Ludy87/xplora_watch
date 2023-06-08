@@ -42,7 +42,6 @@ CONF_HOME_SAFEZONE: Final = "home_is_safezone"
 CONF_HOME_LATITUDE: Final = "home_latitude"
 CONF_HOME_LONGITUDE: Final = "home_longitude"
 CONF_HOME_RADIUS: Final = "home_radius"
-CONF_LANGUAGE: Final = "language"
 CONF_MAPS: Final = "maps"
 CONF_MESSAGE: Final = "message"
 CONF_OPENCAGE_APIKEY: Final = "opencage_apikey"
@@ -71,7 +70,6 @@ DEVICE_TRACKER_SAFZONES: Final = "watch_safezone"
 DEVICE_TRACKER_WATCH: Final = "dt_watch"
 
 DEFAULT_SCAN_INTERVAL: Final = 3 * 60
-TRACKER_UPDATE: Final = 60
 
 HOME: Final = "zone.home"
 TRACKER_UPDATE_STR: Final = f"{DOMAIN}_tracker_update"
@@ -86,7 +84,21 @@ MAPS: Final[list[str]] = ["openstreetmap.org (free)", "opencagedata.com (with Li
 
 DEFAULT_LANGUAGE: Final = "en"
 
-LANGUAGES: Final[list[str]] = ["de", "en"]
+XPLORA_USER_LANGS: Final[list[dict[str, str]]] = [
+    {"en": "en-GB"},
+    {"es": "es-ES"},
+    {"de": "de-DE"},
+    {"nb": "nb-NO"},
+    {"sv": "sv-SE"},
+    {"hu": "hu-HU"},
+    {"it": "it-IT"},
+    {"fr": "fr-FR"},
+    {"hr": "hr-HR"},
+    {"da": "da-DK"},
+    {"fi": "fi-FI"},
+]
+
+SUPPORTED_LANGUAGES: Final[list[dict[str, str]]] = [{"de": "Deutsch"}, {"en": "English"}]
 
 STR_DAYS: Final[dict[str, str]] = {
     "en": "Day(s)",

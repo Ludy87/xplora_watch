@@ -2,7 +2,7 @@
 Custom Version - Edit by Ludy87
 Geocoder module.
 https://github.com/OpenCageData/python-opencage-geocoder/
-Version: 2.1
+Version: 2.2.0
 https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt
 """
 from __future__ import annotations
@@ -137,9 +137,11 @@ class OpenCageGeocodeUA:
     key = ""
     session = None
 
-    def __init__(self, key):
+    def __init__(self, key, protocol="https"):
         """Constructor."""
         self.key = key
+        if protocol and protocol == "http":
+            self.url = self.url.replace("https://", "http://")
 
     def __enter__(self):
         self.session = requests.Session()
@@ -269,7 +271,6 @@ class OpenCageGeocodeUA:
         if self.session:
             response = self.session.get(self.url, params=params)
         else:
-            # codiga-disable
             response = requests.get(self.url, params=params, timeout=DEFAULT_TIMEOUT)
 
         try:

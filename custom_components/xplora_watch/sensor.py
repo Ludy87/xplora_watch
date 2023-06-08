@@ -2,9 +2,8 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription, SensorStateClass
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, CONF_NAME, PERCENTAGE, EntityCategory, UnitOfLength
 from homeassistant.core import HomeAssistant
@@ -40,7 +39,7 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key=SENSOR_STEP_DAY,
         icon="mdi:run",
-        state_class=SensorStateClass.TOTAL,
+        device_class=SensorDeviceClass.ENUM,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorEntityDescription(
@@ -53,6 +52,7 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key=SENSOR_MESSAGE,
         icon="mdi:message",
+        device_class=SensorDeviceClass.ENUM,
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorEntityDescription(
@@ -68,19 +68,30 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
     """Set up the Xplora® Watch Version 2 sensors from config entry."""
     coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
     entities: list[XploraSensor] = []
-    for desc in SENSOR_TYPES:
+    for description in SENSOR_TYPES:
         for watch in coordinator.controller.watchs:
-            ward = watch.get("ward")
-            wuid = ward.get(ATTR_ID, "")
-            if (
-                config_entry.options
-                and wuid in config_entry.options.get(CONF_WATCHES, [])
-                and desc.key in config_entry.options.get(CONF_TYPES, [])
-            ):
-                sw_version = await coordinator.controller.getWatches(wuid)
-                entities.append(XploraSensor(config_entry, coordinator, ward, sw_version, wuid, desc))
-            elif not config_entry.options:
-                _LOGGER.debug("%s %s", watch, config_entry.entry_id)
+            options = config_entry.options
+            if not options or not isinstance(watch, dict):
+                _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
+                continue
+
+            ward: dict[str, any] = watch.get("ward", None)
+            if ward is None:
+                continue
+
+            wuid = ward.get(ATTR_ID, None)
+            if wuid is None:
+                continue
+
+            conf_watches = options.get(CONF_WATCHES, None)
+            conf_tyes = options.get(CONF_TYPES, None)
+
+            if conf_watches is None or conf_tyes is None or wuid not in conf_watches or description.key not in conf_tyes:
+                continue
+
+            sw_version = await coordinator.controller.getWatches(wuid)
+            entities.append(XploraSensor(config_entry, coordinator, ward, sw_version, wuid, description))
+
     async_add_entities(entities)
 
 
@@ -89,12 +100,16 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         self,
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, Any],
-        sw_version: dict[str, Any],
+        ward: dict[str, any],
+        sw_version: dict[str, any],
         wuid: str,
         description: SensorEntityDescription,
     ) -> None:
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
+        if self.watch_uid not in self.coordinator.data:
+            return
+        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
+
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
         if i == -1:
             return
@@ -110,7 +125,7 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
 
         self._attr_unique_id = f"{ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{wuid}"
         _LOGGER.debug(
-            "Updating sensor: %s | %s | %s Watch_ID %s",
+            "Updating sensor: %s | Typ: %s | %s Watch_ID %s",
             self._attr_name[:-33] if _wuid.find("=") == -1 else self._attr_name,
             description.key,
             i,
@@ -120,16 +135,16 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
     @property
     def native_value(self) -> StateType:
         if self.entity_description.key == SENSOR_BATTERY:
-            return self.coordinator.data[self.watch_uid].get(SENSOR_BATTERY, None)
+            return self._watch_data.get(SENSOR_BATTERY, None)
         if self.entity_description.key == SENSOR_STEP_DAY:
-            return self.coordinator.data[self.watch_uid].get(SENSOR_STEP_DAY, 0)
+            return self._watch_data.get(SENSOR_STEP_DAY, 0)
         if self.entity_description.key == SENSOR_XCOIN:
-            return self.coordinator.data[self.watch_uid].get(SENSOR_XCOIN, 0)
+            return self._watch_data.get(SENSOR_XCOIN, 0)
         if self.entity_description.key == SENSOR_MESSAGE:
-            return self.coordinator.data[self.watch_uid].get("unreadMsg", 0)
+            return self._watch_data.get("unreadMsg", 0)
         if self.entity_description.key == SENSOR_DISTANCE:
-            lat = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)
-            lng = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)
+            lat = self._watch_data.get(ATTR_TRACKER_LAT, None)
+            lng = self._watch_data.get(ATTR_TRACKER_LNG, None)
             if lat and lng:
                 lat_lng: tuple[float, float] = (float(lat), float(lng))
                 return get_location_distance_meter(self.hass, lat_lng)
@@ -137,11 +152,14 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         return None
 
     @property
-    def extra_state_attributes(self) -> dict[str, Any]:
+    def extra_state_attributes(self) -> dict[str, any]:
         data = super().extra_state_attributes or {}
-        if self.entity_description.key == SENSOR_MESSAGE and self.coordinator.data:
-            if self.watch_uid in self.coordinator.data:
-                if SENSOR_MESSAGE in self.coordinator.data[self.watch_uid]:
-                    if self.coordinator.data[self.watch_uid].get(SENSOR_MESSAGE, None):
-                        return dict(data, **self.coordinator.data[self.watch_uid].get(SENSOR_MESSAGE))
+        if (
+            self.entity_description.key is SENSOR_MESSAGE
+            and self.coordinator.data
+            or self.coordinator.data.get(self.watch_uid, None)
+            or SENSOR_MESSAGE in self._watch_data
+            or self._watch_data.get(SENSOR_MESSAGE, None)
+        ):
+            return dict(data, **self._watch_data.get(SENSOR_MESSAGE))
         return dict(data, **{})

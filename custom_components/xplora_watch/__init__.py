@@ -11,7 +11,7 @@ from homeassistant.helpers.typing import ConfigType
 
 from .const import DATA_HASS_CONFIG, DOMAIN
 from .coordinator import XploraDataUpdateCoordinator
-from .helper import create_service_yaml_file, create_www_directory, move_file
+from .helper import create_service_yaml_file, create_www_directory, move_emojis_directory
 from .services import async_setup_services, async_unload_services
 
 PLATFORMS = [Platform.BINARY_SENSOR, Platform.DEVICE_TRACKER, Platform.NOTIFY, Platform.SENSOR, Platform.SWITCH]
@@ -21,7 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, hass_config: ConfigType) -> bool:
     """Set up the Xplora® Watch Version 2 component."""
-    _LOGGER.debug("Set up the Xplora® Watch Version 2 component.")
+    _LOGGER.debug("Set up the Xplora® Watch Version 2 component")
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][DATA_HASS_CONFIG] = hass_config
     return True
@@ -29,7 +29,7 @@ async def async_setup(hass: HomeAssistant, hass_config: ConfigType) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Configure based on config entry."""
-    _LOGGER.debug("Configure based on config entry.")
+    _LOGGER.debug("Configure based on config entry")
     coordinator = XploraDataUpdateCoordinator(hass, entry)
     await coordinator.init()
     await coordinator.async_config_entry_first_refresh()
@@ -46,7 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     watches = await coordinator.controller.setDevices()
 
     await create_www_directory(hass)
-    move_file(hass)
+    move_emojis_directory(hass)
     create_service_yaml_file(hass, entry, watches)
 
     for platform in PLATFORMS:
@@ -70,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-    _LOGGER.debug("Unload a config entry.")
+    _LOGGER.debug("Unload a config entry")
     unload_ok = await hass.config_entries.async_unload_platforms(
         entry, [platform for platform in PLATFORMS if platform != Platform.NOTIFY]
     )

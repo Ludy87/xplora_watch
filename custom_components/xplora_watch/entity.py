@@ -51,6 +51,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
             name=f"{DEVICE_NAME} {wuid}",
             sw_version=self.sw_version.get("osVersion", "n/a"),
             via_device=(DOMAIN, wuid),
+            configuration_url="https://github.com/Ludy87/xplora_watch/blob/main/README.md",
         )
 
     def _states(self, status) -> bool:
