@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict
 
 from homeassistant.components.device_tracker import SourceType
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
@@ -47,7 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
             continue
 
-        ward: Dict[str, any] = watch.get("ward", None)
+        ward: dict[str, any] = watch.get("ward", None)
         if ward is None:
             continue
 
@@ -84,10 +83,10 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         self,
         hass: HomeAssistant,
         config_entry: ConfigEntry,
-        safezone: Dict[str, any],
+        safezone: dict[str, any],
         coordinator: XploraDataUpdateCoordinator,
-        ward: Dict[str, any],
-        sw_version: Dict[str, any],
+        ward: dict[str, any],
+        sw_version: dict[str, any],
         wuid: str,
     ) -> None:
         super().__init__(config_entry, None, coordinator, ward, sw_version, wuid)
@@ -154,14 +153,14 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
         wuid: str,
-        ward: Dict[str, any],
-        sw_version: Dict[str, any],
+        ward: dict[str, any],
+        sw_version: dict[str, any],
     ) -> None:
         """Initialize the Tracker."""
         super().__init__(config_entry, None, coordinator, ward, sw_version, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self._watch_data: Dict[str, any] = self.coordinator.data[self.watch_uid]
+        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
 
         self._hass = hass
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1

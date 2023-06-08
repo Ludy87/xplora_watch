@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict
 
 from pyxplora_api.pyxplora_api_async import PyXploraApi
 
@@ -55,7 +54,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
                 continue
 
-            ward: Dict[str, any] = watch.get("ward", None)
+            ward: dict[str, any] = watch.get("ward", None)
             if ward is None:
                 continue
 
@@ -84,17 +83,17 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     def __init__(
         self,
         config_entry: ConfigEntry,
-        alarm: Dict[str, any],
+        alarm: dict[str, any],
         coordinator: XploraDataUpdateCoordinator,
-        ward: Dict[str, any],
-        sw_version: Dict[str, any],
+        ward: dict[str, any],
+        sw_version: dict[str, any],
         wuid: str,
         description: SwitchEntityDescription,
     ) -> None:
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self._watch_data: Dict[str, any] = self.coordinator.data[self.watch_uid]
+        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
 
         self._alarm = alarm
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
@@ -171,17 +170,17 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     def __init__(
         self,
         config_entry: ConfigEntry,
-        silent: Dict[str, any],
+        silent: dict[str, any],
         coordinator: XploraDataUpdateCoordinator,
-        ward: Dict[str, any],
-        sw_version: Dict[str, any],
+        ward: dict[str, any],
+        sw_version: dict[str, any],
         wuid: str,
         description: SwitchEntityDescription,
     ) -> None:
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self._watch_data: Dict[str, any] = self.coordinator.data[self.watch_uid]
+        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
 
         self._silent = silent
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1

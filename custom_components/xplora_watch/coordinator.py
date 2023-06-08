@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
-from typing import Dict, Union
+from typing import Union
 
 import aiohttp
 from pyxplora_api.const import DEFAULT_TIMEOUT
@@ -147,7 +147,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         data = {}
         for wuid in wuids:
             _LOGGER.debug("Fetch data from Xplora: %s", wuid[25:])
-            device: Dict[str, any] = self.controller.getDevice(wuid=wuid)
+            device: dict[str, any] = self.controller.getDevice(wuid=wuid)
             res_chats = await self.controller.getWatchChatsRaw(wuid, limit=message_limit, show_del_msg=remove_message)
             chats = ChatsNew.from_dict(res_chats).to_dict()
             watch_location = await self.controller.loadWatchLocation(wuid)
@@ -176,7 +176,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self.alarm = await self.controller.getWatchAlarm(wuid=wuid)  # device.get("getWatchAlarm", [])
         self.silent = device.get("getSilentTime", [])
 
-        sw_version: Dict[str, any] = device.get("getWatches", {})
+        sw_version: dict[str, any] = device.get("getWatches", {})
         self.imei = sw_version.get(ATTR_TRACKER_IMEI, wuid)
         self.watch_id = wuid
         self.os_version = sw_version.get("osVersion", "n/a")
@@ -186,7 +186,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self._step_day = device.get("getWatchUserSteps", {}).get("day")
         self._xcoin = device.get("getWatchUserXcoins", 0)
 
-    def get_location(self, device: Dict[str, any], watch_location):
+    def get_location(self, device: dict[str, any], watch_location):
         self.lat = float(device.get(ATTR_TRACKER_LAT, 0.0)) if device.get(ATTR_TRACKER_LAT, None) else None
         self.lng = float(device.get(ATTR_TRACKER_LNG, 0.0)) if device.get(ATTR_TRACKER_LNG, None) else None
         self.poi = watch_location.get(ATTR_TRACKER_POI, None)
@@ -229,9 +229,9 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
             async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session:
                 async with session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response:
-                    res: Dict[str, any] = await response.json()
+                    res: dict[str, any] = await response.json()
                     self.licence = res.get(ATTR_TRACKER_LICENCE, None)
-                    address: Dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
+                    address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
                     if address:
                         self.location_name = res.get("display_name", "")
                         _LOGGER.debug("load address from openstreetmap.org")

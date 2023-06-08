@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
-from typing import Dict
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import callback
@@ -29,8 +28,8 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         config_entry: ConfigEntry,
         description: EntityDescription,
         coordinator: XploraDataUpdateCoordinator,
-        ward: Dict[str, any],
-        sw_version: Dict[str, any],
+        ward: dict[str, any],
+        sw_version: dict[str, any],
         wuid: str,
     ) -> None:
         """Initialize entity."""
@@ -40,8 +39,8 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         self._data = config_entry.data
         self._options = config_entry.options
 
-        self._ward: Dict[str, any] = ward
-        self.sw_version: Dict[str, any] = sw_version
+        self._ward: dict[str, any] = ward
+        self.sw_version: dict[str, any] = sw_version
         self.watch_uid = wuid
         self._unsub_dispatchers: list[Callable[[], None]] = []
 

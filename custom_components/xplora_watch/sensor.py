@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription
 from homeassistant.config_entries import ConfigEntry
@@ -76,7 +75,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
                 continue
 
-            ward: Dict[str, any] = watch.get("ward", None)
+            ward: dict[str, any] = watch.get("ward", None)
             if ward is None:
                 continue
 
@@ -101,15 +100,15 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         self,
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
-        ward: Dict[str, any],
-        sw_version: Dict[str, any],
+        ward: dict[str, any],
+        sw_version: dict[str, any],
         wuid: str,
         description: SensorEntityDescription,
     ) -> None:
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self._watch_data: Dict[str, any] = self.coordinator.data[self.watch_uid]
+        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
 
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
         if i == -1:
