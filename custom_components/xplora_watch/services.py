@@ -187,18 +187,18 @@ class XploraMessageSensorUpdateService(XploraService):
         await self._coordinator._async_update_data(new_data=old_state)
 
     async def _fetch_chat_voice(self, watch_id: str, msg_id: str) -> None:
-        voice: dict[str, any] = await self._coordinator.controller._gql_handler.fetchChatVoice_a(watch_id, msg_id)
-        encoded_base64_string_to_mp3_file(self._hass, voice.get("fetchChatVoice"), msg_id)
+        voice: dict[str, any] = await self._coordinator.controller.get_chat_voice(watch_id, msg_id)
+        encoded_base64_string_to_mp3_file(self._hass, voice, msg_id)
 
     async def _fetch_chat_short_video(self, watch_id: str, msg_id: str) -> None:
-        video: dict[str, any] = await self._coordinator.controller._gql_handler.fetchChatShortVideo_a(watch_id, msg_id)
-        encoded_base64_string_to_file(self._hass, video.get("fetchChatShortVideo"), msg_id, "mp4", "video")
-        thumb: dict[str, any] = await self._coordinator.controller._gql_handler.fetchChatShortVideoCover_a(watch_id, msg_id)
+        video: dict[str, any] = await self._coordinator.controller.get_short_video(watch_id, msg_id)
+        encoded_base64_string_to_file(self._hass, video, msg_id, "mp4", "video")
+        thumb: dict[str, any] = await self._coordinator.controller.get_short_video_cover(watch_id, msg_id)
         encoded_base64_string_to_file(self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb")
 
     async def _fetch_chat_image(self, watch, msg_id):
-        image = await self._coordinator.controller._gql_handler.fetchChatImage_a(watch, msg_id)
-        encoded_base64_string_to_file(self._hass, image.get("fetchChatImage"), msg_id, "jpeg", "image")
+        image = await self._coordinator.controller.get_chat_image(watch, msg_id)
+        encoded_base64_string_to_file(self._hass, image, msg_id, "jpeg", "image")
 
 
 class XploraShutdownService(XploraService):

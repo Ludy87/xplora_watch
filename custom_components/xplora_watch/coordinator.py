@@ -68,13 +68,13 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     model: str = "GPS-Watch"
     entity_picture: str = ""
     _step_day: dict
+    _xcoin: int
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
         self._entry = entry
         self._opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
         self._maps = entry.options.get(CONF_MAPS, MAPS[0])
-        self._xcoin = 0
         name = f"{DOMAIN}-"
         if CONF_PHONENUMBER in entry.data:
             name += entry.data[CONF_PHONENUMBER][5:]
@@ -184,7 +184,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self.entity_picture = device.get("getWatchUserIcons", "")
 
         self._step_day = device.get("getWatchUserSteps", {}).get("day")
-        self._xcoin = device.get("getWatchUserXcoins", 0)
+        self._xcoin = device.get("getWatchUserXCoins", 0)
 
     def get_location(self, device: dict[str, any], watch_location):
         self.lat = float(device.get(ATTR_TRACKER_LAT, 0.0)) if device.get(ATTR_TRACKER_LAT, None) else None
