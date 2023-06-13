@@ -93,7 +93,6 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
 
         self._alarm = alarm
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
@@ -124,8 +123,8 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._watch_data = self.coordinator.data[self.watch_uid]
-        for alarm in self._watch_data.get("alarm", []):
+        self.coordinator.data[self.watch_uid] = self.coordinator.data[self.watch_uid]
+        for alarm in self.coordinator.data[self.watch_uid].get("alarm", []):
             if alarm[ATTR_ID] == self._alarm[ATTR_ID]:
                 self._attr_is_on = self._states(alarm["status"])
                 self.async_write_ha_state()
@@ -180,7 +179,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
+        self.coordinator.data[self.watch_uid]: dict[str, any] = self.coordinator.data[self.watch_uid]
 
         self._silent = silent
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
@@ -216,8 +215,8 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
-        self._watch_data = self.coordinator.data[self.watch_uid]
-        for silent in self._watch_data.get("silent", []):
+        self.coordinator.data[self.watch_uid] = self.coordinator.data[self.watch_uid]
+        for silent in self.coordinator.data[self.watch_uid].get("silent", []):
             if silent[ATTR_ID] == self._silent[ATTR_ID]:
                 self._attr_is_on = self._states(silent["status"])
                 self.async_write_ha_state()
