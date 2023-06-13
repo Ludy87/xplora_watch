@@ -25,6 +25,7 @@ from .const import (
 )
 
 DEFAULT_DATA_SCHEMA = {
+    vol.Required(CONF_PASSWORD): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
     vol.Required(CONF_TIMEZONE, default="Europe/Berlin"): TextSelector(TextSelectorConfig(type=TextSelectorType.TEXT)),
     vol.Required(CONF_USERLANG, default="en-GB"): SelectSelector(
         SelectSelectorConfig(
@@ -63,6 +64,5 @@ DATA_SCHEMA_PHONE = {
 }
 DATA_SCHEMA_EMAIL = {
     vol.Required(CONF_EMAIL): TextSelector(TextSelectorConfig(type=TextSelectorType.EMAIL)),
-    vol.Required(CONF_PASSWORD): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),
     **DEFAULT_DATA_SCHEMA,
 }

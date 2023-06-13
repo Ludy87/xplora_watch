@@ -98,7 +98,6 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
 
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
         if i == -1:
@@ -126,13 +125,13 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
     def is_on(self) -> bool | None:
         """Return true if the binary sensor is on."""
         if self.entity_description.key == BINARY_SENSOR_CHARGING:
-            return self._watch_data.get("isCharging", None)
+            return self.coordinator.data[self.watch_uid].get("isCharging", None)
         if self.entity_description.key == BINARY_SENSOR_STATE:
-            return self._watch_data.get("isOnline", None)
+            return self.coordinator.data[self.watch_uid].get("isOnline", None)
         if self.entity_description.key == BINARY_SENSOR_SAFEZONE:
             if self._options.get(CONF_HOME_SAFEZONE, STATE_OFF) == STATE_ON:
-                latitude = self._watch_data.get(ATTR_TRACKER_LAT, None)
-                longitude = self._watch_data.get(ATTR_TRACKER_LNG, None)
+                latitude = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)
+                longitude = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)
                 home_latitude = self.hass.states.get(HOME).attributes[ATTR_LATITUDE]
                 home_longitude = self.hass.states.get(HOME).attributes[ATTR_LONGITUDE]
                 home_raduis = self.hass.states.get(HOME).attributes["radius"]
@@ -145,13 +144,15 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
                     self._options.get(CONF_HOME_RADIUS, home_raduis),
                 ):
                     return False
-            return self._watch_data.get("isSafezone", None)
+            return self.coordinator.data[self.watch_uid].get("isSafezone", None)
         return False
 
     @property
     def icon(self) -> str | None:
         """Return the icon to use in the frontend, if any."""
-        if self.entity_description.key == BINARY_SENSOR_CHARGING and not self._watch_data.get("isCharging", None):
+        if self.entity_description.key == BINARY_SENSOR_CHARGING and not self.coordinator.data[self.watch_uid].get(
+            "isCharging", None
+        ):
             return "mdi:battery-unknown"
         if hasattr(self, "_attr_icon"):
             return self._attr_icon
