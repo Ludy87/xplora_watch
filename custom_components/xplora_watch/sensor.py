@@ -108,7 +108,6 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self._watch_data: dict[str, any] = self.coordinator.data[self.watch_uid]
 
         i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
         if i == -1:
@@ -135,16 +134,16 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
     @property
     def native_value(self) -> StateType:
         if self.entity_description.key == SENSOR_BATTERY:
-            return self._watch_data.get(SENSOR_BATTERY, None)
+            return self.coordinator.data[self.watch_uid].get(SENSOR_BATTERY, None)
         if self.entity_description.key == SENSOR_STEP_DAY:
-            return self._watch_data.get(SENSOR_STEP_DAY, 0)
+            return self.coordinator.data[self.watch_uid].get(SENSOR_STEP_DAY, 0)
         if self.entity_description.key == SENSOR_XCOIN:
-            return self._watch_data.get(SENSOR_XCOIN, 0)
+            return self.coordinator.data[self.watch_uid].get(SENSOR_XCOIN, 0)
         if self.entity_description.key == SENSOR_MESSAGE:
-            return self._watch_data.get("unreadMsg", 0)
+            return self.coordinator.data[self.watch_uid].get("unreadMsg", 0)
         if self.entity_description.key == SENSOR_DISTANCE:
-            lat = self._watch_data.get(ATTR_TRACKER_LAT, None)
-            lng = self._watch_data.get(ATTR_TRACKER_LNG, None)
+            lat = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)
+            lng = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)
             if lat and lng:
                 lat_lng: tuple[float, float] = (float(lat), float(lng))
                 return get_location_distance_meter(self.hass, lat_lng)
@@ -157,9 +156,9 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         if (
             self.entity_description.key is SENSOR_MESSAGE
             and self.coordinator.data
-            or self.coordinator.data.get(self.watch_uid, None)
-            or SENSOR_MESSAGE in self._watch_data
-            or self._watch_data.get(SENSOR_MESSAGE, None)
+            and self.coordinator.data.get(self.watch_uid, None)
+            and SENSOR_MESSAGE in self.coordinator.data[self.watch_uid]
+            and self.coordinator.data[self.watch_uid].get(SENSOR_MESSAGE, None)
         ):
-            return dict(data, **self._watch_data.get(SENSOR_MESSAGE))
+            return dict(data, **self.coordinator.data[self.watch_uid].get(SENSOR_MESSAGE))
         return dict(data, **{})
