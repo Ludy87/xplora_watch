@@ -1,7 +1,9 @@
 {
   "name": "Xplora® Watch",
+  "zip_release": true,
   "country": ["DE", "US"],
   "render_readme": true,
   "homeassistant": "2023.6.1",
-  "hacs": "1.32.1"
+  "hacs": "1.32.1",
+  "filename": "xplora_watch.zip"
 }
