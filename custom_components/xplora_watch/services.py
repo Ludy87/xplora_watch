@@ -188,17 +188,21 @@ class XploraMessageSensorUpdateService(XploraService):
 
     async def _fetch_chat_voice(self, watch_id: str, msg_id: str) -> None:
         voice: dict[str, any] = await self._coordinator.controller.get_chat_voice(watch_id, msg_id)
-        encoded_base64_string_to_mp3_file(self._hass, voice, msg_id)
+        if voice:
+            encoded_base64_string_to_mp3_file(self._hass, voice, msg_id)
 
     async def _fetch_chat_short_video(self, watch_id: str, msg_id: str) -> None:
         video: dict[str, any] = await self._coordinator.controller.get_short_video(watch_id, msg_id)
-        encoded_base64_string_to_file(self._hass, video, msg_id, "mp4", "video")
+        if video:
+            encoded_base64_string_to_file(self._hass, video, msg_id, "mp4", "video")
         thumb: dict[str, any] = await self._coordinator.controller.get_short_video_cover(watch_id, msg_id)
-        encoded_base64_string_to_file(self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb")
+        if thumb:
+            encoded_base64_string_to_file(self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb")
 
     async def _fetch_chat_image(self, watch, msg_id):
         image = await self._coordinator.controller.get_chat_image(watch, msg_id)
-        encoded_base64_string_to_file(self._hass, image, msg_id, "jpeg", "image")
+        if image:
+            encoded_base64_string_to_file(self._hass, image, msg_id, "jpeg", "image")
 
 
 class XploraShutdownService(XploraService):
