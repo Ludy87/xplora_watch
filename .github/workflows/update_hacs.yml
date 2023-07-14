@@ -64,7 +64,7 @@ jobs:
             committer: github-actions[bot] <noreply@github.com>
             author: github-actions[bot] <noreply@github.com>
             signoff: true
-            branch: "${{ env.version_hassio }}_${{ env.version_hacs }}"
+            branch: "update_hacs_hassio"
             delete-branch: true
             title: '🔨 Update hacs.json file by <github-actions[bot]>'
             body: |
