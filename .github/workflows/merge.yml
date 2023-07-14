@@ -72,7 +72,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: prNumber,
-                name: 'PR: rejected'
+                labels: ['PR: rejected']
             });
 
             const pullRequestLabels = await github.rest.issues.listLabelsOnIssue({
