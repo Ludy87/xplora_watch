@@ -50,7 +50,7 @@ jobs:
           zip -r xplora_watch.zip ./
       - name: Upload zip to release
         if: steps.checkTag.outputs.exists == 'false'
-        uses: svenstaro/upload-release-action@2.6.1
+        uses: svenstaro/upload-release-action@2.7.0
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip
