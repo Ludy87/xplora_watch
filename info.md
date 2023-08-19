@@ -19,21 +19,24 @@ Xplora® Watch Version 2 integration for Home Assistant
 
 ## Features
 
-| Features               | Type           |
-| ---------------------- | -------------- |
-| Battery                | Sensor         |
-| Watch-Xcoin            | Sensor         |
-| Watch Step per Day     | Sensor         |
-| Watch Online state     | Binary Sensor  |
-| Watch is in Safezone   | Binary Sensor  |
-| charging state         | Binary Sensor  |
-| Watch silent(s)        | Switch         |
-| Watch alarm(s)         | Switch         |
-| Send Message           | Notify         |
-| Send Message           | Service        |
-| Manually update        | Service        |
-| Watch Tracking         | Device Tracker |
-| Watch Show Safezone(s) | Device Tracker |
+| Features                   | Type           |
+| -------------------------- | -------------- |
+| Battery                    | Sensor         |
+| Watch-Xcoin                | Sensor         |
+| Watch Step per Day         | Sensor         |
+| Watch Online state         | Binary Sensor  |
+| Watch is in Safezone       | Binary Sensor  |
+| charging state             | Binary Sensor  |
+| Watch silent(s)            | Switch         |
+| Watch alarm(s)             | Switch         |
+| Send Message               | Notify         |
+| Send Message               | Service        |
+| Read Messages from Account | Service        |
+| Delete Messages from App   | Service        |
+| Manually update            | Service        |
+| Turn off Watch             | Service        |
+| Watch Tracking             | Device Tracker |
+| Watch Show Safezone(s)     | Device Tracker |
 ---
 
 ## Basis Configuration
