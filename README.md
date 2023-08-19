@@ -39,7 +39,7 @@ Xplora® Watch Version 2 integration for Home Assistant
 | [Read Messages from Account](https://github.com/Ludy87/xplora_watch#read-messages-from-account-v240) | Service        |
 | [Delete Messages from App](https://github.com/Ludy87/xplora_watch#delete-messages-from-app-v260)     | Service        |
 | [Manually update](https://github.com/Ludy87/xplora_watch#manually-update-v208--v209)                 | Service        |
-| turn off Watch                                                                                       | Service        |
+| Turn off Watch                                                                                       | Service        |
 | Watch Tracking                                                                                       | Device Tracker |
 | Watch Show Safezone(s)                                                                               | Device Tracker |
 ---
