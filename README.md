@@ -22,6 +22,12 @@ Xplora® Watch Version 2 integration for Home Assistant
 
 ## Features
 
+* Control your watch from Home Assistant
+* Receive notifications from your watch
+* Track your watch's location
+* View your watch's battery level
+* And more!
+
 **IMPORTANCE: Of a service is activated by automation, the sensors will no longer be updated. Therefore, activate the `xplora_watch.see` service with a corresponding interval.**
 
 | Features                                                                                             | Type           |
@@ -70,69 +76,69 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 | add in Version 2.2.0                                                                          | add in Version 2                                                                                        |
 | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| ![signin image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/signin.png) | ![integration image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/integration.png) |
+| ![signin image](images/signin.png) | ![integration image](images/integration.png) |
 
 ---
 
 ## Downloaded from voice messages, Videos and Images (v2.7.0)
 
-- All voice messages, videos and images are stored in `config/www/{voice|video|image|}`. [#152](https://github.com/Ludy87/xplora_watch/discussions/152)
-  - The voice message will be downloaded as amr and converted to mp3.
-  - Videos as mp4
-  - Images as jpeg
-- updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) [#155](https://github.com/Ludy87/xplora_watch/issues/155)
+* All voice messages, videos and images are stored in `config/www/{voice|video|image|}`. [#152](https://github.com/Ludy87/xplora_watch/discussions/152)
+  * The voice message will be downloaded as amr and converted to mp3.
+  * Videos as mp4
+  * Images as jpeg
+* updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) [#155](https://github.com/Ludy87/xplora_watch/issues/155)
 
 ---
 
 ## Delete Messages from App (v2.6.0)
 
-- new service added - delete only app message
-- chats: add ```delete_flag```  `1` = message is deleted
-- updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md)
-- add Emoji
-  - M1001 = "😄"
-  - M1002 = "😏"
-  - M1003 = "😘"
-  - M1004 = "😅"
-  - M1005 = "😂"
-  - M1006 = "😭"
-  - M1007 = "😍"
-  - M1008 = "😎"
-  - M1009 = "😜"
-  - M1010 = "😳"
-  - M1011 = "🥱"
-  - M1012 = "👏"
-  - M1013 = "😡"
-  - M1014 = "👍"
-  - M1015 = "😏"
-  - M1016 = "😓"
-  - M1017 = "🍧"
-  - M1018 = "😮"
-  - M1019 = "M1019"
-  - M1020 = "🎁"
-  - M1021 = "M1021"
-  - M1022 = "☺️"
-  - M1023 = "M1023"
-  - M1024 = "🌹"
+* new service added - delete only app message
+* chats: add ```delete_flag```  `1` = message is deleted
+* updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md)
+* add Emoji
+  * M1001 = "😄"
+  * M1002 = "😏"
+  * M1003 = "😘"
+  * M1004 = "😅"
+  * M1005 = "😂"
+  * M1006 = "😭"
+  * M1007 = "😍"
+  * M1008 = "😎"
+  * M1009 = "😜"
+  * M1010 = "😳"
+  * M1011 = "🥱"
+  * M1012 = "👏"
+  * M1013 = "😡"
+  * M1014 = "👍"
+  * M1015 = "😏"
+  * M1016 = "😓"
+  * M1017 = "🍧"
+  * M1018 = "😮"
+  * M1019 = "M1019"
+  * M1020 = "🎁"
+  * M1021 = "M1021"
+  * M1022 = "☺️"
+  * M1023 = "M1023"
+  * M1024 = "🌹"
 
 ---
 
 ## Read Messages from Account (v2.4.0)
 
-- A new (message) sensor has been added, default: disabled
-- new service added, (message) sensor will be updated
-- change Number of Messages option find in "Configure"
-- [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) (updated v2.6.0)
-- [Automation Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/automation-read-messages.yaml)
+* A new (message) sensor has been added, default: disabled
+* new service added, (message) sensor will be updated
+* change Number of Messages option find in "Configure"
+* [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) (updated v2.6.0)
+* [Automation Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/automation-read-messages.yaml)
 
-![markdown sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/markdown_sample.png)
+![markdown sample](images/markdown_sample.png)
 
 ---
 
 ## Multilanguage (v2.1.0)
 
-- DE
-- EN
+* DE
+* EN
 
 ---
 
@@ -140,7 +146,7 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 Manually update all information from your watch
 
-![manually_refresh image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/manually_refresh.png)
+![manually_refresh image](images/manually_refresh.png)
 
 ---
 
@@ -151,7 +157,7 @@ Please note that this can also change the entry_id!
 
 Rule format: ```watchID=New Name``` Notice the equals sign
 
-![friendly_name image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/friendly_name.png)
+![friendly_name image](images/friendly_name.png)
 
 ---
 
@@ -159,13 +165,29 @@ Rule format: ```watchID=New Name``` Notice the equals sign
 
 Set Target with the WatchID for the receiver watch
 
-![notify image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/notify.png)
+### require (v2.10.0)
+
+* `message`
+* `target`
+* `data`
+  * `user_id`
+
+```yaml
+service: notify.xplora_watch
+data:
+  message: Message
+  data:
+    user_id: 053eb6e5e5b32e502cfb1934cefb77ff
+  target: 01102f442f1125f525f5f3336316068
+```
+
+![notify image](images/notify.png)
 
 ---
 
 ## Send Message via Service (v2.0.3)
 
-![message_service image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/message_service.png)
+![message_service image](images/message_service.png)
 
 ---
 
