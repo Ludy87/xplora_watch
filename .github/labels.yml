@@ -68,3 +68,5 @@
   color: "ff0000"
 - name: "in progress"
   color: "FDF89E"
+- name: "New Version"
+  color: "ff0000"
