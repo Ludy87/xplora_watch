@@ -44,6 +44,20 @@ wontfix:
       - 'help wanted'
       - 'check for Bug'
     comment: >
+      :wave: @{issue-author}, the bug will not be further investigated.
+
+      This action was performed automatically.
+    close: true
+    lock: true
+
+"New Version":
+  issues:
+    unlabel:
+      - 'wait'
+      - 'in progress'
+      - 'help wanted'
+      - 'check for Bug'
+    comment: >
       :wave: @{issue-author}, the bug will not be further investigated. 
       A new integration version has been released, check if the bug persists. 
       If the error persists, open a new bug report.
