@@ -3,8 +3,8 @@ from __future__ import annotations
 
 import json
 import os
-from pathlib import Path
 import sys
+from pathlib import Path
 
 HACS_FILE = Path(f"{os.getcwd()}/hacs.json")
 
