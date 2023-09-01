@@ -20,13 +20,63 @@ Xplora® Watch Version 2 integration for Home Assistant
 ---
 ![Xplora® Watch Version 2](https://github.com/home-assistant/brands/blob/master/custom_integrations/xplora_watch/logo@2x.png?raw=true)
 
+## 🚨 Important: Upgrading from version 2.8.3 or earlier to version 2.10.\* 🚨
+
+1. ⚠️back up your Homeassistant instance
+2. ⚠️save your backup externally
+3. Preparation
+   - 👥There is more than one Xplora® Watch user logged into the Homeassistant instance
+     - 🗑️remove the user that is generating the error `Platform xplora_watch does not generate unique IDs.`
+     - 🗑️remove the sensors that are listed as unavailable
+     - restart Homeassistant
+   - 👤There is only one user for Xplora® Watch who is logged into the Homeassistant instance
+     - no further steps necessary
+4. Upgrade the integration and restart Homeassistant instance
+5. Two instances (or more) of Xplora® Watch are now displayed - click on `2 devices` ![new Device 1](./images/new_device_1.png)
+6. an instance with your name at the beginning is the new instance ![new Device 2](./images/new_device_2.png)
+   - click on the old instance
+   - Go to the pen in the upper right corner
+   - disable this device
+7. (optional for more than one user)
+   - add the second user `ADD DEVICE`
+8. Follow-up
+   - new entities are created or old ones are listed as unavailable
+   - the old entities can be removed
+   - note that the new entities have a new naming convention
+
+### Names layout changed (v2.10.0)
+
+_binary\_sensor:_
+
+- `"Watch Name" "Watch" "Charging" "Watch ID"` to `"Watch Name" "Watch" "Charging" "(Username)"`
+- `"Watch Name" "Watch" "Safezone" "Watch ID"` to `"Watch Name" "Watch" "Safezone" "(Username)"`
+- `"Watch Name" "Watch" "State" "Watch ID"` to `"Watch Name" "Watch" "State" "(Username)"`
+
+_device\_tracker:_
+
+- `"Watch Name" "Watch" "Tracker" "Watch ID"` to `"Watch Name" "Watch" "Tracker" "(Username)"`
+- `"Safzone" "Safzone Name" "Watch ID"` to `"Watch Name" "Watch" "Safzone" "Safzone Name" "(Username)"`
+
+_sensor:_
+
+- `"Watch Name" "Watch" "Battery" "Watch ID"` to `"Watch Name" "Watch" "Battery" "(Username)"`
+- `"Watch Name" "Watch" "Xcoin" "Watch ID"` to `"Watch Name" "Watch" "Xcoin" "(Username)"`
+- `"Watch Name" "Watch" "Step Day" "Watch ID"` to `"Watch Name" "Watch" "Step Day" "(Username)"`
+- `"Watch Name" "Watch" "Message" "Watch ID"` to `"Watch Name" "Watch" "Message" "(Username)"`
+- `"Watch Name" "Watch" "Distance" "Watch ID"` to `"Watch Name" "Watch" "Distance" "(Username)"`
+
+_switch:_
+
+- `"Watch Name" "Watch" "Alarm" "Time" "Watch ID"` to `"Watch Name" "Watch" "Alarm" "Time" "(Username)"`
+- `"Watch Name" "Watch" "Silent" "Time" "Watch ID"` to `"Watch Name" "Watch" "Silent" "Time" "(Username)"`
+
 ## Features
 
-* Control your watch from Home Assistant
-* Receive notifications from your watch
-* Track your watch's location
-* View your watch's battery level
-* And more!
+- Control your watch from Home Assistant
+- Receive notifications from your watch
+- Track your watch's location
+- View your watch's battery level
+- And more!
 
 **IMPORTANCE: Of a service is activated by automation, the sensors will no longer be updated. Therefore, activate the `xplora_watch.see` service with a corresponding interval.**
 
@@ -74,62 +124,62 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 
 Xplora® should now appear as a card under the HA Integrations page with "Configure" selection available at the bottom of the card.
 
-| add in Version 2.2.0                                                                          | add in Version 2                                                                                        |
-| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| add in Version 2.2.0               | add in Version 2                             |
+| ---------------------------------- | -------------------------------------------- |
 | ![signin image](images/signin.png) | ![integration image](images/integration.png) |
 
 ---
 
 ## Downloaded from voice messages, Videos and Images (v2.7.0)
 
-* All voice messages, videos and images are stored in `config/www/{voice|video|image|}`. [#152](https://github.com/Ludy87/xplora_watch/discussions/152)
-  * The voice message will be downloaded as amr and converted to mp3.
-  * Videos as mp4
-  * Images as jpeg
-* updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) [#155](https://github.com/Ludy87/xplora_watch/issues/155)
+- All voice messages, videos and images are stored in `config/www/{voice|video|image|}`. [#152](https://github.com/Ludy87/xplora_watch/discussions/152)
+  - The voice message will be downloaded as amr and converted to mp3.
+  - Videos as mp4
+  - Images as jpeg
+- updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) [#155](https://github.com/Ludy87/xplora_watch/issues/155)
 
 ---
 
 ## Delete Messages from App (v2.6.0)
 
-* new service added - delete only app message
-* chats: add ```delete_flag```  `1` = message is deleted
-* updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md)
-* add Emoji
-  * M1001 = "😄"
-  * M1002 = "😏"
-  * M1003 = "😘"
-  * M1004 = "😅"
-  * M1005 = "😂"
-  * M1006 = "😭"
-  * M1007 = "😍"
-  * M1008 = "😎"
-  * M1009 = "😜"
-  * M1010 = "😳"
-  * M1011 = "🥱"
-  * M1012 = "👏"
-  * M1013 = "😡"
-  * M1014 = "👍"
-  * M1015 = "😏"
-  * M1016 = "😓"
-  * M1017 = "🍧"
-  * M1018 = "😮"
-  * M1019 = "M1019"
-  * M1020 = "🎁"
-  * M1021 = "M1021"
-  * M1022 = "☺️"
-  * M1023 = "M1023"
-  * M1024 = "🌹"
+- new service added - delete only app message
+- chats: add ```delete_flag```  `1` = message is deleted
+- updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md)
+- add Emoji
+  - M1001 = "😄"
+  - M1002 = "😏"
+  - M1003 = "😘"
+  - M1004 = "😅"
+  - M1005 = "😂"
+  - M1006 = "😭"
+  - M1007 = "😍"
+  - M1008 = "😎"
+  - M1009 = "😜"
+  - M1010 = "😳"
+  - M1011 = "🥱"
+  - M1012 = "👏"
+  - M1013 = "😡"
+  - M1014 = "👍"
+  - M1015 = "😏"
+  - M1016 = "😓"
+  - M1017 = "🍧"
+  - M1018 = "😮"
+  - M1019 = "M1019"
+  - M1020 = "🎁"
+  - M1021 = "M1021"
+  - M1022 = "☺️"
+  - M1023 = "M1023"
+  - M1024 = "🌹"
 
 ---
 
 ## Read Messages from Account (v2.4.0)
 
-* A new (message) sensor has been added, default: disabled
-* new service added, (message) sensor will be updated
-* change Number of Messages option find in "Configure"
-* [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) (updated v2.6.0)
-* [Automation Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/automation-read-messages.yaml)
+- A new (message) sensor has been added, default: disabled
+- new service added, (message) sensor will be updated
+- change Number of Messages option find in "Configure"
+- [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) (updated v2.6.0)
+- [Automation Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/automation-read-messages.yaml)
 
 ![markdown sample](images/markdown_sample.png)
 
@@ -137,8 +187,8 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 ## Multilanguage (v2.1.0)
 
-* DE
-* EN
+- DE
+- EN
 
 ---
 
@@ -167,10 +217,10 @@ Set Target with the WatchID for the receiver watch
 
 ### require (v2.10.0)
 
-* `message`
-* `target`
-* `data`
-  * `user_id`
+- `message`
+- `target`
+- `data`
+  - `user_id`
 
 ```yaml
 service: notify.xplora_watch
