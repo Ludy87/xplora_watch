@@ -1,3 +1,4 @@
+"""update countries.md file."""
 import json
 
 with open("countries.md", "w", encoding="utf8") as text_file:
