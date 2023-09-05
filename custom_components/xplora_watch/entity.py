@@ -22,14 +22,13 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
 
     _attr_attribution = ATTRIBUTION
     _attr_force_update = False
+    _state = None
 
     def __init__(
         self,
         config_entry: ConfigEntry,
         description: EntityDescription,
         coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, any],
-        sw_version: dict[str, any],
         wuid: str,
     ) -> None:
         """Initialize entity."""
@@ -39,18 +38,20 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         self._data = config_entry.data
         self._options = config_entry.options
 
-        self._ward: dict[str, any] = ward
-        self.sw_version: dict[str, any] = sw_version
         self.watch_uid = wuid
         self._unsub_dispatchers: list[Callable[[], None]] = []
 
+        is_admin = " (Admin)-" if coordinator.is_admin.get(coordinator.user_id + config_entry.entry_id, None) else "-"
+
+        watch_name = self.coordinator.controller.getWatchUserNames(wuid=wuid)
+
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, wuid)},
+            identifiers={(DOMAIN, f"{config_entry.unique_id}_{wuid}")},
             manufacturer=MANUFACTURER,
-            model=self.coordinator.data[wuid].get("model", DEVICE_NAME),
-            name=f"{DEVICE_NAME} {wuid}",
-            sw_version=self.sw_version.get("osVersion", "n/a"),
-            via_device=(DOMAIN, wuid),
+            model=coordinator.data[wuid].get("model", DEVICE_NAME),
+            name=f"{coordinator.username}{is_admin}{watch_name} ({wuid})",
+            sw_version=coordinator.os_version,
+            via_device=(DOMAIN, f"{config_entry.unique_id}_{coordinator.username}"),
             configuration_url="https://github.com/Ludy87/xplora_watch/blob/main/README.md",
         )
 
