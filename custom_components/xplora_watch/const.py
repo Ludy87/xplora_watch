@@ -16,13 +16,14 @@ API_KEY_MAPBOX: Final = (
     "pk.eyJ1IjoieHBsb3JhdGVjaG5vbG9naWVzIiwiYSI6ImNrenpoYnFodzBhZTUzbG83aTFrNG91aXoifQ.ih4DP1EH9xSrQnzr7QaDvw"
 )
 
-ATTR_SERVICE_MSG: Final = "message"
-ATTR_SERVICE_MSGID: Final = "message_id"
 ATTR_SERVICE_SEE: Final = "see"
 ATTR_SERVICE_DELETE_MSG: Final = "delete_message_from_app"
 ATTR_SERVICE_READ_MSG: Final = "read_message"
 ATTR_SERVICE_SEND_MSG: Final = "send_message"
 ATTR_SERVICE_SHUTDOWN: Final = "shutdown"
+ATTR_SERVICE_MSG: Final = "message"
+ATTR_SERVICE_MSGID: Final = "message_id"
+ATTR_SERVICE_USER: Final = "user"
 ATTR_SERVICE_TARGET: Final = "target"
 
 ATTR_TRACKER_ADDR: Final = "address"
@@ -63,7 +64,9 @@ BINARY_SENSOR_CHARGING: Final = "charging"
 BINARY_SENSOR_SAFEZONE: Final = "safezone"
 BINARY_SENSOR_STATE: Final = "state"
 
+SWITCH_ALARM: Final = "alarm"
 SWITCH_ALARMS: Final = "alarms"
+SWITCH_SILENT: Final = "silent"
 SWITCH_SILENTS: Final = "silents"
 
 DEVICE_TRACKER_SAFZONES: Final = "watch_safezone"
