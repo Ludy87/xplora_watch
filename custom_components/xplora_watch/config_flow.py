@@ -11,7 +11,11 @@ from pyxplora_api.status import UserContactType
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant import config_entries, core
-from homeassistant.config_entries import ConfigEntry, OptionsFlow, OptionsFlowWithConfigEntry
+from homeassistant.config_entries import (
+    ConfigEntry,
+    OptionsFlow,
+    OptionsFlowWithConfigEntry,
+)
 from homeassistant.const import (
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
@@ -73,6 +77,7 @@ _LOGGER = logging.getLogger(__name__)
 
 @callback
 async def sign_in(hass: core.HomeAssistant, data: dict[str, any] = None) -> PyXploraApi:
+    """Sign in to the Xplora® API."""
     controller: PyXploraApi = PyXploraApi(
         countrycode=data.get(CONF_COUNTRY_CODE, None),
         phoneNumber=data.get(CONF_PHONENUMBER, None),
@@ -80,7 +85,7 @@ async def sign_in(hass: core.HomeAssistant, data: dict[str, any] = None) -> PyXp
         userLang=data.get(CONF_USERLANG, None),
         timeZone=data.get(CONF_TIMEZONE, None),
         email=data.get(CONF_EMAIL, None),
-        session=aiohttp_client.async_create_clientsession(hass),
+        session=aiohttp_client.async_get_clientsession(hass),
     )
     await controller.init()
     return controller
@@ -88,6 +93,7 @@ async def sign_in(hass: core.HomeAssistant, data: dict[str, any] = None) -> PyXp
 
 async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
+
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
 
@@ -104,7 +110,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict
     try:
         await sign_in(hass=hass, data=data)
     except LoginError as err:
-        raise LoginError(err.error_message)
+        raise LoginError(err.error_message) from err
 
     # Return info that you want to store in the config entry.
     return {"title": f"{MANUFACTURER}"}
@@ -112,6 +118,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict
 
 def validate_options_input(user_input: dict[str, any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
+
     Data has the keys from DATA_SCHEMA with values provided by the user.
     """
     errors = {}
@@ -123,19 +130,6 @@ def validate_options_input(user_input: dict[str, any]) -> dict[str, str]:
 
     if not user_input[CONF_WATCHES]:
         errors["base"] = "no_watch"
-
-    for watch in user_input[CONF_WATCHES]:
-        for i in range(1, len(user_input[CONF_WATCHES]) + 1):
-            user_input_watches = user_input.get(f"{CONF_WATCHES}_{i}")
-            if not user_input_watches:
-                errors["base"] = "friendly_name_error"
-                continue
-
-            if "=" not in user_input_watches and len(user_input_watches) != len(watch):
-                errors["base"] = "friendly_name_error"
-
-    if not user_input[CONF_TYPES]:
-        errors["base"] = "no_sensor"
 
     # Return info that you want to store in the config entry.
     return errors
@@ -168,14 +162,14 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             info = None
             try:
                 info = await validate_input(self.hass, user_input)
-            except PhoneOrEmailFail as e:
-                _LOGGER.exception(e)
+            except PhoneOrEmailFail as error:
+                _LOGGER.exception(error)
                 errors["base"] = "phone_email_invalid"
-            except LoginError as e:
-                _LOGGER.exception(e)
+            except LoginError as error:
+                _LOGGER.exception(error)
                 errors["base"] = "pass_invalid"
-            except Error as e:
-                _LOGGER.exception(e)
+            except Error as error:
+                _LOGGER.exception(error)
                 errors["base"] = "cannot_connect"
 
             if info:
@@ -197,14 +191,14 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             info = None
             try:
                 info = await validate_input(self.hass, user_input)
-            except PhoneOrEmailFail as e:
-                _LOGGER.exception(e)
+            except PhoneOrEmailFail as error:
+                _LOGGER.exception(error)
                 errors["base"] = "phone_email_invalid"
-            except LoginError as e:
-                _LOGGER.exception(e)
+            except LoginError as error:
+                _LOGGER.exception(error)
                 errors["base"] = "pass_invalid"
-            except Error as e:
-                _LOGGER.exception(e)
+            except Error as error:
+                _LOGGER.exception(error)
                 errors["base"] = "cannot_connect"
 
             if info:
@@ -219,6 +213,7 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
     """Handle a option flow."""
 
     def get_options(self, signin_typ, schema, language, _options, _home_zone) -> vol.Schema:
+        """Set SCHEMA return SCHEMA."""
         return vol.Schema(
             {
                 vol.Required(CONF_SIGNIN_TYP, default=signin_typ[0]): SelectSelector(
@@ -296,7 +291,7 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
                 vol.Required(
                     CONF_HOME_RADIUS, default=_options.get(CONF_HOME_RADIUS, _home_zone[CONF_RADIUS])
                 ): cv.positive_int,
-                vol.Required(CONF_TYPES, default=_options.get(CONF_TYPES, [])): SelectSelector(
+                vol.Optional(CONF_TYPES, default=_options.get(CONF_TYPES, [])): SelectSelector(
                     SelectSelectorConfig(
                         options=[
                             SelectOptionDict(
@@ -341,10 +336,6 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
                 mode=SelectSelectorMode.LIST,
             )
         )
-        i = 1
-        for watch in watches:
-            schema[vol.Optional(f"{CONF_WATCHES}_{i}", default=_options.get(f"{CONF_WATCHES}_{i}", watch))] = cv.string
-            i += 1
 
         language = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
 
