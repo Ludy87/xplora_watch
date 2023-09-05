@@ -115,7 +115,9 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         self._attr_unique_id = (
             f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{alarm["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(
                 " ", "_"
-            ).lower()
+            )
+            .replace("-", "_")
+            .lower()
         )
 
         self._attr_is_on = self._states(alarm["status"])
@@ -207,9 +209,9 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
         self._attr_unique_id = (
             f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{silent["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(
-                "_", "-"
+                " ", "_"
             )
-            .replace(" ", "_")
+            .replace("-", "_")
             .lower()
         )
 

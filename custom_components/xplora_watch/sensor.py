@@ -124,9 +124,11 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
             "_", " "
         ).title()
 
-        self._attr_unique_id = f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{wuid}_{coordinator.user_id}".replace(
-            " ", "_"
-        ).lower()
+        self._attr_unique_id = (
+            f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{wuid}_{coordinator.user_id}".replace(" ", "_")
+            .replace("-", "_")
+            .lower()
+        )
         _LOGGER.debug("Updating sensor: %s | Typ: %s | Watch_ID ...%s", self._attr_name, description.key, wuid[25:])
 
     @property

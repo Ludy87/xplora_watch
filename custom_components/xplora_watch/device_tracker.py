@@ -112,7 +112,9 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         self._attr_unique_id = (
             f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_safezone_{safezone["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(
                 " ", "_"
-            ).lower()
+            )
+            .replace("-", "_")
+            .lower()
         )
 
     @property
@@ -174,9 +176,11 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
 
         self._attr_name = f"{ward.get(CONF_NAME)} {ATTR_WATCH} Tracker ({coordinator.username})".replace("_", " ").title()
 
-        self._attr_unique_id = f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_Tracker_{wuid}_{coordinator.user_id}".replace(
-            " ", "_"
-        ).lower()
+        self._attr_unique_id = (
+            f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_Tracker_{wuid}_{coordinator.user_id}".replace(" ", "_")
+            .replace("-", "_")
+            .lower()
+        )
 
         self._attr_entity_picture = image
 
