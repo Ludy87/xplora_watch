@@ -1,77 +1,75 @@
 {
-    "config": {
-        "abort": {
-            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-            "already_configured": "[%key:common::config_flow::abort::already_configured%]",
-            "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]"
-        },
-        "error": {
-            "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
-            "pass_invalid": "[%key:common::config_flow::error::pass_invalid%]",
-            "phone_email_invalid": "[%key:common::config_flow::error::phone_email_invalid%]",
-            "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]"
-        },
-        "create_entry": {
-            "default": "[%key:common::config_flow::error::default%]"
-        },
-        "step": {
-            "user_email": {
-                "title": "[%key:common::config_flow::title%]",
-                "description": "[%key:common::config_flow::description%]",
-                "data": {
-                    "language": "[%key:common::config_flow::data::language%]",
-                    "email": "[%key:common::config_flow::data::email%]",
-                    "password": "[%key:common::config_flow::data::password%]",
-                    "timezone": "[%key:common::config_flow::data::timezone%]",
-                    "userlang": "[%key:common::config_flow::data::userlang%]"
-                }
-            },
-            "user_phone": {
-                "title": "[%key:common::config_flow::title%]",
-                "description": "[%key:common::config_flow::description%]",
-                "data": {
-                    "language": "[%key:common::config_flow::data::language%]",
-                    "country_code": "[%key:common::config_flow::data::country_code%]",
-                    "phonenumber": "[%key:common::config_flow::data::phonenumber%]",
-                    "password": "[%key:common::config_flow::data::password%]",
-                    "timezone": "[%key:common::config_flow::data::timezone%]",
-                    "userlang": "[%key:common::config_flow::data::userlang%]"
-                }
-            },
-            "user": {
-                "menu_options": {
-                    "user_email": "[%key:common::config_flow::data::user_email%]",
-                    "user_phone": "[%key:common::config_flow::data::user_phone%]"
-                }
-            }
-        }
+  "config": {
+    "abort": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "already_configured": "[%key:common::config_flow::abort::already_configured%]",
+      "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]"
     },
-    "options": {
-        "error": {
-            "api_key_error": "[%key:common::config_flow::error::api_key_error%]",
-            "no_watch": "[%key:common::config_flow::error::no_watch%]",
-            "no_sensor": "[%key:common::config_flow::error::no_sensor%]",
-            "friendly_name_error": "[%key:common::config_flow::error::friendly_name_error%]"
-        },
-        "step": {
-            "init": {
-                "data": {
-                    "watches": "[%key:common::config_flow::data::watches%]",
-                    "watches_1": "[%key:common::config_flow::data::watches_1%]",
-                    "watches_2": "[%key:common::config_flow::data::watches_2%]",
-                    "language": "[%key:common::config_flow::data::language%]",
-                    "maps": "[%key:common::config_flow::data::maps%]",
-                    "remove_message": "[%key:common::config_flow::data::remove_message%]",
-                    "opencage_apikey": "[%key:common::config_flow::data::opencage_apikey%]",
-                    "scan_interval": "[%key:common::config_flow::data::scan_interval%]",
-                    "home_is_safezone": "[%key:common::config_flow::data::home_is_safezone%]",
-                    "home_latitude": "[%key:common::config_flow::data::home_latitude%]",
-                    "home_longitude": "[%key:common::config_flow::data::home_longitude%]",
-                    "home_radius": "[%key:common::config_flow::data::home_radius%]",
-                    "types": "[%key:common::config_flow::data::types%]",
-                    "message": "[%key:common::config_flow::data::message%]"
-                }
-            }
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "pass_invalid": "[%key:common::config_flow::error::pass_invalid%]",
+      "phone_email_invalid": "[%key:common::config_flow::error::phone_email_invalid%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]"
+    },
+    "create_entry": {
+      "default": "[%key:common::config_flow::error::default%]"
+    },
+    "step": {
+      "user_email": {
+        "title": "[%key:common::config_flow::title%]",
+        "description": "[%key:common::config_flow::description%]",
+        "data": {
+          "language": "[%key:common::config_flow::data::language%]",
+          "email": "[%key:common::config_flow::data::email%]",
+          "password": "[%key:common::config_flow::data::password%]",
+          "timezone": "[%key:common::config_flow::data::timezone%]",
+          "userlang": "[%key:common::config_flow::data::userlang%]"
         }
+      },
+      "user_phone": {
+        "title": "[%key:common::config_flow::title%]",
+        "description": "[%key:common::config_flow::description%]",
+        "data": {
+          "language": "[%key:common::config_flow::data::language%]",
+          "country_code": "[%key:common::config_flow::data::country_code%]",
+          "phonenumber": "[%key:common::config_flow::data::phonenumber%]",
+          "password": "[%key:common::config_flow::data::password%]",
+          "timezone": "[%key:common::config_flow::data::timezone%]",
+          "userlang": "[%key:common::config_flow::data::userlang%]"
+        }
+      },
+      "user": {
+        "menu_options": {
+          "user_email": "[%key:common::config_flow::data::user_email%]",
+          "user_phone": "[%key:common::config_flow::data::user_phone%]"
+        }
+      }
     }
+  },
+  "options": {
+    "error": {
+      "api_key_error": "[%key:common::config_flow::error::api_key_error%]",
+      "no_watch": "[%key:common::config_flow::error::no_watch%]",
+      "no_sensor": "[%key:common::config_flow::error::no_sensor%]",
+      "friendly_name_error": "[%key:common::config_flow::error::friendly_name_error%]"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "watches": "[%key:common::config_flow::data::watches%]",
+          "language": "[%key:common::config_flow::data::language%]",
+          "maps": "[%key:common::config_flow::data::maps%]",
+          "remove_message": "[%key:common::config_flow::data::remove_message%]",
+          "opencage_apikey": "[%key:common::config_flow::data::opencage_apikey%]",
+          "scan_interval": "[%key:common::config_flow::data::scan_interval%]",
+          "home_is_safezone": "[%key:common::config_flow::data::home_is_safezone%]",
+          "home_latitude": "[%key:common::config_flow::data::home_latitude%]",
+          "home_longitude": "[%key:common::config_flow::data::home_longitude%]",
+          "home_radius": "[%key:common::config_flow::data::home_radius%]",
+          "types": "[%key:common::config_flow::data::types%]",
+          "message": "[%key:common::config_flow::data::message%]"
+        }
+      }
+    }
+  }
 }
