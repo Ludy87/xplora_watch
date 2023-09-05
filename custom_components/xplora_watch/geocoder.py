@@ -1,9 +1,9 @@
-"""
-Custom Version - Edit by Ludy87
+"""Custom Version - Edit by Ludy87.
+
 Geocoder module.
 https://github.com/OpenCageData/python-opencage-geocoder/
 Version: 2.2.0
-https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt
+https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt.
 """
 from __future__ import annotations
 
@@ -28,6 +28,7 @@ DEFAULT_TIMEOUT = 60
 
 
 def backoff_max_time():
+    """Get the time in seconds to wait before retrying."""
     return int(os.environ.get("BACKOFF_MAX_TIME", "120"))
 
 
@@ -36,9 +37,7 @@ class OpenCageGeocodeError(Exception):
 
 
 class InvalidInputError(OpenCageGeocodeError):
-
-    """
-    There was a problem with the input you provided.
+    """There was a problem with the input you provided.
 
     :var bad_value: The value that caused the problem
     """
@@ -54,14 +53,11 @@ class InvalidInputError(OpenCageGeocodeError):
 
 
 class UnknownError(OpenCageGeocodeError):
-
     """There was a problem with the OpenCage server."""
 
 
 class RateLimitExceededError(OpenCageGeocodeError):
-
-    """
-    Exception raised when account has exceeded it's limit.
+    """Exception raised when account has exceeded it's limit.
 
     :var datetime reset_time: When your account limit will be reset.
     :var int reset_to: What your account will be reset to.
@@ -82,10 +78,7 @@ class RateLimitExceededError(OpenCageGeocodeError):
 
 
 class NotAuthorizedError(OpenCageGeocodeError):
-
-    """
-    Exception raised when an unautorized API key is used.
-    """
+    """Exception raised when an unautorized API key is used."""
 
     def __unicode__(self):
         """Convert exception to a string."""
@@ -95,10 +88,7 @@ class NotAuthorizedError(OpenCageGeocodeError):
 
 
 class ForbiddenError(OpenCageGeocodeError):
-
-    """
-    Exception raised when a blocked or suspended API key is used.
-    """
+    """Exception raised when a blocked or suspended API key is used."""
 
     def __unicode__(self):
         """Convert exception to a string."""
@@ -108,16 +98,11 @@ class ForbiddenError(OpenCageGeocodeError):
 
 
 class AioHttpError(OpenCageGeocodeError):
-
-    """
-    Exceptions related to async HTTP calls with aiohttp
-    """
+    """Exceptions related to async HTTP calls with aiohttp."""
 
 
 class OpenCageGeocodeUA:
-
-    """
-    Geocoder object.
+    """Geocoder object.
 
     Initialize it with your API key:
 
@@ -165,8 +150,7 @@ class OpenCageGeocodeUA:
         return False
 
     def geocode(self, query, **kwargs):
-        """
-        Given a string to search for, return the list (array) of results from OpenCage's Geocoder.
+        """Given a string to search for, return the list (array) of results from OpenCage's Geocoder.
 
         :param string query: String to search for
 
@@ -187,8 +171,7 @@ class OpenCageGeocodeUA:
         return floatify_latlng(response["results"])
 
     async def geocode_async(self, query, **kwargs):
-        """
-        Aync version of `geocode`.
+        """Aync version of `geocode`.
 
         Given a string to search for, return the list (array) of results from OpenCage's Geocoder.
 
@@ -232,8 +215,7 @@ class OpenCageGeocodeUA:
         return response["licenses"]
 
     def reverse_geocode(self, lat, lng, **kwargs):
-        """
-        Given a latitude & longitude, return an address for that point from OpenCage's Geocoder.
+        """Given a latitude & longitude, return an address for that point from OpenCage's Geocoder.
 
         :param lat: Latitude
         :param lng: Longitude
@@ -246,8 +228,7 @@ class OpenCageGeocodeUA:
         return self.geocode(_query_for_reverse_geocoding(lat, lng), **kwargs)
 
     async def reverse_geocode_async(self, lat, lng, **kwargs):
-        """
-        Aync version of `reverse_geocode`.
+        """Aync version of `reverse_geocode`.
 
         Given a latitude & longitude, return an address for that point from OpenCage's Geocoder.
 
@@ -341,19 +322,19 @@ class OpenCageGeocodeUA:
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36"
         }
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session:
-            async with session.get(url, headers=headers) as response:
-                data: list[dict[str, str]] = await response.json(content_type=None)
-                i = randint(0, len(data) - 1)
-                return data[i].get(
-                    "useragent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
-                )
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session, session.get(
+            url, headers=headers
+        ) as response:
+            data: list[dict[str, str]] = await response.json(content_type=None)
+            i = randint(0, len(data) - 1)
+            return data[i].get(
+                "useragent",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+            )
 
 
 def _query_for_reverse_geocoding(lat, lng):
-    """
-    Given a lat & lng, what's the string search query.
+    """Given a lat & lng, what's the string search query.
 
     If the API changes, change this function. Only for internal use.
     """
@@ -365,8 +346,8 @@ def _query_for_reverse_geocoding(lat, lng):
 
 
 def float_if_float(float_string):
-    """
-    Given a float string, returns the float value.
+    """Given a float string, returns the float value.
+
     On value error returns the original string.
     """
     try:
@@ -377,8 +358,7 @@ def float_if_float(float_string):
 
 
 def floatify_latlng(input_value):
-    """
-    Work around a JSON dict with string, not float, lat/lngs.
+    """Work around a JSON dict with string, not float, lat/lngs.
 
     Given anything (list/dict/etc) it will return that thing again, *but* any
     dict (at any level) that has only 2 elements lat & lng, will be replaced
@@ -393,7 +373,7 @@ def floatify_latlng(input_value):
 
             return {"lat": float_if_float(input_value["lat"]), "lng": float_if_float(input_value["lng"])}
 
-        return dict((key, floatify_latlng(value)) for key, value in input_value.items())
+        return {key: floatify_latlng(value) for key, value in input_value.items()}
 
     if isinstance(input_value, collections.abc.MutableSequence):
         return [floatify_latlng(x) for x in input_value]
