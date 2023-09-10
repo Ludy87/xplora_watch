@@ -3,9 +3,19 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_ID, CONF_NAME, PERCENTAGE, EntityCategory, UnitOfLength
+from homeassistant.const import (
+    ATTR_ID,
+    CONF_NAME,
+    PERCENTAGE,
+    EntityCategory,
+    UnitOfLength,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import StateType
@@ -39,7 +49,7 @@ SENSOR_TYPES: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key=SENSOR_STEP_DAY,
         icon="mdi:run",
-        device_class=SensorDeviceClass.ENUM,
+        native_unit_of_measurement="step",
         entity_category=EntityCategory.DIAGNOSTIC,
     ),
     SensorEntityDescription(
@@ -89,50 +99,41 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             if conf_watches is None or conf_tyes is None or wuid not in conf_watches or description.key not in conf_tyes:
                 continue
 
-            sw_version = await coordinator.controller.getWatches(wuid)
-            entities.append(XploraSensor(config_entry, coordinator, ward, sw_version, wuid, description))
+            entities.append(XploraSensor(config_entry, coordinator, ward, wuid, description))
 
     async_add_entities(entities)
 
 
 class XploraSensor(XploraBaseEntity, SensorEntity):
+    """A sensor implementation for Xplora® Watch."""
+
     def __init__(
         self,
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
         ward: dict[str, any],
-        sw_version: dict[str, any],
         wuid: str,
         description: SensorEntityDescription,
     ) -> None:
-        super().__init__(config_entry, description, coordinator, ward, sw_version, wuid)
+        """Initialize a sensor for an Xplora® Watch."""
+        super().__init__(config_entry, description, coordinator, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
 
-        i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
-        if i == -1:
-            return
-        _wuid: str = self._options.get(f"{CONF_WATCHES}_{i}", "")
-        if _wuid.find("=") != -1:
-            friendly_name = _wuid.split("=")
-            if friendly_name[0] == wuid:
-                self._attr_name: str = f'{friendly_name[1]} {description.key.replace("_", " ")}'.title()
-            else:
-                self._attr_name: str = f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key.replace("_", " ")} {wuid}'.title()
-        else:
-            self._attr_name: str = f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key.replace("_", " ")} {wuid}'.title()
+        self._attr_name: str = f"{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} ({coordinator.username})".replace(
+            "_", " "
+        ).title()
 
-        self._attr_unique_id = f"{ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{wuid}"
-        _LOGGER.debug(
-            "Updating sensor: %s | Typ: %s | %s Watch_ID %s",
-            self._attr_name[:-33] if _wuid.find("=") == -1 else self._attr_name,
-            description.key,
-            i,
-            wuid[25:],
+        self._attr_unique_id = (
+            f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{wuid}_{coordinator.user_id}".replace(" ", "_")
+            .replace("-", "_")
+            .lower()
         )
+        _LOGGER.debug("Updating sensor: %s | Typ: %s | Watch_ID ...%s", self._attr_name, description.key, wuid[25:])
 
     @property
     def native_value(self) -> StateType:
+        """Return the state of the sensor."""
         if self.entity_description.key == SENSOR_BATTERY:
             return self.coordinator.data[self.watch_uid].get(SENSOR_BATTERY, None)
         if self.entity_description.key == SENSOR_STEP_DAY:
@@ -152,6 +153,7 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, any]:
+        """Return state attributes that should be added to SENSOR_STATE."""
         data = super().extra_state_attributes or {}
         if (
             self.entity_description.key is SENSOR_MESSAGE
@@ -161,4 +163,4 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
             and self.coordinator.data[self.watch_uid].get(SENSOR_MESSAGE, None)
         ):
             return dict(data, **self.coordinator.data[self.watch_uid].get(SENSOR_MESSAGE))
-        return dict(data, **{})
+        return dict(data, **{"user": self.coordinator.controller.getUserName()})

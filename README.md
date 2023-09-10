@@ -20,7 +20,63 @@ Xplora® Watch Version 2 integration for Home Assistant
 ---
 ![Xplora® Watch Version 2](https://github.com/home-assistant/brands/blob/master/custom_integrations/xplora_watch/logo@2x.png?raw=true)
 
+## 🚨 Important: Upgrading from version 2.8.3 or earlier to version 2.10.\* 🚨
+
+1. ⚠️back up your Homeassistant instance
+2. ⚠️save your backup externally
+3. Preparation
+   - 👥There is more than one Xplora® Watch user logged into the Homeassistant instance
+     - 🗑️remove the user that is generating the error `Platform xplora_watch does not generate unique IDs.`
+     - 🗑️remove the sensors that are listed as unavailable
+     - restart Homeassistant
+   - 👤There is only one user for Xplora® Watch who is logged into the Homeassistant instance
+     - no further steps necessary
+4. Upgrade the integration and restart Homeassistant instance
+5. Two instances (or more) of Xplora® Watch are now displayed - click on `2 devices` ![new Device 1](./images/new_device_1.png)
+6. an instance with your name at the beginning is the new instance ![new Device 2](./images/new_device_2.png)
+   - click on the old instance
+   - Go to the pen in the upper right corner
+   - disable this device
+7. (optional for more than one user)
+   - add the second user `ADD DEVICE`
+8. Follow-up
+   - new entities are created or old ones are listed as unavailable
+   - the old entities can be removed
+   - note that the new entities have a new naming convention
+
+### Names layout changed (v2.10.0)
+
+_binary\_sensor:_
+
+- `"Watch Name" "Watch" "Charging" "Watch ID"` to `"Watch Name" "Watch" "Charging" "(Username)"`
+- `"Watch Name" "Watch" "Safezone" "Watch ID"` to `"Watch Name" "Watch" "Safezone" "(Username)"`
+- `"Watch Name" "Watch" "State" "Watch ID"` to `"Watch Name" "Watch" "State" "(Username)"`
+
+_device\_tracker:_
+
+- `"Watch Name" "Watch" "Tracker" "Watch ID"` to `"Watch Name" "Watch" "Tracker" "(Username)"`
+- `"Safzone" "Safzone Name" "Watch ID"` to `"Watch Name" "Watch" "Safzone" "Safzone Name" "(Username)"`
+
+_sensor:_
+
+- `"Watch Name" "Watch" "Battery" "Watch ID"` to `"Watch Name" "Watch" "Battery" "(Username)"`
+- `"Watch Name" "Watch" "Xcoin" "Watch ID"` to `"Watch Name" "Watch" "Xcoin" "(Username)"`
+- `"Watch Name" "Watch" "Step Day" "Watch ID"` to `"Watch Name" "Watch" "Step Day" "(Username)"`
+- `"Watch Name" "Watch" "Message" "Watch ID"` to `"Watch Name" "Watch" "Message" "(Username)"`
+- `"Watch Name" "Watch" "Distance" "Watch ID"` to `"Watch Name" "Watch" "Distance" "(Username)"`
+
+_switch:_
+
+- `"Watch Name" "Watch" "Alarm" "Time" "Watch ID"` to `"Watch Name" "Watch" "Alarm" "Time" "(Username)"`
+- `"Watch Name" "Watch" "Silent" "Time" "Watch ID"` to `"Watch Name" "Watch" "Silent" "Time" "(Username)"`
+
 ## Features
+
+- Control your watch from Home Assistant
+- Receive notifications from your watch
+- Track your watch's location
+- View your watch's battery level
+- And more!
 
 **IMPORTANCE: Of a service is activated by automation, the sensors will no longer be updated. Therefore, activate the `xplora_watch.see` service with a corresponding interval.**
 
@@ -68,9 +124,9 @@ Copy the xplora_watch [last Releae](https://github.com/Ludy87/xplora_watch/relea
 
 Xplora® should now appear as a card under the HA Integrations page with "Configure" selection available at the bottom of the card.
 
-| add in Version 2.2.0                                                                          | add in Version 2                                                                                        |
-| --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| ![signin image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/signin.png) | ![integration image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/integration.png) |
+| add in Version 2.2.0               | add in Version 2                             |
+| ---------------------------------- | -------------------------------------------- |
+| ![signin image](images/signin.png) | ![integration image](images/integration.png) |
 
 ---
 
@@ -125,7 +181,7 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 - [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md) (updated v2.6.0)
 - [Automation Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/automation-read-messages.yaml)
 
-![markdown sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/markdown_sample.png)
+![markdown sample](images/markdown_sample.png)
 
 ---
 
@@ -140,7 +196,7 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 Manually update all information from your watch
 
-![manually_refresh image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/manually_refresh.png)
+![manually_refresh image](images/manually_refresh.png)
 
 ---
 
@@ -151,7 +207,7 @@ Please note that this can also change the entry_id!
 
 Rule format: ```watchID=New Name``` Notice the equals sign
 
-![friendly_name image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/friendly_name.png)
+![friendly_name image](images/friendly_name.png)
 
 ---
 
@@ -159,13 +215,29 @@ Rule format: ```watchID=New Name``` Notice the equals sign
 
 Set Target with the WatchID for the receiver watch
 
-![notify image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/notify.png)
+### require (v2.10.0)
+
+- `message`
+- `target`
+- `data`
+  - `user_id`
+
+```yaml
+service: notify.xplora_watch
+data:
+  message: Message
+  data:
+    user_id: 053eb6e5e5b32e502cfb1934cefb77ff
+  target: 01102f442f1125f525f5f3336316068
+```
+
+![notify image](images/notify.png)
 
 ---
 
 ## Send Message via Service (v2.0.3)
 
-![message_service image](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/images/message_service.png)
+![message_service image](images/message_service.png)
 
 ---
 

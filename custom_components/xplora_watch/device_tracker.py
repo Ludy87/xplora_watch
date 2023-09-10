@@ -5,14 +5,19 @@ import logging
 
 from homeassistant.components.device_tracker import SourceType
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
-from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
+from homeassistant.components.device_tracker.const import (
+    ATTR_BATTERY,
+    ATTR_LOCATION_NAME,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, CONF_NAME
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
 
 from .const import (
+    ATTR_SERVICE_USER,
     ATTR_TRACKER_ADDR,
     ATTR_TRACKER_DISTOHOME,
     ATTR_TRACKER_IMEI,
@@ -22,6 +27,7 @@ from .const import (
     ATTR_TRACKER_LNG,
     ATTR_TRACKER_POI,
     ATTR_TRACKER_RAD,
+    ATTR_WATCH,
     CONF_TYPES,
     CONF_WATCHES,
     DEVICE_TRACKER_SAFZONES,
@@ -65,47 +71,51 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
         ):
             continue
 
-        sw_version = await coordinator.controller.getWatches(wuid)
         if DEVICE_TRACKER_SAFZONES in conf_tyes:
             safe_zones = await coordinator.controller.getWatchSafeZones(wuid)
-            for safeZone in safe_zones:
-                entities.append(XploraSafezoneTracker(hass, config_entry, safeZone, coordinator, ward, sw_version, wuid))
+            for safe_zone in safe_zones:
+                entities.append(XploraSafezoneTracker(config_entry, safe_zone, coordinator, wuid, ward))
         if DEVICE_TRACKER_WATCH in config_entry.options.get(CONF_TYPES):
-            entities.append(XploraDeviceTracker(hass, config_entry, coordinator, wuid, ward, sw_version))
+            image = coordinator.data[wuid].get("entity_picture", None)
+            session = async_get_clientsession(hass)
+            resp = await session.get(url=image, timeout=5)
+            if image is None or resp.status != 200:
+                image = "https://s3.eu-central-1.amazonaws.com/kids360uc/default_icon.png"
+            entities.append(XploraDeviceTracker(hass, config_entry, coordinator, wuid, ward, image))
     async_add_entities(entities)
 
 
 class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
+    """Creates a safezone tracker."""
+
     _attr_force_update: bool = False
     _attr_icon: str | None = "mdi:crosshairs-gps"
 
     def __init__(
         self,
-        hass: HomeAssistant,
         config_entry: ConfigEntry,
         safezone: dict[str, any],
         coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, any],
-        sw_version: dict[str, any],
         wuid: str,
+        ward: dict[str, any],
     ) -> None:
-        super().__init__(config_entry, None, coordinator, ward, sw_version, wuid)
+        """Initialize XploraSafezoneTracker instance."""
+        super().__init__(config_entry, None, coordinator, wuid)
         self._safezone = safezone
-        self._hass = hass
-        i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
-        if i == -1:
-            return
-        _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
-        if _wuid.find("=") != -1:
-            friendly_name = _wuid.split("=")
-            if friendly_name[0] == wuid:
-                self._attr_name = f"{friendly_name[1]} Safezone {safezone[CONF_NAME]}"
-            else:
-                self._attr_name = f"Safezone {safezone[CONF_NAME]} {wuid}"
-        else:
-            self._attr_name = f"Safezone {safezone[CONF_NAME]} {wuid}"
 
-        self._attr_unique_id = f'safezone_{safezone["vendorId"]}'
+        self._attr_name = (
+            f"{ward.get(CONF_NAME)} {ATTR_WATCH} Safezone {safezone[CONF_NAME]} ({coordinator.username})".replace(
+                "_", " "
+            ).title()
+        )
+
+        self._attr_unique_id = (
+            f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_safezone_{safezone["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(
+                " ", "_"
+            )
+            .replace("-", "_")
+            .lower()
+        )
 
     @property
     def latitude(self) -> float | None:
@@ -134,6 +144,7 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
 
     @property
     def extra_state_attributes(self) -> dict[str, any]:
+        """Return state attributes that should be added to SAFEZONE_STATE."""
         data = super().extra_state_attributes or {}
         return dict(
             data,
@@ -154,29 +165,24 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         coordinator: XploraDataUpdateCoordinator,
         wuid: str,
         ward: dict[str, any],
-        sw_version: dict[str, any],
+        image: str,
     ) -> None:
         """Initialize the Tracker."""
-        super().__init__(config_entry, None, coordinator, ward, sw_version, wuid)
-        if self.watch_uid not in self.coordinator.data:
+        super().__init__(config_entry, None, coordinator, wuid)
+        if self.watch_uid not in coordinator.data:
             return
 
         self._hass = hass
-        i = (self._options.get(CONF_WATCHES, []).index(wuid) + 1) if self._options.get(CONF_WATCHES, []) else -1
-        if i == -1:
-            return
-        _wuid: str = config_entry.options.get(f"{CONF_WATCHES}_{i}")
-        if _wuid.find("=") != -1:
-            friendly_name = _wuid.split("=")
-            if friendly_name[0] == wuid:
-                self._attr_name = f"{friendly_name[1]} Watch Tracker"
-            else:
-                self._attr_name = f"{self._ward.get(CONF_NAME)} Watch Tracker {wuid}"
-        else:
-            self._attr_name = f"{self._ward.get(CONF_NAME)} Watch Tracker {wuid}"
 
-        self._attr_unique_id = wuid
-        self._config_entry = config_entry
+        self._attr_name = f"{ward.get(CONF_NAME)} {ATTR_WATCH} Tracker ({coordinator.username})".replace("_", " ").title()
+
+        self._attr_unique_id = (
+            f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_Tracker_{wuid}_{coordinator.user_id}".replace(" ", "_")
+            .replace("-", "_")
+            .lower()
+        )
+
+        self._attr_entity_picture = image
 
     @property
     def battery_level(self) -> int | None:
@@ -209,12 +215,8 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         return self.coordinator.data[self.watch_uid].get(ATTR_LOCATION_NAME, None)
 
     @property
-    def entity_picture(self) -> str | None:
-        """Return the entity picture to use in the frontend, if any."""
-        return self.coordinator.data[self.watch_uid].get("entity_picture", None)
-
-    @property
     def extra_state_attributes(self) -> dict[str, any]:
+        """Return state attributes that should be added to DEVICE_STATE."""
         data = super().extra_state_attributes or {}
         distance_to_home = None
 
@@ -230,6 +232,7 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         return dict(
             data,
             **{
+                ATTR_SERVICE_USER: self.coordinator.username,
                 ATTR_TRACKER_DISTOHOME: distance_to_home,
                 ATTR_TRACKER_ADDR: self.coordinator.data[self.watch_uid].get(ATTR_LOCATION_NAME, None)
                 if distance_to_home
