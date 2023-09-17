@@ -4,71 +4,71 @@
       "already_configured": "Integration has already been configured",
       "single_instance_allowed": "Already configured. Only one configuration possible."
     },
-    "error": {
-      "cannot_connect": "Connection Failed",
-      "pass_invalid": "Wrong password",
-      "phone_email_invalid": "Phone Number or Email address not exist",
-      "invalid_auth": "Invalid authentication"
-    },
     "create_entry": {
       "default": "Xplora® Watch Integration was created!"
     },
+    "error": {
+      "cannot_connect": "Connection Failed",
+      "invalid_auth": "Invalid authentication",
+      "pass_invalid": "Wrong password",
+      "phone_email_invalid": "Phone Number or Email address not exist"
+    },
     "step": {
-      "user_email": {
-        "title": "Set up Xplora® Watch",
-        "description": "Account Authentication",
-        "data": {
-          "language": "Language",
-          "email": "E-mail address",
-          "password": "Password",
-          "timezone": "Timezone",
-          "userlang": "Watch Language (en)"
-        }
-      },
-      "user_phone": {
-        "title": "Set up Xplora® Watch",
-        "description": "Account Authentication",
-        "data": {
-          "language": "Language",
-          "country_code": "Countrycode (+49)",
-          "phonenumber": "phonenumber without Countrycode",
-          "password": "Password",
-          "timezone": "Timezone",
-          "userlang": "Watch Language (en)"
-        }
-      },
       "user": {
         "menu_options": {
           "user_email": "sign in with E-mail address (experimental)",
           "user_phone": "sign in with Phonenumber"
         }
+      },
+      "user_email": {
+        "data": {
+          "email": "E-mail address",
+          "language": "Language",
+          "password": "Password",
+          "timezone": "Timezone",
+          "userlang": "Watch Language (en)"
+        },
+        "description": "Account Authentication",
+        "title": "Set up Xplora® Watch"
+      },
+      "user_phone": {
+        "data": {
+          "country_code": "Countrycode (+49)",
+          "language": "Language",
+          "password": "Password",
+          "phonenumber": "phonenumber without Countrycode",
+          "timezone": "Timezone",
+          "userlang": "Watch Language (en)"
+        },
+        "description": "Account Authentication",
+        "title": "Set up Xplora® Watch"
       }
     }
   },
   "options": {
     "error": {
       "api_key_error": "OpenCage API KEY must be specified!",
-      "no_watch": "Please select a Watch!",
+      "friendly_name_error": "Friendly Name format not correkt (watch_id=friendly_name)",
       "no_sensor": "Please select one or more sensors!",
-      "friendly_name_error": "Friendly Name format not correkt (watch_id=friendly_name)"
+      "no_watch": "Please select a Watch!"
     },
     "step": {
       "init": {
-        "title": "further settings for Xplora® Watch",
         "data": {
-          "watches": "Watches",
-          "language": "Language",
-          "maps": "Maps",
-          "remove_message": "show deleted messages?",
-          "opencage_apikey": "OpenCage API KEY",
-          "scan_interval": "Scan Intervall (s)",
           "home_is_safezone": "Home is Safezone",
           "home_latitude": "Home latitude",
           "home_longitude": "Home longitude",
           "home_radius": "Home radius",
+          "language": "Language",
+          "maps": "Maps",
+          "message": "Number of Messages",
+          "opencage_apikey": "OpenCage API KEY",
+          "remove_message": "show deleted messages?",
+          "scan_interval": "Scan Intervall (s)",
           "types": "Sensortypes",
-          "message": "Number of Messages"
-        }
+          "watches": "Watches"
+        },
+        "title": "further settings for Xplora® Watch"
       }
     }
   }

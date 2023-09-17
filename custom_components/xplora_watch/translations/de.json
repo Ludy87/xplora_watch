@@ -2,73 +2,73 @@
   "config": {
     "abort": {
       "already_configured": "Integration wurde bereits konfiguriert",
-      "single_instance_allowed": "Bereits konfiguriert. Nur eine einzige Konfiguration m\u00f6glich."
-    },
-    "error": {
-      "cannot_connect": "Verbindung fehlgeschlagen",
-      "pass_invalid": "Passwort falsch",
-      "phone_email_invalid": "Telefonnummer oder E-Mail-Adresse ist nicht registriert",
-      "invalid_auth": "Ung\u00fcltige Authentifizierung"
+      "single_instance_allowed": "Bereits konfiguriert. Nur eine einzige Konfiguration möglich."
     },
     "create_entry": {
       "default": "Xplora® Watch Integration wurde erstellt!"
     },
+    "error": {
+      "cannot_connect": "Verbindung fehlgeschlagen",
+      "invalid_auth": "Ungültige Authentifizierung",
+      "pass_invalid": "Passwort falsch",
+      "phone_email_invalid": "Telefonnummer oder E-Mail-Adresse ist nicht registriert"
+    },
     "step": {
-      "user_email": {
-        "title": "Xplora® Watch einrichten",
-        "description": "Kontoauthentifizierung",
-        "data": {
-          "language": "Sprache",
-          "email": "E-Mail-Adresse",
-          "password": "Passwort",
-          "timezone": "Zeitzone",
-          "userlang": "Benutzersprache (de) der Uhr"
-        }
-      },
-      "user_phone": {
-        "title": "Xplora® Watch einrichten",
-        "description": "Kontoauthentifizierung",
-        "data": {
-          "language": "Sprache",
-          "country_code": "L\u00E4ndercode (+49)",
-          "phonenumber": "Telefonnummer ohne L\u00E4ndercode",
-          "password": "Passwort",
-          "timezone": "Zeitzone",
-          "userlang": "Benutzersprache (de) der Uhr"
-        }
-      },
       "user": {
         "menu_options": {
           "user_email": "Einloggen mit E-mail-Adresse (experimentell)",
           "user_phone": "Einloggen mit Telefonnummer"
         }
+      },
+      "user_email": {
+        "data": {
+          "email": "E-Mail-Adresse",
+          "language": "Sprache",
+          "password": "Passwort",
+          "timezone": "Zeitzone",
+          "userlang": "Benutzersprache (de) der Uhr"
+        },
+        "description": "Kontoauthentifizierung",
+        "title": "Xplora® Watch einrichten"
+      },
+      "user_phone": {
+        "data": {
+          "country_code": "Ländercode (+49)",
+          "language": "Sprache",
+          "password": "Passwort",
+          "phonenumber": "Telefonnummer ohne Ländercode",
+          "timezone": "Zeitzone",
+          "userlang": "Benutzersprache (de) der Uhr"
+        },
+        "description": "Kontoauthentifizierung",
+        "title": "Xplora® Watch einrichten"
       }
     }
   },
   "options": {
     "error": {
       "api_key_error": "OpenCage API KEY muss angegeben werden!",
-      "no_watch": "Bitte eine Uhr ausw\u00E4hlen!",
-      "no_sensor": "Bitte ein oder mehrere Sensoren ausw\u00E4hlen!",
-      "friendly_name_error": "Friendly Name Format nicht korrekt (watch_id=friendly_name)"
+      "friendly_name_error": "Friendly Name Format nicht korrekt (watch_id=friendly_name)",
+      "no_sensor": "Bitte ein oder mehrere Sensoren auswählen!",
+      "no_watch": "Bitte eine Uhr auswählen!"
     },
     "step": {
       "init": {
-        "title": "weitere Einstellungen für Xplora® Watch",
         "data": {
-          "watches": "Uhren",
-          "language": "Sprache",
-          "maps": "Maps",
-          "remove_message": "gelöschte Nachrichten anzeigen?",
-          "opencage_apikey": "OpenCage API KEY",
-          "scan_interval": "Scan Intervall (in s)",
           "home_is_safezone": "Home ist Sicherheitszone",
           "home_latitude": "Home Latitude",
           "home_longitude": "Home Longitude",
           "home_radius": "Home Radius",
+          "language": "Sprache",
+          "maps": "Maps",
+          "message": "Anzahl der Nachrichten",
+          "opencage_apikey": "OpenCage API KEY",
+          "remove_message": "gelöschte Nachrichten anzeigen?",
+          "scan_interval": "Scan Intervall (in s)",
           "types": "Sensortypen",
-          "message": "Anzahl der Nachrichten"
-        }
+          "watches": "Uhren"
+        },
+        "title": "weitere Einstellungen für Xplora® Watch"
       }
     }
   }

@@ -1,137 +1,30 @@
 {
-  "send_message": {
-    "name": "Send Message",
-    "description": "Send a notification.",
-    "fields": {
-      "message": {
-        "name": "Message",
-        "description": "Notification text of the message.",
-        "required": true,
-        "selector": { "text": null }
-      },
-      "target": {
-        "name": "Watch(es)",
-        "description": "Choose your watch to send the message to.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": ["all"]
-          }
-        }
-      },
-      "user": {
-        "name": "User",
-        "description": "Select the user who should receive the message on the watch.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": []
-          }
-        }
-      }
-    }
-  },
-  "see": {
-    "name": "Track Watch",
-    "description": "Manually update all information from your watch.",
-    "fields": {
-      "target": {
-        "name": "Watch(es)",
-        "description": "Choose your watch to update the data.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": ["all"]
-          }
-        }
-      },
-      "user": {
-        "name": "User",
-        "description": "Select the user who should trigger the tracking.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": []
-          }
-        }
-      }
-    }
-  },
-  "read_message": {
-    "name": "Read Messages",
-    "description": "Read messages from the watch.",
-    "fields": {
-      "target": {
-        "name": "Watch(es)",
-        "description": "Choose your watch from which to retrieve the message.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": ["all"]
-          }
-        }
-      },
-      "user": {
-        "name": "User",
-        "description": "Select the user from whom the messages should be read.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": []
-          }
-        }
-      }
-    }
-  },
-  "shutdown": {
-    "name": "Shut Down Watch",
-    "description": "Power down the watch.",
-    "fields": {
-      "target": {
-        "name": "Watch(es)",
-        "description": "Choose your watch to be turned off.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": ["all"]
-          }
-        }
-      },
-      "user": {
-        "name": "User",
-        "description": "Select the user who should power off the watch (for admins only).",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": []
-          }
-        }
-      }
-    }
-  },
   "delete_message_from_app": {
-    "name": "Delete Message",
     "description": "Delete message in the Xplora® app.",
     "fields": {
       "message_id": {
-        "name": "Message ID",
         "description": "Enter the message ID to be deleted in the app; does not affect messages on the watch.",
+        "name": "Message ID",
         "required": true,
-        "selector": { "text": null }
+        "selector": {
+          "text": null
+        }
       },
       "target": {
-        "name": "Watch(es)",
         "description": "Choose your watch where the message should be deleted.",
+        "name": "Watch(es)",
         "required": true,
         "selector": {
           "select": {
-            "options": ["all"]
+            "options": [
+              "all"
+            ]
           }
         }
       },
       "user": {
-        "name": "User",
         "description": "Select the user who should delete the message on the watch.",
+        "name": "User",
         "required": true,
         "selector": {
           "select": {
@@ -139,6 +32,127 @@
           }
         }
       }
-    }
+    },
+    "name": "Delete Message"
+  },
+  "read_message": {
+    "description": "Read messages from the watch.",
+    "fields": {
+      "target": {
+        "description": "Choose your watch from which to retrieve the message.",
+        "name": "Watch(es)",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": [
+              "all"
+            ]
+          }
+        }
+      },
+      "user": {
+        "description": "Select the user from whom the messages should be read.",
+        "name": "User",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": []
+          }
+        }
+      }
+    },
+    "name": "Read Messages"
+  },
+  "see": {
+    "description": "Manually update all information from your watch.",
+    "fields": {
+      "target": {
+        "description": "Choose your watch to update the data.",
+        "name": "Watch(es)",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": [
+              "all"
+            ]
+          }
+        }
+      },
+      "user": {
+        "description": "Select the user who should trigger the tracking.",
+        "name": "User",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": []
+          }
+        }
+      }
+    },
+    "name": "Track Watch"
+  },
+  "send_message": {
+    "description": "Send a notification.",
+    "fields": {
+      "message": {
+        "description": "Notification text of the message.",
+        "name": "Message",
+        "required": true,
+        "selector": {
+          "text": null
+        }
+      },
+      "target": {
+        "description": "Choose your watch to send the message to.",
+        "name": "Watch(es)",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": [
+              "all"
+            ]
+          }
+        }
+      },
+      "user": {
+        "description": "Select the user who should receive the message on the watch.",
+        "name": "User",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": []
+          }
+        }
+      }
+    },
+    "name": "Send Message"
+  },
+  "shutdown": {
+    "description": "Power down the watch.",
+    "fields": {
+      "target": {
+        "description": "Choose your watch to be turned off.",
+        "name": "Watch(es)",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": [
+              "all"
+            ]
+          }
+        }
+      },
+      "user": {
+        "description": "Select the user who should power off the watch (for admins only).",
+        "name": "User",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": []
+          }
+        }
+      }
+    },
+    "name": "Shut Down Watch"
   }
 }

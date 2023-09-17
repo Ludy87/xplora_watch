@@ -1,27 +1,30 @@
 {
-  "send_message": {
-    "name": "Nachricht senden",
-    "description": "Sende eine Benachrichtigung.",
+  "delete_message_from_app": {
+    "description": "Nachricht in der Xplora® App löschen",
     "fields": {
-      "message": {
-        "name": "Nachricht",
-        "description": "Nachrichtentext der Benachrichtigung.",
+      "message_id": {
+        "description": "Trage die Nachrichten ID ein, die in der App gelöscht werden soll, hat keinen einfluß auf die Nachrichten in der Uhr.",
+        "name": "Nachrichten ID",
         "required": true,
-        "selector": { "text": null }
+        "selector": {
+          "text": null
+        }
       },
       "target": {
+        "description": "Wähle deine Uhr aus, die ausgeschaltet werden soll.",
         "name": "Uhr(en)",
-        "description": "W\u00e4hle deine Uhr aus, um die Nachricht zu versenden.",
         "required": true,
         "selector": {
           "select": {
-            "options": ["all"]
+            "options": [
+              "all"
+            ]
           }
         }
       },
       "user": {
+        "description": "Wähle den Nutzer, der die Nachricht auf der Uhr löschen soll.",
         "name": "Nutzer",
-        "description": "W\u00e4hle den Nutzer, der die Nachricht an die Uhr senden soll.",
         "required": true,
         "selector": {
           "select": {
@@ -29,51 +32,27 @@
           }
         }
       }
-    }
-  },
-  "see": {
-    "name": "Watch Tracken",
-    "description": "Aktualisiere manuell alle Informationen von deiner Uhr",
-    "fields": {
-      "target": {
-        "name": "Uhr(en)",
-        "description": "W\u00e4hle deine Uhr aus, um die Daten zu aktualisieren.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": ["all"]
-          }
-        }
-      },
-      "user": {
-        "name": "Nutzer",
-        "description": "W\u00e4hle den Nutzer, der das Tracken auslösen soll.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": []
-          }
-        }
-      }
-    }
+    },
+    "name": "Nachricht löschen"
   },
   "read_message": {
-    "name": "Nachrichten lesen",
     "description": "Nachrichten von Watch lesen",
     "fields": {
       "target": {
+        "description": "Wähle deine Uhr aus, von der die Nachricht abgerufen werden soll.",
         "name": "Uhr(en)",
-        "description": "W\u00e4hle deine Uhr aus, von der die Nachricht abgerufen werden soll.",
         "required": true,
         "selector": {
           "select": {
-            "options": ["all"]
+            "options": [
+              "all"
+            ]
           }
         }
       },
       "user": {
+        "description": "Wähle den Nutzer, der von dem die Nachrichten ausgelesen werden soll.",
         "name": "Nutzer",
-        "description": "W\u00e4hle den Nutzer, der von dem die Nachrichten ausgelesen werden soll.",
         "required": true,
         "selector": {
           "select": {
@@ -81,25 +60,91 @@
           }
         }
       }
-    }
+    },
+    "name": "Nachrichten lesen"
+  },
+  "see": {
+    "description": "Aktualisiere manuell alle Informationen von deiner Uhr",
+    "fields": {
+      "target": {
+        "description": "Wähle deine Uhr aus, um die Daten zu aktualisieren.",
+        "name": "Uhr(en)",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": [
+              "all"
+            ]
+          }
+        }
+      },
+      "user": {
+        "description": "Wähle den Nutzer, der das Tracken auslösen soll.",
+        "name": "Nutzer",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": []
+          }
+        }
+      }
+    },
+    "name": "Watch Tracken"
+  },
+  "send_message": {
+    "description": "Sende eine Benachrichtigung.",
+    "fields": {
+      "message": {
+        "description": "Nachrichtentext der Benachrichtigung.",
+        "name": "Nachricht",
+        "required": true,
+        "selector": {
+          "text": null
+        }
+      },
+      "target": {
+        "description": "Wähle deine Uhr aus, um die Nachricht zu versenden.",
+        "name": "Uhr(en)",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": [
+              "all"
+            ]
+          }
+        }
+      },
+      "user": {
+        "description": "Wähle den Nutzer, der die Nachricht an die Uhr senden soll.",
+        "name": "Nutzer",
+        "required": true,
+        "selector": {
+          "select": {
+            "options": []
+          }
+        }
+      }
+    },
+    "name": "Nachricht senden"
   },
   "shutdown": {
-    "name": "Uhr ausschalten",
     "description": "Uhr herunterfahren",
     "fields": {
       "target": {
+        "description": "Wähle deine Uhr aus, die ausgeschaltet werden soll.",
         "name": "Uhr(en)",
-        "description": "W\u00e4hle deine Uhr aus, die ausgeschaltet werden soll.",
         "required": true,
         "selector": {
           "select": {
-            "options": ["all"]
+            "options": [
+              "all"
+            ]
           }
         }
       },
       "user": {
+        "description": "Wähle den Nutzer, der die Uhr ausschlaten soll (nur Admins).",
         "name": "Nutzer",
-        "description": "W\u00e4hle den Nutzer, der die Uhr ausschlaten soll (nur Admins).",
         "required": true,
         "selector": {
           "select": {
@@ -107,38 +152,7 @@
           }
         }
       }
-    }
-  },
-  "delete_message_from_app": {
-    "name": "Nachricht l\u00f6schen",
-    "description": "Nachricht in der Xplora\u00ae App l\u00f6schen",
-    "fields": {
-      "message_id": {
-        "name": "Nachrichten ID",
-        "description": "Trage die Nachrichten ID ein, die in der App gel\u00f6scht werden soll, hat keinen einflu\u00df auf die Nachrichten in der Uhr.",
-        "required": true,
-        "selector": { "text": null }
-      },
-      "target": {
-        "name": "Uhr(en)",
-        "description": "W\u00e4hle deine Uhr aus, die ausgeschaltet werden soll.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": ["all"]
-          }
-        }
-      },
-      "user": {
-        "name": "Nutzer",
-        "description": "W\u00e4hle den Nutzer, der die Nachricht auf der Uhr löschen soll.",
-        "required": true,
-        "selector": {
-          "select": {
-            "options": []
-          }
-        }
-      }
-    }
+    },
+    "name": "Uhr ausschalten"
   }
 }
