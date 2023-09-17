@@ -1,1212 +1,1212 @@
 [
   {
-    "name": "Afghanistan",
     "code": "93",
-    "locale": "AF"
+    "locale": "AF",
+    "name": "Afghanistan"
   },
   {
-    "name": "Albania",
     "code": "355",
-    "locale": "AL"
+    "locale": "AL",
+    "name": "Albania"
   },
   {
-    "name": "Algeria",
     "code": "213",
-    "locale": "DZ"
+    "locale": "DZ",
+    "name": "Algeria"
   },
   {
-    "name": "AmericanSamoa",
     "code": "1 684",
-    "locale": "AS"
+    "locale": "AS",
+    "name": "AmericanSamoa"
   },
   {
-    "name": "Andorra",
     "code": "376",
-    "locale": "AD"
+    "locale": "AD",
+    "name": "Andorra"
   },
   {
-    "name": "Angola",
     "code": "244",
-    "locale": "AO"
+    "locale": "AO",
+    "name": "Angola"
   },
   {
-    "name": "Anguilla",
     "code": "1 264",
-    "locale": "AI"
+    "locale": "AI",
+    "name": "Anguilla"
   },
   {
-    "name": "Antarctica",
     "code": "672",
-    "locale": "AQ"
+    "locale": "AQ",
+    "name": "Antarctica"
   },
   {
-    "name": "Antigua and Barbuda",
     "code": "1268",
-    "locale": "AG"
+    "locale": "AG",
+    "name": "Antigua and Barbuda"
   },
   {
-    "name": "Argentina",
     "code": "54",
-    "locale": "AR"
+    "locale": "AR",
+    "name": "Argentina"
   },
   {
-    "name": "Armenia",
     "code": "374",
-    "locale": "AM"
+    "locale": "AM",
+    "name": "Armenia"
   },
   {
-    "name": "Aruba",
     "code": "297",
-    "locale": "AW"
+    "locale": "AW",
+    "name": "Aruba"
   },
   {
-    "name": "Australia",
     "code": "61",
-    "locale": "AU"
+    "locale": "AU",
+    "name": "Australia"
   },
   {
-    "name": "Austria",
     "code": "43",
-    "locale": "AT"
+    "locale": "AT",
+    "name": "Austria"
   },
   {
-    "name": "Azerbaijan",
     "code": "994",
-    "locale": "AZ"
+    "locale": "AZ",
+    "name": "Azerbaijan"
   },
   {
-    "name": "Bahamas",
     "code": "1 242",
-    "locale": "BS"
+    "locale": "BS",
+    "name": "Bahamas"
   },
   {
-    "name": "Bahrain",
     "code": "973",
-    "locale": "BH"
+    "locale": "BH",
+    "name": "Bahrain"
   },
   {
-    "name": "Bangladesh",
     "code": "880",
-    "locale": "BD"
+    "locale": "BD",
+    "name": "Bangladesh"
   },
   {
-    "name": "Barbados",
     "code": "1 246",
-    "locale": "BB"
+    "locale": "BB",
+    "name": "Barbados"
   },
   {
-    "name": "Belarus",
     "code": "375",
-    "locale": "BY"
+    "locale": "BY",
+    "name": "Belarus"
   },
   {
-    "name": "Belgium",
     "code": "32",
-    "locale": "BE"
+    "locale": "BE",
+    "name": "Belgium"
   },
   {
-    "name": "Belize",
     "code": "501",
-    "locale": "BZ"
+    "locale": "BZ",
+    "name": "Belize"
   },
   {
-    "name": "Benin",
     "code": "229",
-    "locale": "BJ"
+    "locale": "BJ",
+    "name": "Benin"
   },
   {
-    "name": "Bermuda",
     "code": "1 441",
-    "locale": "BM"
+    "locale": "BM",
+    "name": "Bermuda"
   },
   {
-    "name": "Bhutan",
     "code": "975",
-    "locale": "BT"
+    "locale": "BT",
+    "name": "Bhutan"
   },
   {
-    "name": "Bolivia, Plurinational State of",
     "code": "591",
-    "locale": "BO"
+    "locale": "BO",
+    "name": "Bolivia, Plurinational State of"
   },
   {
-    "name": "Bosnia and Herzegovina",
     "code": "387",
-    "locale": "BA"
+    "locale": "BA",
+    "name": "Bosnia and Herzegovina"
   },
   {
-    "name": "Botswana",
     "code": "267",
-    "locale": "BW"
+    "locale": "BW",
+    "name": "Botswana"
   },
   {
-    "name": "Brazil",
     "code": "55",
-    "locale": "BR"
+    "locale": "BR",
+    "name": "Brazil"
   },
   {
-    "name": "British Indian Ocean Territory",
     "code": "246",
-    "locale": "IO"
+    "locale": "IO",
+    "name": "British Indian Ocean Territory"
   },
   {
-    "name": "Brunei Darussalam",
     "code": "673",
-    "locale": "BN"
+    "locale": "BN",
+    "name": "Brunei Darussalam"
   },
   {
-    "name": "Bulgaria",
     "code": "359",
-    "locale": "BG"
+    "locale": "BG",
+    "name": "Bulgaria"
   },
   {
-    "name": "Burkina Faso",
     "code": "226",
-    "locale": "BF"
+    "locale": "BF",
+    "name": "Burkina Faso"
   },
   {
-    "name": "Burundi",
     "code": "257",
-    "locale": "BI"
+    "locale": "BI",
+    "name": "Burundi"
   },
   {
-    "name": "Cambodia",
     "code": "855",
-    "locale": "KH"
+    "locale": "KH",
+    "name": "Cambodia"
   },
   {
-    "name": "Cameroon",
     "code": "237",
-    "locale": "CM"
+    "locale": "CM",
+    "name": "Cameroon"
   },
   {
-    "name": "Canada",
     "code": "1",
-    "locale": "CA"
+    "locale": "CA",
+    "name": "Canada"
   },
   {
-    "name": "Cape Verde",
     "code": "238",
-    "locale": "CV"
+    "locale": "CV",
+    "name": "Cape Verde"
   },
   {
-    "name": "Cayman Islands",
     "code": " 345",
-    "locale": "KY"
+    "locale": "KY",
+    "name": "Cayman Islands"
   },
   {
-    "name": "Central African Republic",
     "code": "236",
-    "locale": "CF"
+    "locale": "CF",
+    "name": "Central African Republic"
   },
   {
-    "name": "Chad",
     "code": "235",
-    "locale": "TD"
+    "locale": "TD",
+    "name": "Chad"
   },
   {
-    "name": "Chile",
     "code": "56",
-    "locale": "CL"
+    "locale": "CL",
+    "name": "Chile"
   },
   {
-    "name": "China",
     "code": "86",
-    "locale": "CN"
+    "locale": "CN",
+    "name": "China"
   },
   {
-    "name": "Christmas Island",
     "code": "61",
-    "locale": "CX"
+    "locale": "CX",
+    "name": "Christmas Island"
   },
   {
-    "name": "Cocos (Keeling) Islands",
     "code": "61",
-    "locale": "CC"
+    "locale": "CC",
+    "name": "Cocos (Keeling) Islands"
   },
   {
-    "name": "Colombia",
     "code": "57",
-    "locale": "CO"
+    "locale": "CO",
+    "name": "Colombia"
   },
   {
-    "name": "Comoros",
     "code": "269",
-    "locale": "KM"
+    "locale": "KM",
+    "name": "Comoros"
   },
   {
-    "name": "Congo",
     "code": "242",
-    "locale": "CG"
+    "locale": "CG",
+    "name": "Congo"
   },
   {
-    "name": "Congo, The Democratic Republic of the",
     "code": "243",
-    "locale": "CD"
+    "locale": "CD",
+    "name": "Congo, The Democratic Republic of the"
   },
   {
-    "name": "Cook Islands",
     "code": "682",
-    "locale": "CK"
+    "locale": "CK",
+    "name": "Cook Islands"
   },
   {
-    "name": "Costa Rica",
     "code": "506",
-    "locale": "CR"
+    "locale": "CR",
+    "name": "Costa Rica"
   },
   {
-    "name": "Cote d'Ivoire",
     "code": "225",
-    "locale": "CI"
+    "locale": "CI",
+    "name": "Cote d'Ivoire"
   },
   {
-    "name": "Croatia",
     "code": "385",
-    "locale": "HR"
+    "locale": "HR",
+    "name": "Croatia"
   },
   {
-    "name": "Cuba",
     "code": "53",
-    "locale": "CU"
+    "locale": "CU",
+    "name": "Cuba"
   },
   {
-    "name": "Cyprus",
     "code": "357",
-    "locale": "CY"
+    "locale": "CY",
+    "name": "Cyprus"
   },
   {
-    "name": "Czech Republic",
     "code": "420",
-    "locale": "CZ"
+    "locale": "CZ",
+    "name": "Czech Republic"
   },
   {
-    "name": "Denmark",
     "code": "45",
-    "locale": "DK"
+    "locale": "DK",
+    "name": "Denmark"
   },
   {
-    "name": "Djibouti",
     "code": "253",
-    "locale": "DJ"
+    "locale": "DJ",
+    "name": "Djibouti"
   },
   {
-    "name": "Dominica",
     "code": "1 767",
-    "locale": "DM"
+    "locale": "DM",
+    "name": "Dominica"
   },
   {
-    "name": "Dominican Republic",
     "code": "1 849",
-    "locale": "DO"
+    "locale": "DO",
+    "name": "Dominican Republic"
   },
   {
-    "name": "Ecuador",
     "code": "593",
-    "locale": "EC"
+    "locale": "EC",
+    "name": "Ecuador"
   },
   {
-    "name": "Egypt",
     "code": "20",
-    "locale": "EG"
+    "locale": "EG",
+    "name": "Egypt"
   },
   {
-    "name": "El Salvador",
     "code": "503",
-    "locale": "SV"
+    "locale": "SV",
+    "name": "El Salvador"
   },
   {
-    "name": "Equatorial Guinea",
     "code": "240",
-    "locale": "GQ"
+    "locale": "GQ",
+    "name": "Equatorial Guinea"
   },
   {
-    "name": "Eritrea",
     "code": "291",
-    "locale": "ER"
+    "locale": "ER",
+    "name": "Eritrea"
   },
   {
-    "name": "Estonia",
     "code": "372",
-    "locale": "EE"
+    "locale": "EE",
+    "name": "Estonia"
   },
   {
-    "name": "Ethiopia",
     "code": "251",
-    "locale": "ET"
+    "locale": "ET",
+    "name": "Ethiopia"
   },
   {
-    "name": "Falkland Islands (Malvinas)",
     "code": "500",
-    "locale": "FK"
+    "locale": "FK",
+    "name": "Falkland Islands (Malvinas)"
   },
   {
-    "name": "Faroe Islands",
     "code": "298",
-    "locale": "FO"
+    "locale": "FO",
+    "name": "Faroe Islands"
   },
   {
-    "name": "Fiji",
     "code": "679",
-    "locale": "FJ"
+    "locale": "FJ",
+    "name": "Fiji"
   },
   {
-    "name": "Finland",
     "code": "358",
-    "locale": "FI"
+    "locale": "FI",
+    "name": "Finland"
   },
   {
-    "name": "France",
     "code": "33",
-    "locale": "FR"
+    "locale": "FR",
+    "name": "France"
   },
   {
-    "name": "French Guiana",
     "code": "594",
-    "locale": "GF"
+    "locale": "GF",
+    "name": "French Guiana"
   },
   {
-    "name": "French Polynesia",
     "code": "689",
-    "locale": "PF"
+    "locale": "PF",
+    "name": "French Polynesia"
   },
   {
-    "name": "Gabon",
     "code": "241",
-    "locale": "GA"
+    "locale": "GA",
+    "name": "Gabon"
   },
   {
-    "name": "Gambia",
     "code": "220",
-    "locale": "GM"
+    "locale": "GM",
+    "name": "Gambia"
   },
   {
-    "name": "Georgia",
     "code": "995",
-    "locale": "GE"
+    "locale": "GE",
+    "name": "Georgia"
   },
   {
-    "name": "Germany",
     "code": "49",
-    "locale": "DE"
+    "locale": "DE",
+    "name": "Germany"
   },
   {
-    "name": "Ghana",
     "code": "233",
-    "locale": "GH"
+    "locale": "GH",
+    "name": "Ghana"
   },
   {
-    "name": "Gibraltar",
     "code": "350",
-    "locale": "GI"
+    "locale": "GI",
+    "name": "Gibraltar"
   },
   {
-    "name": "Greece",
     "code": "30",
-    "locale": "GR"
+    "locale": "GR",
+    "name": "Greece"
   },
   {
-    "name": "Greenland",
     "code": "299",
-    "locale": "GL"
+    "locale": "GL",
+    "name": "Greenland"
   },
   {
-    "name": "Grenada",
     "code": "1 473",
-    "locale": "GD"
+    "locale": "GD",
+    "name": "Grenada"
   },
   {
-    "name": "Guadeloupe",
     "code": "590",
-    "locale": "GP"
+    "locale": "GP",
+    "name": "Guadeloupe"
   },
   {
-    "name": "Guam",
     "code": "1 671",
-    "locale": "GU"
+    "locale": "GU",
+    "name": "Guam"
   },
   {
-    "name": "Guatemala",
     "code": "502",
-    "locale": "GT"
+    "locale": "GT",
+    "name": "Guatemala"
   },
   {
-    "name": "Guernsey",
     "code": "44",
-    "locale": "GG"
+    "locale": "GG",
+    "name": "Guernsey"
   },
   {
-    "name": "Guinea",
     "code": "224",
-    "locale": "GN"
+    "locale": "GN",
+    "name": "Guinea"
   },
   {
-    "name": "Guinea-Bissau",
     "code": "245",
-    "locale": "GW"
+    "locale": "GW",
+    "name": "Guinea-Bissau"
   },
   {
-    "name": "Guyana",
     "code": "595",
-    "locale": "GY"
+    "locale": "GY",
+    "name": "Guyana"
   },
   {
-    "name": "Haiti",
     "code": "509",
-    "locale": "HT"
+    "locale": "HT",
+    "name": "Haiti"
   },
   {
-    "name": "Holy See (Vatican City State)",
     "code": "379",
-    "locale": "VA"
+    "locale": "VA",
+    "name": "Holy See (Vatican City State)"
   },
   {
-    "name": "Honduras",
     "code": "504",
-    "locale": "HN"
+    "locale": "HN",
+    "name": "Honduras"
   },
   {
-    "name": "Hong Kong",
     "code": "852",
-    "locale": "HK"
+    "locale": "HK",
+    "name": "Hong Kong"
   },
   {
-    "name": "Hungary",
     "code": "36",
-    "locale": "HU"
+    "locale": "HU",
+    "name": "Hungary"
   },
   {
-    "name": "Iceland",
     "code": "354",
-    "locale": "IS"
+    "locale": "IS",
+    "name": "Iceland"
   },
   {
-    "name": "India",
     "code": "91",
-    "locale": "IN"
+    "locale": "IN",
+    "name": "India"
   },
   {
-    "name": "Indonesia",
     "code": "62",
-    "locale": "ID"
+    "locale": "ID",
+    "name": "Indonesia"
   },
   {
-    "name": "Iran, Islamic Republic of",
     "code": "98",
-    "locale": "IR"
+    "locale": "IR",
+    "name": "Iran, Islamic Republic of"
   },
   {
-    "name": "Iraq",
     "code": "964",
-    "locale": "IQ"
+    "locale": "IQ",
+    "name": "Iraq"
   },
   {
-    "name": "Ireland",
     "code": "353",
-    "locale": "IE"
+    "locale": "IE",
+    "name": "Ireland"
   },
   {
-    "name": "Isle of Man",
     "code": "44",
-    "locale": "IM"
+    "locale": "IM",
+    "name": "Isle of Man"
   },
   {
-    "name": "Israel",
     "code": "972",
-    "locale": "IL"
+    "locale": "IL",
+    "name": "Israel"
   },
   {
-    "name": "Italy",
     "code": "39",
-    "locale": "IT"
+    "locale": "IT",
+    "name": "Italy"
   },
   {
-    "name": "Jamaica",
     "code": "1 876",
-    "locale": "JM"
+    "locale": "JM",
+    "name": "Jamaica"
   },
   {
-    "name": "Japan",
     "code": "81",
-    "locale": "JP"
+    "locale": "JP",
+    "name": "Japan"
   },
   {
-    "name": "Jersey",
     "code": "44",
-    "locale": "JE"
+    "locale": "JE",
+    "name": "Jersey"
   },
   {
-    "name": "Jordan",
     "code": "962",
-    "locale": "JO"
+    "locale": "JO",
+    "name": "Jordan"
   },
   {
-    "name": "Kazakhstan",
     "code": "7 7",
-    "locale": "KZ"
+    "locale": "KZ",
+    "name": "Kazakhstan"
   },
   {
-    "name": "Kenya",
     "code": "254",
-    "locale": "KE"
+    "locale": "KE",
+    "name": "Kenya"
   },
   {
-    "name": "Kiribati",
     "code": "686",
-    "locale": "KI"
+    "locale": "KI",
+    "name": "Kiribati"
   },
   {
-    "name": "Korea, Democratic People's Republic of",
     "code": "850",
-    "locale": "KP"
+    "locale": "KP",
+    "name": "Korea, Democratic People's Republic of"
   },
   {
-    "name": "Korea, Republic of",
     "code": "82",
-    "locale": "KR"
+    "locale": "KR",
+    "name": "Korea, Republic of"
   },
   {
-    "name": "Kuwait",
     "code": "965",
-    "locale": "KW"
+    "locale": "KW",
+    "name": "Kuwait"
   },
   {
-    "name": "Kosovo",
     "code": "383",
-    "locale": "XK"
+    "locale": "XK",
+    "name": "Kosovo"
   },
   {
-    "name": "Kyrgyzstan",
     "code": "996",
-    "locale": "KG"
+    "locale": "KG",
+    "name": "Kyrgyzstan"
   },
   {
-    "name": "Lao People's Democratic Republic",
     "code": "856",
-    "locale": "LA"
+    "locale": "LA",
+    "name": "Lao People's Democratic Republic"
   },
   {
-    "name": "Latvia",
     "code": "371",
-    "locale": "LV"
+    "locale": "LV",
+    "name": "Latvia"
   },
   {
-    "name": "Lebanon",
     "code": "961",
-    "locale": "LB"
+    "locale": "LB",
+    "name": "Lebanon"
   },
   {
-    "name": "Lesotho",
     "code": "266",
-    "locale": "LS"
+    "locale": "LS",
+    "name": "Lesotho"
   },
   {
-    "name": "Liberia",
     "code": "231",
-    "locale": "LR"
+    "locale": "LR",
+    "name": "Liberia"
   },
   {
-    "name": "Libyan Arab Jamahiriya",
     "code": "218",
-    "locale": "LY"
+    "locale": "LY",
+    "name": "Libyan Arab Jamahiriya"
   },
   {
-    "name": "Liechtenstein",
     "code": "423",
-    "locale": "LI"
+    "locale": "LI",
+    "name": "Liechtenstein"
   },
   {
-    "name": "Lithuania",
     "code": "370",
-    "locale": "LT"
+    "locale": "LT",
+    "name": "Lithuania"
   },
   {
-    "name": "Luxembourg",
     "code": "352",
-    "locale": "LU"
+    "locale": "LU",
+    "name": "Luxembourg"
   },
   {
-    "name": "Macao",
     "code": "853",
-    "locale": "MO"
+    "locale": "MO",
+    "name": "Macao"
   },
   {
-    "name": "Macedonia, The Former Yugoslav Republic of",
     "code": "389",
-    "locale": "MK"
+    "locale": "MK",
+    "name": "Macedonia, The Former Yugoslav Republic of"
   },
   {
-    "name": "Madagascar",
     "code": "261",
-    "locale": "MG"
+    "locale": "MG",
+    "name": "Madagascar"
   },
   {
-    "name": "Malawi",
     "code": "265",
-    "locale": "MW"
+    "locale": "MW",
+    "name": "Malawi"
   },
   {
-    "name": "Malaysia",
     "code": "60",
-    "locale": "MY"
+    "locale": "MY",
+    "name": "Malaysia"
   },
   {
-    "name": "Maldives",
     "code": "960",
-    "locale": "MV"
+    "locale": "MV",
+    "name": "Maldives"
   },
   {
-    "name": "Mali",
     "code": "223",
-    "locale": "ML"
+    "locale": "ML",
+    "name": "Mali"
   },
   {
-    "name": "Malta",
     "code": "356",
-    "locale": "MT"
+    "locale": "MT",
+    "name": "Malta"
   },
   {
-    "name": "Marshall Islands",
     "code": "692",
-    "locale": "MH"
+    "locale": "MH",
+    "name": "Marshall Islands"
   },
   {
-    "name": "Martinique",
     "code": "596",
-    "locale": "MQ"
+    "locale": "MQ",
+    "name": "Martinique"
   },
   {
-    "name": "Mauritania",
     "code": "222",
-    "locale": "MR"
+    "locale": "MR",
+    "name": "Mauritania"
   },
   {
-    "name": "Mauritius",
     "code": "230",
-    "locale": "MU"
+    "locale": "MU",
+    "name": "Mauritius"
   },
   {
-    "name": "Mayotte",
     "code": "262",
-    "locale": "YT"
+    "locale": "YT",
+    "name": "Mayotte"
   },
   {
-    "name": "Mexico",
     "code": "52",
-    "locale": "MX"
+    "locale": "MX",
+    "name": "Mexico"
   },
   {
-    "name": "Micronesia, Federated States of",
     "code": "691",
-    "locale": "FM"
+    "locale": "FM",
+    "name": "Micronesia, Federated States of"
   },
   {
-    "name": "Moldova, Republic of",
     "code": "373",
-    "locale": "MD"
+    "locale": "MD",
+    "name": "Moldova, Republic of"
   },
   {
-    "name": "Monaco",
     "code": "377",
-    "locale": "MC"
+    "locale": "MC",
+    "name": "Monaco"
   },
   {
-    "name": "Mongolia",
     "code": "976",
-    "locale": "MN"
+    "locale": "MN",
+    "name": "Mongolia"
   },
   {
-    "name": "Montenegro",
     "code": "382",
-    "locale": "ME"
+    "locale": "ME",
+    "name": "Montenegro"
   },
   {
-    "name": "Montserrat",
     "code": "1664",
-    "locale": "MS"
+    "locale": "MS",
+    "name": "Montserrat"
   },
   {
-    "name": "Morocco",
     "code": "212",
-    "locale": "MA"
+    "locale": "MA",
+    "name": "Morocco"
   },
   {
-    "name": "Mozambique",
     "code": "258",
-    "locale": "MZ"
+    "locale": "MZ",
+    "name": "Mozambique"
   },
   {
-    "name": "Myanmar",
     "code": "95",
-    "locale": "MM"
+    "locale": "MM",
+    "name": "Myanmar"
   },
   {
-    "name": "Namibia",
     "code": "264",
-    "locale": "NA"
+    "locale": "NA",
+    "name": "Namibia"
   },
   {
-    "name": "Nauru",
     "code": "674",
-    "locale": "NR"
+    "locale": "NR",
+    "name": "Nauru"
   },
   {
-    "name": "Nepal",
     "code": "977",
-    "locale": "NP"
+    "locale": "NP",
+    "name": "Nepal"
   },
   {
-    "name": "Netherlands",
     "code": "31",
-    "locale": "NL"
+    "locale": "NL",
+    "name": "Netherlands"
   },
   {
-    "name": "Netherlands Antilles",
     "code": "599",
-    "locale": "AN"
+    "locale": "AN",
+    "name": "Netherlands Antilles"
   },
   {
-    "name": "New Caledonia",
     "code": "687",
-    "locale": "NC"
+    "locale": "NC",
+    "name": "New Caledonia"
   },
   {
-    "name": "New Zealand",
     "code": "64",
-    "locale": "NZ"
+    "locale": "NZ",
+    "name": "New Zealand"
   },
   {
-    "name": "Nicaragua",
     "code": "505",
-    "locale": "NI"
+    "locale": "NI",
+    "name": "Nicaragua"
   },
   {
-    "name": "Niger",
     "code": "227",
-    "locale": "NE"
+    "locale": "NE",
+    "name": "Niger"
   },
   {
-    "name": "Nigeria",
     "code": "234",
-    "locale": "NG"
+    "locale": "NG",
+    "name": "Nigeria"
   },
   {
-    "name": "Niue",
     "code": "683",
-    "locale": "NU"
+    "locale": "NU",
+    "name": "Niue"
   },
   {
-    "name": "Norfolk Island",
     "code": "672",
-    "locale": "NF"
+    "locale": "NF",
+    "name": "Norfolk Island"
   },
   {
-    "name": "Northern Mariana Islands",
     "code": "1 670",
-    "locale": "MP"
+    "locale": "MP",
+    "name": "Northern Mariana Islands"
   },
   {
-    "name": "Norway",
     "code": "47",
-    "locale": "NO"
+    "locale": "NO",
+    "name": "Norway"
   },
   {
-    "name": "Oman",
     "code": "968",
-    "locale": "OM"
+    "locale": "OM",
+    "name": "Oman"
   },
   {
-    "name": "Pakistan",
     "code": "92",
-    "locale": "PK"
+    "locale": "PK",
+    "name": "Pakistan"
   },
   {
-    "name": "Palau",
     "code": "680",
-    "locale": "PW"
+    "locale": "PW",
+    "name": "Palau"
   },
   {
-    "name": "Palestinian Territory, Occupied",
     "code": "970",
-    "locale": "PS"
+    "locale": "PS",
+    "name": "Palestinian Territory, Occupied"
   },
   {
-    "name": "Panama",
     "code": "507",
-    "locale": "PA"
+    "locale": "PA",
+    "name": "Panama"
   },
   {
-    "name": "Papua New Guinea",
     "code": "675",
-    "locale": "PG"
+    "locale": "PG",
+    "name": "Papua New Guinea"
   },
   {
-    "name": "Paraguay",
     "code": "595",
-    "locale": "PY"
+    "locale": "PY",
+    "name": "Paraguay"
   },
   {
-    "name": "Peru",
     "code": "51",
-    "locale": "PE"
+    "locale": "PE",
+    "name": "Peru"
   },
   {
-    "name": "Philippines",
     "code": "63",
-    "locale": "PH"
+    "locale": "PH",
+    "name": "Philippines"
   },
   {
-    "name": "Pitcairn",
     "code": "872",
-    "locale": "PN"
+    "locale": "PN",
+    "name": "Pitcairn"
   },
   {
-    "name": "Poland",
     "code": "48",
-    "locale": "PL"
+    "locale": "PL",
+    "name": "Poland"
   },
   {
-    "name": "Portugal",
     "code": "351",
-    "locale": "PT"
+    "locale": "PT",
+    "name": "Portugal"
   },
   {
-    "name": "Puerto Rico",
     "code": "1 939",
-    "locale": "PR"
+    "locale": "PR",
+    "name": "Puerto Rico"
   },
   {
-    "name": "Qatar",
     "code": "974",
-    "locale": "QA"
+    "locale": "QA",
+    "name": "Qatar"
   },
   {
-    "name": "Romania",
     "code": "40",
-    "locale": "RO"
+    "locale": "RO",
+    "name": "Romania"
   },
   {
-    "name": "Russia",
     "code": "7",
-    "locale": "RU"
+    "locale": "RU",
+    "name": "Russia"
   },
   {
-    "name": "Rwanda",
     "code": "250",
-    "locale": "RW"
+    "locale": "RW",
+    "name": "Rwanda"
   },
   {
-    "name": "Réunion",
     "code": "262",
-    "locale": "RE"
+    "locale": "RE",
+    "name": "Réunion"
   },
   {
-    "name": "Saint Barthélemy",
     "code": "590",
-    "locale": "BL"
+    "locale": "BL",
+    "name": "Saint Barthélemy"
   },
   {
-    "name": "Saint Helena, Ascension and Tristan Da Cunha",
     "code": "290",
-    "locale": "SH"
+    "locale": "SH",
+    "name": "Saint Helena, Ascension and Tristan Da Cunha"
   },
   {
-    "name": "Saint Kitts and Nevis",
     "code": "1 869",
-    "locale": "KN"
+    "locale": "KN",
+    "name": "Saint Kitts and Nevis"
   },
   {
-    "name": "Saint Lucia",
     "code": "1 758",
-    "locale": "LC"
+    "locale": "LC",
+    "name": "Saint Lucia"
   },
   {
-    "name": "Saint Martin",
     "code": "590",
-    "locale": "MF"
+    "locale": "MF",
+    "name": "Saint Martin"
   },
   {
-    "name": "Saint Pierre and Miquelon",
     "code": "508",
-    "locale": "PM"
+    "locale": "PM",
+    "name": "Saint Pierre and Miquelon"
   },
   {
-    "name": "Saint Vincent and the Grenadines",
     "code": "1 784",
-    "locale": "VC"
+    "locale": "VC",
+    "name": "Saint Vincent and the Grenadines"
   },
   {
-    "name": "Samoa",
     "code": "685",
-    "locale": "WS"
+    "locale": "WS",
+    "name": "Samoa"
   },
   {
-    "name": "San Marino",
     "code": "378",
-    "locale": "SM"
+    "locale": "SM",
+    "name": "San Marino"
   },
   {
-    "name": "Sao Tome and Principe",
     "code": "239",
-    "locale": "ST"
+    "locale": "ST",
+    "name": "Sao Tome and Principe"
   },
   {
-    "name": "Saudi Arabia",
     "code": "966",
-    "locale": "SA"
+    "locale": "SA",
+    "name": "Saudi Arabia"
   },
   {
-    "name": "Senegal",
     "code": "221",
-    "locale": "SN"
+    "locale": "SN",
+    "name": "Senegal"
   },
   {
-    "name": "Serbia",
     "code": "381",
-    "locale": "RS"
+    "locale": "RS",
+    "name": "Serbia"
   },
   {
-    "name": "Seychelles",
     "code": "248",
-    "locale": "SC"
+    "locale": "SC",
+    "name": "Seychelles"
   },
   {
-    "name": "Sierra Leone",
     "code": "232",
-    "locale": "SL"
+    "locale": "SL",
+    "name": "Sierra Leone"
   },
   {
-    "name": "Singapore",
     "code": "65",
-    "locale": "SG"
+    "locale": "SG",
+    "name": "Singapore"
   },
   {
-    "name": "Slovakia",
     "code": "421",
-    "locale": "SK"
+    "locale": "SK",
+    "name": "Slovakia"
   },
   {
-    "name": "Slovenia",
     "code": "386",
-    "locale": "SI"
+    "locale": "SI",
+    "name": "Slovenia"
   },
   {
-    "name": "Solomon Islands",
     "code": "677",
-    "locale": "SB"
+    "locale": "SB",
+    "name": "Solomon Islands"
   },
   {
-    "name": "Somalia",
     "code": "252",
-    "locale": "SO"
+    "locale": "SO",
+    "name": "Somalia"
   },
   {
-    "name": "South Africa",
     "code": "27",
-    "locale": "ZA"
+    "locale": "ZA",
+    "name": "South Africa"
   },
   {
-    "name": "South Georgia and the South Sandwich Islands",
     "code": "500",
-    "locale": "GS"
+    "locale": "GS",
+    "name": "South Georgia and the South Sandwich Islands"
   },
   {
-    "name": "Spain",
     "code": "34",
-    "locale": "ES"
+    "locale": "ES",
+    "name": "Spain"
   },
   {
-    "name": "Sri Lanka",
     "code": "94",
-    "locale": "LK"
+    "locale": "LK",
+    "name": "Sri Lanka"
   },
   {
-    "name": "Sudan",
     "code": "249",
-    "locale": "SD"
+    "locale": "SD",
+    "name": "Sudan"
   },
   {
-    "name": "Suriname",
     "code": "597",
-    "locale": "SR"
+    "locale": "SR",
+    "name": "Suriname"
   },
   {
-    "name": "Svalbard and Jan Mayen",
     "code": "47",
-    "locale": "SJ"
+    "locale": "SJ",
+    "name": "Svalbard and Jan Mayen"
   },
   {
-    "name": "Swaziland",
     "code": "268",
-    "locale": "SZ"
+    "locale": "SZ",
+    "name": "Swaziland"
   },
   {
-    "name": "Sweden",
     "code": "46",
-    "locale": "SE"
+    "locale": "SE",
+    "name": "Sweden"
   },
   {
-    "name": "Switzerland",
     "code": "41",
-    "locale": "CH"
+    "locale": "CH",
+    "name": "Switzerland"
   },
   {
-    "name": "Syrian Arab Republic",
     "code": "963",
-    "locale": "SY"
+    "locale": "SY",
+    "name": "Syrian Arab Republic"
   },
   {
-    "name": "Taiwan, Province of China",
     "code": "886",
-    "locale": "TW"
+    "locale": "TW",
+    "name": "Taiwan, Province of China"
   },
   {
-    "name": "Tajikistan",
     "code": "992",
-    "locale": "TJ"
+    "locale": "TJ",
+    "name": "Tajikistan"
   },
   {
-    "name": "Tanzania, United Republic of",
     "code": "255",
-    "locale": "TZ"
+    "locale": "TZ",
+    "name": "Tanzania, United Republic of"
   },
   {
-    "name": "Thailand",
     "code": "66",
-    "locale": "TH"
+    "locale": "TH",
+    "name": "Thailand"
   },
   {
-    "name": "Timor-Leste",
     "code": "670",
-    "locale": "TL"
+    "locale": "TL",
+    "name": "Timor-Leste"
   },
   {
-    "name": "Togo",
     "code": "228",
-    "locale": "TG"
+    "locale": "TG",
+    "name": "Togo"
   },
   {
-    "name": "Tokelau",
     "code": "690",
-    "locale": "TK"
+    "locale": "TK",
+    "name": "Tokelau"
   },
   {
-    "name": "Tonga",
     "code": "676",
-    "locale": "TO"
+    "locale": "TO",
+    "name": "Tonga"
   },
   {
-    "name": "Trinidad and Tobago",
     "code": "1 868",
-    "locale": "TT"
+    "locale": "TT",
+    "name": "Trinidad and Tobago"
   },
   {
-    "name": "Tunisia",
     "code": "216",
-    "locale": "TN"
+    "locale": "TN",
+    "name": "Tunisia"
   },
   {
-    "name": "Turkey",
     "code": "90",
-    "locale": "TR"
+    "locale": "TR",
+    "name": "Turkey"
   },
   {
-    "name": "Turkmenistan",
     "code": "993",
-    "locale": "TM"
+    "locale": "TM",
+    "name": "Turkmenistan"
   },
   {
-    "name": "Turks and Caicos Islands",
     "code": "1 649",
-    "locale": "TC"
+    "locale": "TC",
+    "name": "Turks and Caicos Islands"
   },
   {
-    "name": "Tuvalu",
     "code": "688",
-    "locale": "TV"
+    "locale": "TV",
+    "name": "Tuvalu"
   },
   {
-    "name": "Uganda",
     "code": "256",
-    "locale": "UG"
+    "locale": "UG",
+    "name": "Uganda"
   },
   {
-    "name": "Ukraine",
     "code": "380",
-    "locale": "UA"
+    "locale": "UA",
+    "name": "Ukraine"
   },
   {
-    "name": "United Arab Emirates",
     "code": "971",
-    "locale": "AE"
+    "locale": "AE",
+    "name": "United Arab Emirates"
   },
   {
-    "name": "United Kingdom",
     "code": "44",
-    "locale": "GB"
+    "locale": "GB",
+    "name": "United Kingdom"
   },
   {
-    "name": "United States",
     "code": "1",
-    "locale": "US"
+    "locale": "US",
+    "name": "United States"
   },
   {
-    "name": "Uruguay",
     "code": "598",
-    "locale": "UY"
+    "locale": "UY",
+    "name": "Uruguay"
   },
   {
-    "name": "Uzbekistan",
     "code": "998",
-    "locale": "UZ"
+    "locale": "UZ",
+    "name": "Uzbekistan"
   },
   {
-    "name": "Vanuatu",
     "code": "678",
-    "locale": "VU"
+    "locale": "VU",
+    "name": "Vanuatu"
   },
   {
-    "name": "Venezuela, Bolivarian Republic of",
     "code": "58",
-    "locale": "VE"
+    "locale": "VE",
+    "name": "Venezuela, Bolivarian Republic of"
   },
   {
-    "name": "Viet Nam",
     "code": "84",
-    "locale": "VN"
+    "locale": "VN",
+    "name": "Viet Nam"
   },
   {
-    "name": "Virgin Islands, British",
     "code": "1284",
-    "locale": "VG"
+    "locale": "VG",
+    "name": "Virgin Islands, British"
   },
   {
-    "name": "Virgin Islands, U.S.",
     "code": "1340",
-    "locale": "VI"
+    "locale": "VI",
+    "name": "Virgin Islands, U.S."
   },
   {
-    "name": "Wallis and Futuna",
     "code": "681",
-    "locale": "WF"
+    "locale": "WF",
+    "name": "Wallis and Futuna"
   },
   {
-    "name": "Yemen",
     "code": "967",
-    "locale": "YE"
+    "locale": "YE",
+    "name": "Yemen"
   },
   {
-    "name": "Zambia",
     "code": "260",
-    "locale": "ZM"
+    "locale": "ZM",
+    "name": "Zambia"
   },
   {
-    "name": "Zimbabwe",
     "code": "263",
-    "locale": "ZW"
+    "locale": "ZW",
+    "name": "Zimbabwe"
   },
   {
-    "name": "Åland Islands",
     "code": "358",
-    "locale": "AX"
+    "locale": "AX",
+    "name": "Åland Islands"
   }
 ]

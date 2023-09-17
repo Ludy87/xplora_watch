@@ -1,0 +1,79 @@
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ""
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.289
+    hooks:
+      - id: ruff
+        args:
+          - --fix
+          - --line-length=127
+        exclude: custom_components/xplora_watch/geocoder.py
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 23.9.1
+    hooks:
+      - id: black
+        args:
+          - --line-length=127
+          - --quiet
+        files: ^((custom_components|pylint|script|tests)/.+)?[^/]+\.py$
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.2
+    hooks:
+      - id: codespell
+        args:
+          - --ignore-words-list=additionals,alle,alot,bund,currenty,datas,deine,farenheit,falsy,fo,haa,hass,iif,incomfort,ines,ist,manuell,nam,nd,pres,pullrequests,resset,rime,ser,serie,te,technik,ue,unsecure,withing,zar
+          - --skip="./.*,*.csv,*.json,*.ambr"
+          - --quiet-level=2
+        exclude_types: [csv, json]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-ast
+      - id: check-yaml
+      - id: check-json
+        exclude: (.vscode|.devcontainer)
+      - id: check-added-large-files
+        args: [--maxkb=800]
+      - id: debug-statements
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: detect-private-key
+      - id: end-of-file-fixer
+        exclude_types: [json]
+      - id: forbid-new-submodules
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: trailing-whitespace
+      - id: pretty-format-json
+        args: [--autofix,--no-ensure-ascii]
+        exclude: ^(hacs|custom_components/xplora_watch/manifest)\.json$
+  - repo: https://github.com/cdce8p/python-typing-update
+    rev: v0.6.0
+    hooks:
+      # Run `python-typing-update` hook manually from time to time
+      # to update python typing syntax.
+      # Will require manual work, before submitting changes!
+      # pre-commit run --hook-stage manual python-typing-update --all-files
+      - id: python-typing-update
+        stages: [manual]
+        args:
+          - --py311-plus
+          - --force
+          - --keep-updates
+        files: ^(custom_components|tests|script)/.+\.py$
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.11.0
+    hooks:
+      - id: pyupgrade
+        args: [--py38-plus]

@@ -39,7 +39,7 @@ jobs:
       - name: Is Tag exists
         uses: mukunku/tag-exists-action@v1.3.0
         id: checkTag
-        with: 
+        with:
           tag: ${{ steps.version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
