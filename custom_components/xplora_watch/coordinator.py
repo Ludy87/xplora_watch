@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
-from typing import Union
 
 import aiohttp
 from pyxplora_api.const import DEFAULT_TIMEOUT
@@ -308,7 +307,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             }
         }
 
-    async def message_data(self, wuid, message_limit, remove_message) -> Union[dict, ChatsNew]:
+    async def message_data(self, wuid, message_limit, remove_message) -> dict | ChatsNew:
         """Fetch message chats from Xplora."""
         watch_entry = {}
         if self.data:
