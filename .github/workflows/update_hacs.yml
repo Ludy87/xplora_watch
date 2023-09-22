@@ -11,5 +11,5 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4.0.0
+      - uses: actions/checkout@v4.1.0
       - uses: Ludy87/action/update_hacs_hassio@v1.0.3
