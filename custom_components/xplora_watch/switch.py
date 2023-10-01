@@ -203,7 +203,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
         self._silent = silent
 
-        self._attr_name: str = f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent["start"]}-{silent["end"]} ({coordinator.username})'.replace(
+        self._attr_name: str = f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent["start"]}-{silent["end"]} ({coordinator.username})'.replace(  # noqa: E501
             "_", " "
         ).title()
 
