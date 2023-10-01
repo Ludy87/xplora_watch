@@ -79,6 +79,7 @@ def encoded_base64_string_to_mp3_file(hass: HomeAssistant, base64_string: str, f
 async def create_www_directory(hass: HomeAssistant):
     """Create www directory."""
     paths = [
+        hass.config.path("www"),  # http://homeassistant.local:8123/local
         hass.config.path("www/image"),  # http://homeassistant.local:8123/local/image/<filename>.jpeg
         hass.config.path("www/video"),  # http://homeassistant.local:8123/local/video/<filename>.mp4
         hass.config.path("www/video/thumb"),  # http://homeassistant.local:8123/local/video/thumb/<filename>.jpeg
