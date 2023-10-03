@@ -12,7 +12,7 @@ ci:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.289
+    rev: v0.0.292
     hooks:
       - id: ruff
         args:
@@ -37,7 +37,7 @@ repos:
           - --quiet
         files: ^((custom_components|pylint|script|tests)/.+)?[^/]+\.py$
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.2
+    rev: v2.2.6
     hooks:
       - id: codespell
         args:
@@ -83,7 +83,7 @@ repos:
           - --keep-updates
         files: ^(custom_components|tests|script)/.+\.py$
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.11.0
+    rev: v3.14.0
     hooks:
       - id: pyupgrade
         args: [--py311-plus]
