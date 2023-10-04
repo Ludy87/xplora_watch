@@ -28,6 +28,6 @@ jobs:
           with:
             file_pattern: README.md
             commit_message: Buy me a Coffee messages updated
-            branch: main
+            branch: sponsors
             commit_user_name: Buy Me a Coffee Readme action
             commit_user_email: noreply@buymeacoffeereadmeaction.com
