@@ -20,8 +20,8 @@ jobs:
         - uses: akosbalasko/coffee-to-file@1.0.1
           with:
             BUY_ME_A_COFFEE_TOKEN: ${{ secrets.BUY_ME_A_COFFEE_TOKEN }}
-            NUMBER_OF_MESSAGES: ${{ inputs.NUMBER_OF_MESSAGES }}
-            FILENAME: 50
+            NUMBER_OF_MESSAGES: 50
+            FILENAME: "README.md"
         - uses: test-room-7/action-update-file@v1
           with:
             file-path: "README.md"
