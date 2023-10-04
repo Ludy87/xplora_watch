@@ -13,8 +13,20 @@ jobs:
     name: Update Buy Me A Coffee section in this repo's README
     runs-on: ubuntu-latest
     steps:
-      - uses: akosbalasko/coffee-readme@main
-        with:
-          BUY_ME_A_COFFEE_TOKEN: ${{ secrets.BUY_ME_A_COFFEE_TOKEN }}
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
-          NUMBER_OF_MESSAGES: 50
+        - uses: actions/checkout@v3
+        - uses: actions/setup-node@v3
+        - run: ls -la
+          shell: bash
+        - uses: akosbalasko/coffee-to-file@1.0.1
+          with:
+            BUY_ME_A_COFFEE_TOKEN: ${{ secrets.BUY_ME_A_COFFEE_TOKEN }}
+            NUMBER_OF_MESSAGES: ${{ inputs.NUMBER_OF_MESSAGES }}
+            FILENAME: 50
+        - uses: test-room-7/action-update-file@v1
+          with:
+            file-path: "README.md"
+            commit-msg: "Buy me a Coffee messages updated"
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            branch: "main"
+            committer-name: Buy Me a Coffee Readme action
+            committer-email: noreply@buymeacoffeereadmeaction.com
