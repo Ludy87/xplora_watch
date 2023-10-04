@@ -265,3 +265,5 @@ logger:
 ### [v2] - 2022-09-18
 
 <!-- END ./CHANGELOG.md -->
+
+<!-- include Ludy87/sponsors/README.md -->
