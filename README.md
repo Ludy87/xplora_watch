@@ -266,4 +266,4 @@ logger:
 
 <!-- END ./CHANGELOG.md -->
 
-<!-- include Ludy87/sponsors/@main/README.md -->
+<!-- include Ludy87/sponsors/README.md -->
