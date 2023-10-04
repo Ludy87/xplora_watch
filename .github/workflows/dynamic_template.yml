@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     # paths-ignore:
-      # - '.github/**'
+    #   - '.github/**'
   pull_request:
     branches: [ main ]
 
@@ -38,7 +38,7 @@ jobs:
       - name: "💫 Dynamic Template Render"
         uses: varunsridharan/action-dynamic-readme@main
         with:
-          # GLOBAL_TEMPLATE_REPOSITORY: Ludy87/xplora_watch
+          GLOBAL_TEMPLATE_REPOSITORY: Ludy87/xplora_watch
           files: |
             README.md
           confirm_and_push: false # Important if use "Require a pull request before merging" rule
@@ -51,6 +51,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           file_pattern: README.md
+          commit_options: '--no-verify --signoff'
           commit_message: 📝 Update generated README
           branch: main
           commit_user_name: readme-scribe 🤖
