@@ -22,11 +22,12 @@ jobs:
             BUY_ME_A_COFFEE_TOKEN: ${{ secrets.BUY_ME_A_COFFEE_TOKEN }}
             NUMBER_OF_MESSAGES: 50
             FILENAME: "README.md"
-        - uses: test-room-7/action-update-file@v1
+        - uses: stefanzweifel/git-auto-commit-action@v4.16.0
+          env:
+            GITHUB_TOKEN: ${{ secrets.TOKEN }}
           with:
-            file-path: "README.md"
-            commit-msg: "Buy me a Coffee messages updated"
-            github-token: ${{ secrets.GITHUB_TOKEN }}
-            branch: "main"
-            committer-name: Buy Me a Coffee Readme action
-            committer-email: noreply@buymeacoffeereadmeaction.com
+            file_pattern: README.md
+            commit_message: Buy me a Coffee messages updated
+            branch: main
+            commit_user_name: Buy Me a Coffee Readme action
+            commit_user_email: noreply@buymeacoffeereadmeaction.com
