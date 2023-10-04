@@ -15,7 +15,4 @@ jobs:
       contents: write
     name: Update Buy Me A Coffee section in this repo's README
     steps:
-      - uses: akosbalasko/coffee-readme@main
-        with:
-          BUY_ME_A_COFFEE_TOKEN: ${{ secrets.BUY_ME_A_COFFEE_TOKEN }}
-          GH_TOKEN: ${{secrets.GITHUB_TOKEN }}
+      - uses: Ludy87/action/coffee-readme@main
