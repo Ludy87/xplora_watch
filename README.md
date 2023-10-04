@@ -266,6 +266,4 @@ logger:
 
 <!-- END ./CHANGELOG.md -->
 
-<!-- include Ludy87/sponsors/blob/main/README.md -->
-<!--START_SECTION:buy-me-a-coffee-->
-<!--END_SECTION:buy-me-a-coffe-->
+<!-- include Ludy87/sponsors/@main/README.md -->
