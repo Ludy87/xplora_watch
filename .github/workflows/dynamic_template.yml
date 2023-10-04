@@ -54,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           file_pattern: README.md
-          commit_options: '--no-signoff'
+          commit_options: '--signoff'
           commit_message: 📝 Update generated README
           branch: main
           commit_user_name: readme-scribe 🤖
