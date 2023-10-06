@@ -266,6 +266,3 @@ logger:
 
 <!-- END ./CHANGELOG.md -->
 
-<!-- START ./SPONSORS.md -->
-
-<!-- END ./SPONSORS.md -->
