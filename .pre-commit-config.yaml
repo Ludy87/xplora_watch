@@ -64,6 +64,8 @@ repos:
       - id: forbid-new-submodules
       - id: mixed-line-ending
         args: [--fix=lf]
+        exclude_types: [png,yaml]
+        exclude: \.md$
       - id: trailing-whitespace
       - id: pretty-format-json
         args: [--autofix,--no-ensure-ascii]
