@@ -1,2 +1,10 @@
 # Auto detect text files and perform LF normalization
-* text eol=crlf
+*     text eol=lf
+*.py  whitespace=error
+
+*.ico binary
+*.jpg binary
+*.png binary
+*.zip binary
+*.mp3 binary
+*.pcm binary
