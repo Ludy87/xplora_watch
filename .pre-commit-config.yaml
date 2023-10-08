@@ -67,6 +67,7 @@ repos:
         exclude_types: [png,yaml]
         exclude: (\.md|\.yml)$
       - id: trailing-whitespace
+        exclude_types: [json]
       - id: pretty-format-json
         args: [--autofix,--no-ensure-ascii]
         exclude: ^(hacs|custom_components/xplora_watch/manifest)\.json$
