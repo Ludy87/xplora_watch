@@ -1,4 +1,4 @@
-name: Daily Update
+name: Daily Update HACS & Hassio
 
 on:
   schedule:
