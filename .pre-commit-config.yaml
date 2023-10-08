@@ -63,7 +63,7 @@ repos:
         exclude_types: [json]
       - id: forbid-new-submodules
       - id: mixed-line-ending
-        args: [--fix=crlf]
+        args: [--fix=lf]
         exclude_types: [png,yaml]
         exclude: (\.md|\.yml)$
       - id: trailing-whitespace
