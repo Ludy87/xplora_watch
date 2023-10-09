@@ -15,6 +15,9 @@
 - name: "Bug: False Alarm"
   description: no Bug - False Alarm
   color: "80006C"
+- name: "Bug: Xplora® wontfix"
+  description: no Bug in the integration
+  color: "80006C"
 - name: check for Bug
   description: it is checked whether there is an Bug
   color: "1AFF00"
