@@ -36,6 +36,20 @@ Bug:
 
       This action was performed automatically.
 
+"Bug: Xplora® wontfix":
+  issues:
+    unlabel:
+      - 'wait'
+      - 'in progress'
+      - 'help wanted'
+      - 'check for Bug'
+      - 'Bug'
+      - 'Bug: Confirmed!'
+    comment: >
+      :bug: The problem is with Xplora®, please contact support.
+
+      This action was performed automatically.
+
 wontfix:
   issues:
     unlabel:
