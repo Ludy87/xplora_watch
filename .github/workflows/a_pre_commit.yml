@@ -13,13 +13,6 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Überprüfe Pull Request
-        run: |
-          # Extrahiere den Namen des Basis-Branches (base branch) und des Feature-Branches (head branch).
-          echo "is_branch=${{ github.base_ref == github.head_ref }}" >> $GITHUB_ENV
-      - if: env.is_branch == 'true'
-        run: |
-          exit 0
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
