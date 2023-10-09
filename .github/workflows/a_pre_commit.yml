@@ -16,11 +16,8 @@ jobs:
       - name: Überprüfe Pull Request
         run: |
           # Extrahiere den Namen des Basis-Branches (base branch) und des Feature-Branches (head branch).
-          echo "base_branch=${{ github.base_ref }}" >> $GITHUB_ENV
-          echo "head_branch=${{ github.head_ref }}" >> $GITHUB_ENV
-          echo ${{ env.base_branch }}
-          echo ${{ env.head_branch }}
-      - if: ${{ env.base_branch == env.head_branch }}
+          echo "is_branch=${{ github.base_ref == github.head_ref }}" >> $GITHUB_ENV
+      - if: env.is_branch == 'true'
         run: |
           exit 0
       - name: Checkout repository
