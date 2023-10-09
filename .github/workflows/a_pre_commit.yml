@@ -18,8 +18,8 @@ jobs:
           # Extrahiere den Namen des Basis-Branches (base branch) und des Feature-Branches (head branch).
           echo "base_branch=${{ github.base_ref }}" >> $GITHUB_ENV
           echo "head_branch=${{ github.head_ref }}" >> $GITHUB_ENV
-          echo base_branch
-          echo head_branch
+          echo ${{ env.base_branch }}
+          echo ${{ env.head_branch }}
       - if: ${{ env.base_branch == env.head_branch }}
         run: |
           exit 0
