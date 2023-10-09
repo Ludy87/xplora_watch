@@ -49,6 +49,7 @@ Bug:
       :bug: The problem is with Xplora®, please contact support.
 
       This action was performed automatically.
+    close: true
 
 wontfix:
   issues:
