@@ -18,7 +18,8 @@ jobs:
           # Extrahiere den Namen des Basis-Branches (base branch) und des Feature-Branches (head branch).
           base_branch="$GITHUB_BASE_REF"
           head_branch="$GITHUB_HEAD_REF"
-        if: ${{ base_branch != head_branch }}
+      - if: ${{ base_branch == head_branch }}
+        run: exit 0
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
