@@ -16,10 +16,13 @@ jobs:
       - name: Überprüfe Pull Request
         run: |
           # Extrahiere den Namen des Basis-Branches (base branch) und des Feature-Branches (head branch).
-          base_branch="$GITHUB_BASE_REF"
-          head_branch="$GITHUB_HEAD_REF"
-      - if: ${{ base_branch == head_branch }}
-        run: exit 0
+          echo "base_branch=${{ github.base_ref }}" >> $GITHUB_ENV
+          echo "head_branch=${{ github.head_ref }}" >> $GITHUB_ENV
+          echo base_branch
+          echo head_branch
+      - if: ${{ env.base_branch == env.head_branch }}
+        run: |
+          exit 0
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
