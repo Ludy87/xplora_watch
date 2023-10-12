@@ -18,7 +18,7 @@ jobs:
           remove-stale-when-updated: true
           stale-issue-label: "stale"
           labels-to-remove-when-stale: "check for Bug,in progress"
-          exempt-issue-labels: "pinned,Bug: Confirmed!,check for Bug,wait"
+          exempt-issue-labels: "pinned,check for Bug,wait"
           stale-issue-message: >
             This issue has been automatically marked as stale because it has
             not had recent activity. It will be closed if no further activity
