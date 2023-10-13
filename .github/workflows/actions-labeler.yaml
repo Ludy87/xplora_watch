@@ -1,0 +1,21 @@
+name: 'Label Actions'
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  discussions: write
+
+jobs:
+  action:
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v4
+        with:
+          configuration-path: .github/actions-labeler.yaml
+          repo-token: ${{ secrets.TOKEN }}
