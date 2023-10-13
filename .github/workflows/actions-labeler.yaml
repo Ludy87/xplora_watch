@@ -15,6 +15,10 @@ jobs:
     if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.0
+        with:
+          token: ${{ secrets.TOKEN }}
       - uses: actions/labeler@v4
         with:
           configuration-path: .github/actions-labeler.yaml
