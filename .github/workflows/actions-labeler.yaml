@@ -1,7 +1,6 @@
 name: 'Label Actions PR'
 
 on:
-  push:
   pull_request:
     types: [opened, reopened]
     
