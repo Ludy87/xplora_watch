@@ -3,7 +3,7 @@ name: 'Label Actions PR'
 on:
   pull_request:
     types: [opened, reopened]
-    
+
 permissions:
   contents: read
   issues: write
