@@ -34,7 +34,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5.0.2
         with:
-          # token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.TOKEN }}
           commit-message: Update files
           committer: GitHub Action <action@github.com>
           author: GitHub Action <action@github.com>
