@@ -21,5 +21,6 @@ jobs:
           token: ${{ secrets.TOKEN }}
       - uses: actions/labeler@main  # v4.3.0
         with:
+          dot: true
           repo-token: ${{ secrets.TOKEN }}
           configuration-path: ".github/actions_labeler.yaml"
