@@ -1,7 +1,6 @@
 name: Pre-commit
 
 on:
-  push:
   pull_request:
     types: [opened, reopened]
 
