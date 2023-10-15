@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  chack:
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Head
