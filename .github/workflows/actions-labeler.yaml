@@ -17,9 +17,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.0
-        with:
-          token: ${{ secrets.TOKEN }}
-          repository: ${{ github.repository }}
       - uses: actions/labeler@main  # v4.3.0
         with:
           configuration-path: .github/workflows/config/labeler.yml
