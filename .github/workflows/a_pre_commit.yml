@@ -51,4 +51,4 @@ jobs:
               in progress
               bot
           draft: false
-          delete-branch: true
+          # delete-branch: true
