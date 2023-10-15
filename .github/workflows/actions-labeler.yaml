@@ -22,5 +22,5 @@ jobs:
           repository: ${{ github.repository }}
       - uses: actions/labeler@main  # v4.3.0
         with:
+          configuration-path: .github/workflows/config/labeler.yml
           repo-token: ${{ secrets.TOKEN }}
-          configuration-path: ".github/actions_labeler.yaml"
