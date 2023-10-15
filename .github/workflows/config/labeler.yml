@@ -1,11 +1,13 @@
 # Add 'in progress' label to any root file changes
 in progress:
-- '*'
+- '**'
 
 # Add 'wait' label to any root file changes
 wait:
-- '*'
+- '**'
 
 # Add 'Version 2' label to any root file changes
 Version 2:
-- '*'
+- all:
+  - '!.github/**'
+  - '!.github/workflows/**'
