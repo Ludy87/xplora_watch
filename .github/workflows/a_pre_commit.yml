@@ -19,7 +19,8 @@ jobs:
           echo "Base Branch: ${{ github.base_ref }}"
   update:
     
-    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' || github.head_ref != 'pre-commit'}}
+    if: ${{ github.event.pull_request.user.login != 'dependabot[bot]'}}
+    #  || github.head_ref != 'pre-commit'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
