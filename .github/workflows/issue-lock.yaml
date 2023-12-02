@@ -16,7 +16,7 @@ jobs:
   lock:
     runs-on: ubuntu-latest
     steps:
-      - uses: dessant/lock-threads@v4.0.1
+      - uses: dessant/lock-threads@v5.0.1
         with:
           github-token: ${{ secrets.TOKEN }}
           add-issue-labels: 'outdated'
