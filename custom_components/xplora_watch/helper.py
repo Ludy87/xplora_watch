@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import shutil
+from typing import Any
 
 from geopy import distance
 from pydub import AudioSegment
@@ -118,17 +119,18 @@ async def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watc
     _LOGGER.debug("services_%s.json path: %s", language, path_json)
     try:
         with open(path_json, encoding="utf8") as json_file:
-            configuration: dict(str, str) = json.load(json_file)
+            configuration: dict[str, str] = json.load(json_file)
 
         yaml_service = load_yaml(path)
         if (
-            yaml_service.get("see", None)
-            and yaml_service.get("see").get("fields", None)
-            and yaml_service.get("see").get("fields").get("user", None)
+            isinstance(yaml_service, dict)
+            and yaml_service.get("see", {})
+            and yaml_service.get("see", {}).get("fields", None)
+            and yaml_service.get("see", {}).get("fields", {}).get("user", None)
         ):
             configuration = yaml_service
 
-        def set_watches(configurations: any, names: list[str], watches: list[str]) -> dict(str, str):
+        def set_watches(configurations: Any, names: list[str], watches: list[str]) -> dict[str, str]:
             """Set the watches for the configuration."""
             for name in names:
                 option_watches: list[str] = configurations[name]["fields"]["target"]["selector"]["select"]["options"]

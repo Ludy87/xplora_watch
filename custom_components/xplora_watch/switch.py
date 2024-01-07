@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from pyxplora_api.pyxplora_api_async import PyXploraApi
 
@@ -49,7 +50,7 @@ SWITCH_TYPES: tuple[SwitchEntityDescription, ...] = (
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
     """Set up the Xplora® Watch Version 2 switch from config entry."""
     coordinator: XploraDataUpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
-    entities: list[any] = []
+    entities: list[Any] = []
 
     for description in SWITCH_TYPES:
         for watch in coordinator.controller.watchs:
@@ -58,7 +59,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
                 continue
 
-            ward: dict[str, any] = watch.get("ward", None)
+            ward: dict[str, Any] = watch.get("ward", None)
             if ward is None:
                 continue
 
@@ -93,9 +94,9 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
     def __init__(
         self,
         config_entry: ConfigEntry,
-        alarm: dict[str, any],
+        alarm: dict[str, Any],
         coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, any],
+        ward: dict[str, Any],
         wuid: str,
         description: SwitchEntityDescription,
     ) -> None:
@@ -121,7 +122,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         )
 
         self._attr_is_on = self._states(alarm["status"])
-        self._alarms: list[dict[str, any]] = []
+        self._alarms: list[dict[str, Any]] = []
         _LOGGER.debug(
             "Updating switch: %s | Typ: %s | Watch_ID ...%s | state: %s | %s",
             self._attr_name,
@@ -165,7 +166,7 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         await self._set_turn_on_off(status=False)
 
     @property
-    def extra_state_attributes(self) -> dict[str, any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return supported attributes."""
         data = super().extra_state_attributes or {}
         language = self._options.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
@@ -189,9 +190,9 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
     def __init__(
         self,
         config_entry: ConfigEntry,
-        silent: dict[str, any],
+        silent: dict[str, Any],
         coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, any],
+        ward: dict[str, Any],
         wuid: str,
         description: SwitchEntityDescription,
     ) -> None:
@@ -199,7 +200,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         super().__init__(config_entry, description, coordinator, wuid)
         if self.watch_uid not in self.coordinator.data:
             return
-        self.coordinator.data[self.watch_uid]: dict[str, any] = self.coordinator.data[self.watch_uid]
+        self.coordinator.data[self.watch_uid]: dict[str, Any] = self.coordinator.data[self.watch_uid]
 
         self._silent = silent
 
@@ -216,7 +217,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         )
 
         self._attr_is_on = self._states(silent["status"])
-        self._silents: list[dict[str, any]] = []
+        self._silents: list[dict[str, Any]] = []
         _LOGGER.debug(
             "Updating switch: %s | Typ: %s | Watch_ID ...%s | state: %s | %s",
             self._attr_name,
@@ -261,7 +262,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
         await self._set_turn_on_off(status=False)
 
     @property
-    def extra_state_attributes(self) -> dict[str, any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return supported attributes."""
         data = super().extra_state_attributes or {}
         language = self._options.get(CONF_LANGUAGE, self._data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))

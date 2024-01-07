@@ -85,7 +85,7 @@ MAPS: Final[list[str]] = ["openstreetmap.org (free)", "opencagedata.com (with Li
 # Section: Multilanguage #
 ##########################
 
-DEFAULT_LANGUAGE: Final = "en"
+DEFAULT_LANGUAGE: Final[str] = "en"
 
 XPLORA_USER_LANGS: Final[list[dict[str, str]]] = [
     {"en": "en-GB"},
