@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from homeassistant.components.device_tracker import SourceType
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
@@ -52,7 +53,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
             continue
 
-        ward: dict[str, any] = watch.get("ward", None)
+        ward: dict[str, Any] = watch.get("ward", None)
         if ward is None:
             continue
 
@@ -94,10 +95,10 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
     def __init__(
         self,
         config_entry: ConfigEntry,
-        safezone: dict[str, any],
+        safezone: dict[str, Any],
         coordinator: XploraDataUpdateCoordinator,
         wuid: str,
-        ward: dict[str, any],
+        ward: dict[str, Any],
     ) -> None:
         """Initialize XploraSafezoneTracker instance."""
         super().__init__(config_entry, None, coordinator, wuid)
@@ -143,7 +144,7 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         return self._safezone[CONF_NAME]
 
     @property
-    def extra_state_attributes(self) -> dict[str, any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return state attributes that should be added to SAFEZONE_STATE."""
         data = super().extra_state_attributes or {}
         return dict(
@@ -164,7 +165,7 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
         wuid: str,
-        ward: dict[str, any],
+        ward: dict[str, Any],
         image: str,
     ) -> None:
         """Initialize the Tracker."""
@@ -215,7 +216,7 @@ class XploraDeviceTracker(XploraBaseEntity, TrackerEntity):
         return self.coordinator.data[self.watch_uid].get(ATTR_LOCATION_NAME, None)
 
     @property
-    def extra_state_attributes(self) -> dict[str, any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return state attributes that should be added to DEVICE_STATE."""
         data = super().extra_state_attributes or {}
         distance_to_home = None

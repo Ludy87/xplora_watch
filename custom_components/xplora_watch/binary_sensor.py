@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
@@ -11,9 +12,10 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_ID,
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
+    CONF_LATITUDE,
+    CONF_LONGITUDE,
     CONF_NAME,
+    CONF_RADIUS,
     STATE_OFF,
     STATE_ON,
     EntityCategory,
@@ -78,7 +80,7 @@ async def async_setup_entry(
                 _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
                 continue
 
-            ward: dict[str, any] = watch.get("ward", None)
+            ward: dict[str, Any] = watch.get("ward", None)
             if ward is None:
                 continue
 
@@ -104,7 +106,7 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
         self,
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, any],
+        ward: dict[str, Any],
         wuid: str,
         description: BinarySensorEntityDescription,
     ) -> None:
@@ -135,17 +137,21 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
             if self._options.get(CONF_HOME_SAFEZONE, STATE_OFF) == STATE_ON:
                 latitude = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LAT, None)
                 longitude = self.coordinator.data[self.watch_uid].get(ATTR_TRACKER_LNG, None)
-                home_latitude = self.hass.states.get(HOME).attributes[ATTR_LATITUDE]
-                home_longitude = self.hass.states.get(HOME).attributes[ATTR_LONGITUDE]
-                home_raduis = self.hass.states.get(HOME).attributes["radius"]
-                if is_distance_in_radius(
-                    (
-                        self._options.get(CONF_HOME_LATITUDE, home_latitude),
-                        self._options.get(CONF_HOME_LONGITUDE, home_longitude),
-                    ),
-                    (latitude, longitude),
-                    self._options.get(CONF_HOME_RADIUS, home_raduis),
-                ):
+                home_state = self.hass.states.get(HOME)
+                if home_state and home_state.attributes:
+                    home_latitude = home_state.attributes[CONF_LATITUDE]
+                    home_longitude = home_state.attributes[CONF_LONGITUDE]
+                    home_raduis = home_state.attributes[CONF_RADIUS]
+                    if is_distance_in_radius(
+                        (
+                            self._options.get(CONF_HOME_LATITUDE, home_latitude),
+                            self._options.get(CONF_HOME_LONGITUDE, home_longitude),
+                        ),
+                        (latitude, longitude),
+                        self._options.get(CONF_HOME_RADIUS, home_raduis),
+                    ):
+                        return False
+                else:
                     return False
             return self.coordinator.data[self.watch_uid].get("isSafezone", None)
         return False
@@ -164,7 +170,7 @@ class XploraBinarySensor(XploraBaseEntity, BinarySensorEntity):
         return None
 
     @property
-    def extra_state_attributes(self) -> dict[str, any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return state attributes that should be added to BINARY_SENSOR_STATE."""
         data = super().extra_state_attributes or {}
         return dict(data, **{ATTR_SERVICE_USER: self.coordinator.controller.getUserName()})

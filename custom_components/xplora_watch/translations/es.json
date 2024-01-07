@@ -1,0 +1,75 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "La integración ya ha sido configurada",
+      "single_instance_allowed": "Ya configurado. Solo se permite una configuración."
+    },
+    "create_entry": {
+      "default": "¡Se creó la integración de Xplora® Watch!"
+    },
+    "error": {
+      "cannot_connect": "Fallo en la conexión",
+      "invalid_auth": "Autenticación inválida",
+      "pass_invalid": "Contraseña incorrecta",
+      "phone_email_invalid": "El número de teléfono o dirección de correo electrónico no existen"
+    },
+    "step": {
+      "user": {
+        "menu_options": {
+          "user_email": "iniciar sesión con dirección de correo electrónico (experimental)",
+          "user_phone": "iniciar sesión con número de teléfono"
+        }
+      },
+      "user_email": {
+        "data": {
+          "email": "Dirección de correo electrónico",
+          "language": "Idioma",
+          "password": "Contraseña",
+          "timezone": "Zona horaria",
+          "userlang": "Idioma del reloj (en)"
+        },
+        "description": "Autenticación de cuenta",
+        "title": "Configurar Xplora® Watch"
+      },
+      "user_phone": {
+        "data": {
+          "country_code": "Código de país (+49)",
+          "language": "Idioma",
+          "password": "Contraseña",
+          "phonenumber": "número de teléfono sin código de país",
+          "timezone": "Zona horaria",
+          "userlang": "Idioma del reloj (en)"
+        },
+        "description": "Autenticación de cuenta",
+        "title": "Configurar Xplora® Watch"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "api_key_error": "¡Se debe especificar la clave API de OpenCage!",
+      "friendly_name_error": "Formato de nombre amigable incorrecto (watch_id=nombre_amigable)",
+      "no_sensor": "¡Por favor seleccione uno o más sensores!",
+      "no_watch": "¡Por favor seleccione un reloj!"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "home_is_safezone": "El hogar es una zona segura",
+          "home_latitude": "Latitud del hogar",
+          "home_longitude": "Longitud del hogar",
+          "home_radius": "Radio del hogar",
+          "language": "Idioma",
+          "maps": "Mapas",
+          "message": "Número de mensajes",
+          "opencage_apikey": "Clave API de OpenCage",
+          "remove_message": "¿mostrar mensajes eliminados?",
+          "scan_interval": "Intervalo de escaneo (s)",
+          "types": "Tipos de sensores",
+          "watches": "Relojes"
+        },
+        "title": "configuraciones adicionales para Xplora® Watch"
+      }
+    }
+  }
+}

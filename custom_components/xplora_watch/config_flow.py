@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import logging
 from collections import OrderedDict
+from types import MappingProxyType
+from typing import Any
 
 import voluptuous as vol
 from pyxplora_api.exception_classes import Error, LoginError, PhoneOrEmailFail
@@ -76,7 +78,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @callback
-async def sign_in(hass: core.HomeAssistant, data: dict[str, any] = None) -> PyXploraApi:
+async def sign_in(hass: core.HomeAssistant, data: dict[str, Any] | MappingProxyType[str, Any]) -> PyXploraApi:
     """Sign in to the Xplora® API."""
     controller: PyXploraApi = PyXploraApi(
         countrycode=data.get(CONF_COUNTRY_CODE, None),
@@ -91,7 +93,7 @@ async def sign_in(hass: core.HomeAssistant, data: dict[str, any] = None) -> PyXp
     return controller
 
 
-async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict[str, str]:
+async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
 
     Data has the keys from DATA_SCHEMA with values provided by the user.
@@ -116,7 +118,7 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, any]) -> dict
     return {"title": f"{MANUFACTURER}"}
 
 
-def validate_options_input(user_input: dict[str, any]) -> dict[str, str]:
+def validate_options_input(user_input: dict[str, Any]) -> dict[str, str]:
     """Validate the user input allows us to connect.
 
     Data has the keys from DATA_SCHEMA with values provided by the user.
@@ -150,7 +152,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         return self.async_show_menu(step_id="user", menu_options=["user_email", "user_phone"])
 
-    async def async_step_user_phone(self, user_input: dict[str, any] | None = None) -> FlowResult:
+    async def async_step_user_phone(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
@@ -179,7 +181,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user_phone", data_schema=vol.Schema(DATA_SCHEMA_PHONE), errors=errors, last_step=True
         )
 
-    async def async_step_user_email(self, user_input: dict[str, any] | None = None) -> FlowResult:
+    async def async_step_user_email(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle the initial step."""
         errors: dict[str, str] = {}
         if user_input is not None:
@@ -212,7 +214,7 @@ class XploraConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
     """Handle a option flow."""
 
-    def get_options(self, signin_typ, schema, language, _options, _home_zone) -> vol.Schema:
+    def get_options(self, signin_typ, schema, language: str, _options, _home_zone) -> vol.Schema:
         """Set SCHEMA return SCHEMA."""
         return vol.Schema(
             {
@@ -315,10 +317,10 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
             }
         )
 
-    async def async_step_init(self, user_input: dict[str, any] | None = None) -> FlowResult:
+    async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Handle options flow."""
         errors: dict[str, str] = {}
-        controller = await sign_in(self.hass, self.config_entry.data)
+        controller = await sign_in(hass=self.hass, data=self.config_entry.data)
         watches = await controller.setDevices()
         _options = self.config_entry.options
 
@@ -337,7 +339,7 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
             )
         )
 
-        language = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
+        language: str = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
 
         signin_typ = [
             SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_EMAIL)

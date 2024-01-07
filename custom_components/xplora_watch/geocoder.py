@@ -320,7 +320,7 @@ class OpenCageGeocodeUA:
     async def get_user_agent(self) -> str:
         url = "https://raw.githubusercontent.com/Ludy87/xplora_watch/main/custom_components/xplora_watch/ua.json"
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.3"
         }
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session, session.get(
             url, headers=headers
@@ -329,7 +329,7 @@ class OpenCageGeocodeUA:
             i = randint(0, len(data) - 1)
             return data[i].get(
                 "useragent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.54 Safari/537.36",
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.3",
             )
 
 

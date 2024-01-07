@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -85,7 +86,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
                 _LOGGER.debug("%s %s - no config options", watch, config_entry.entry_id)
                 continue
 
-            ward: dict[str, any] = watch.get("ward", None)
+            ward: dict[str, Any] = watch.get("ward", None)
             if ward is None:
                 continue
 
@@ -111,7 +112,7 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         self,
         config_entry: ConfigEntry,
         coordinator: XploraDataUpdateCoordinator,
-        ward: dict[str, any],
+        ward: dict[str, Any],
         wuid: str,
         description: SensorEntityDescription,
     ) -> None:
@@ -152,7 +153,7 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
         return None
 
     @property
-    def extra_state_attributes(self) -> dict[str, any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return state attributes that should be added to SENSOR_STATE."""
         data = super().extra_state_attributes or {}
         if (

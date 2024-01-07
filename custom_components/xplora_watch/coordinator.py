@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timedelta
+from typing import Any
 
 import aiohttp
 from pyxplora_api.const import DEFAULT_TIMEOUT
@@ -60,8 +61,8 @@ _LOGGER = logging.getLogger(__name__)
 class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     """Create XploraDataUpdateCoordinator that manages data updates."""
 
-    location_name: str = None
-    licence: str = None
+    location_name: str | None = None
+    licence: str | None = None
     controller: PyXploraApi = None
     lat: float | None = None
     lng: float | None = None
@@ -74,7 +75,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
     is_charging: bool = False
     is_safezone: bool = False
     is_online: bool = False
-    device: dict[str, any] = {}
+    device: dict[str, Any] = {}
     username: str
     user_id: str
     is_admin: dict[str, bool] = {}
@@ -137,7 +138,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 continue
             self.is_admin.update({new_name: _is_admin})
 
-    async def async_update_xplora_data(self, targets: list[str] = None, new_data: dict = None):
+    async def async_update_xplora_data(self, targets: list[str] | None = None, new_data: dict | None = None):
         """Fetch data from Xplora."""
         # Initialize the watch entry data
         if new_data:
@@ -162,6 +163,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
         # Get the message limit and remove message option
         message_limit = self._entry.options.get(CONF_MESSAGE, 10)
+        message_limit = message_limit if isinstance(message_limit, int) else 10
         remove_message = self._entry.options.get(CONF_REMOVE_MESSAGE, False)
 
         # Loop through the list of watches and fetch data
@@ -208,7 +210,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self.alarm = await self.controller.getWatchAlarm(wuid=wuid)  # device.get("getWatchAlarm", [])
         self.silent = device.get("getSilentTime", [])
 
-        sw_version: dict[str, any] = device.get("getWatches", {})
+        sw_version: dict[str, Any] = device.get("getWatches", {})
         self.imei = sw_version.get(ATTR_TRACKER_IMEI, wuid)
         self.watch_id = wuid
         self.os_version = sw_version.get("osVersion", "n/a")
@@ -234,7 +236,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         elif self._maps == MAPS[0] and self.lat and self.lng:
             await self.openstreetmap()
 
-    async def mapbox(self) -> str:
+    async def mapbox(self):
         """Get mapbox information for the location."""
         language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
         async with aiohttp.ClientSession() as session:
@@ -250,7 +252,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         """Get opencagedata.com information for the location.."""
         try:
             async with OpenCageGeocodeUA(self._opencage_apikey) as geocoder:
-                results: list[any] = await geocoder.reverse_geocode_async(
+                results: list[Any] = await geocoder.reverse_geocode_async(
                     self.lat, self.lng, no_annotations=1, pretty=1, no_record=1, no_dedupe=1, limit=1, abbrv=1
                 )
                 self.location_name = results[0]["formatted"]
@@ -267,7 +269,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session, session.get(
                 URL_OPENSTREETMAP.format(self.lat, self.lng, language)
             ) as response:
-                res: dict[str, any] = await response.json()
+                res: dict[str, Any] = await response.json()
                 self.licence = res.get(ATTR_TRACKER_LICENCE, None)
                 address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
                 if address:
