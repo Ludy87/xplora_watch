@@ -1,0 +1,75 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "L'intégration a déjà été configurée",
+      "single_instance_allowed": "Déjà configuré. Une seule configuration possible."
+    },
+    "create_entry": {
+      "default": "L'intégration de la montre Xplora® a été créée!"
+    },
+    "error": {
+      "cannot_connect": "Échec de la connexion",
+      "invalid_auth": "Authentification invalide",
+      "pass_invalid": "Mot de passe incorrect",
+      "phone_email_invalid": "Le numéro de téléphone ou l'adresse e-mail n'existent pas"
+    },
+    "step": {
+      "user": {
+        "menu_options": {
+          "user_email": "se connecter avec l'adresse e-mail (expérimental)",
+          "user_phone": "se connecter avec le numéro de téléphone"
+        }
+      },
+      "user_email": {
+        "data": {
+          "email": "Adresse e-mail",
+          "language": "Langue",
+          "password": "Mot de passe",
+          "timezone": "Fuseau horaire",
+          "userlang": "Langue de la montre (en)"
+        },
+        "description": "Authentification du compte",
+        "title": "Configurer la montre Xplora®"
+      },
+      "user_phone": {
+        "data": {
+          "country_code": "Code du pays (+49)",
+          "language": "Langue",
+          "password": "Mot de passe",
+          "phonenumber": "numéro de téléphone sans le code du pays",
+          "timezone": "Fuseau horaire",
+          "userlang": "Langue de la montre (en)"
+        },
+        "description": "Authentification du compte",
+        "title": "Configurer la montre Xplora®"
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "api_key_error": "La clé API OpenCage doit être spécifiée !",
+      "friendly_name_error": "Format du nom convivial incorrect (watch_id=nom_convivial)",
+      "no_sensor": "Veuillez sélectionner un ou plusieurs capteurs !",
+      "no_watch": "Veuillez sélectionner une montre !"
+    },
+    "step": {
+      "init": {
+        "data": {
+          "home_is_safezone": "La maison est une zone sûre",
+          "home_latitude": "Latitude de la maison",
+          "home_longitude": "Longitude de la maison",
+          "home_radius": "Rayon de la maison",
+          "language": "Langue",
+          "maps": "Cartes",
+          "message": "Nombre de messages",
+          "opencage_apikey": "Clé API OpenCage",
+          "remove_message": "afficher les messages supprimés ?",
+          "scan_interval": "Intervalle de balayage (s)",
+          "types": "Types de capteurs",
+          "watches": "Montres"
+        },
+        "title": "paramètres supplémentaires pour la montre Xplora®"
+      }
+    }
+  }
+}
