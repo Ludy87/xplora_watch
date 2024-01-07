@@ -21,7 +21,7 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
       - name: Set up Python
-        uses: actions/setup-python@v4.7.1
+        uses: actions/setup-python@v5.0.0
         with:
           python-version: |
             3.11
