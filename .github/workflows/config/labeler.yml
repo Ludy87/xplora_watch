@@ -1,5 +1,5 @@
 # Add 'in progress' label to any root file changes
-in progress:
+'in progress':
 - changed-files:
   - any-glob-to-any-file: '**'
 
@@ -9,7 +9,7 @@ wait:
   - any-glob-to-any-file: '**'
 
 # Add 'Version 2' label to any root file changes
-Version 2:
+'Version 2':
 - all:
   - changed-files:
     - any-glob-to-any-file: '**'
