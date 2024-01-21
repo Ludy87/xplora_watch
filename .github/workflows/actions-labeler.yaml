@@ -20,6 +20,5 @@ jobs:
       - uses: actions/labeler@v5.0.0
         with:
           configuration-path: .github/workflows/config/labeler.yml
-          repo-token: ${{ secrets.TOKEN }}
           sync-labels: false
           dot: true
