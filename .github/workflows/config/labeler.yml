@@ -1,13 +1,16 @@
 # Add 'in progress' label to any root file changes
 in progress:
-- '**'
+- changed-files:
+  - any-glob-to-any-file: '**'
 
 # Add 'wait' label to any root file changes
 wait:
-- '**'
+- changed-files:
+  - any-glob-to-any-file: '**'
 
 # Add 'Version 2' label to any root file changes
 Version 2:
 - all:
-  - '!.github/**'
-  - '!.github/workflows/**'
+  - changed-files:
+    - any-glob-to-any-file: '**'
+    - all-globs-to-all-files: '!.github/**'
