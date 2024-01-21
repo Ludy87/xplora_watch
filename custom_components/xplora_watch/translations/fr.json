@@ -26,7 +26,7 @@
           "language": "Langue",
           "password": "Mot de passe",
           "timezone": "Fuseau horaire",
-          "userlang": "Langue de la montre (en)"
+          "userlang": "Langue de la montre (fr)"
         },
         "description": "Authentification du compte",
         "title": "Configurer la montre Xplora®"
@@ -38,7 +38,7 @@
           "password": "Mot de passe",
           "phonenumber": "numéro de téléphone sans le code du pays",
           "timezone": "Fuseau horaire",
-          "userlang": "Langue de la montre (en)"
+          "userlang": "Langue de la montre (fr)"
         },
         "description": "Authentification du compte",
         "title": "Configurer la montre Xplora®"
@@ -64,7 +64,7 @@
           "message": "Nombre de messages",
           "opencage_apikey": "Clé API OpenCage",
           "remove_message": "afficher les messages supprimés ?",
-          "scan_interval": "Intervalle de balayage (s)",
+          "scan_interval": "Intervalle de balayage (s; 0=désactivé)",
           "types": "Types de capteurs",
           "watches": "Montres"
         },

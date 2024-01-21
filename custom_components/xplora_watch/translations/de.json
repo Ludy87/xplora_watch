@@ -64,7 +64,7 @@
           "message": "Anzahl der Nachrichten",
           "opencage_apikey": "OpenCage API KEY",
           "remove_message": "gelöschte Nachrichten anzeigen?",
-          "scan_interval": "Scan Intervall (in s)",
+          "scan_interval": "Scan Intervall (in s; 0=deaktivert)",
           "types": "Sensortypen",
           "watches": "Uhren"
         },

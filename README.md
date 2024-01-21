@@ -130,6 +130,12 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 ---
 
+## Disabel scan intervall (v2.13.0)
+
+- To deactivate the scan interval you can set the value to "0", the default value is 180.
+
+---
+
 ## Downloaded from voice messages, Videos and Images (v2.7.0)
 
 - All voice messages, videos and images are stored in `config/www/{voice|video|image|}`. [#152](https://github.com/Ludy87/xplora_watch/discussions/152)

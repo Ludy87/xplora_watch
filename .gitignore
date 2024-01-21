@@ -136,3 +136,4 @@ codiga.*
 
 # Home Assistant Core
 /homeassistant
+*.diff

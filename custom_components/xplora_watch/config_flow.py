@@ -266,7 +266,7 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
                     CONF_SCAN_INTERVAL, default=_options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
                 ): NumberSelector(
                     NumberSelectorConfig(
-                        min=10,
+                        min=0,
                         max=9999,
                         mode=NumberSelectorMode.SLIDER,
                     ),
@@ -278,7 +278,7 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
                                 value=value,
                                 label=label,
                             )
-                            for value, label in HOME_SAFEZONE.get(language, DEFAULT_LANGUAGE).items()
+                            for value, label in HOME_SAFEZONE.get(language, HOME_SAFEZONE[DEFAULT_LANGUAGE]).items()
                         ],
                         multiple=False,
                         mode=SelectSelectorMode.DROPDOWN,
@@ -300,7 +300,7 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
                                 value=value,
                                 label=label,
                             )
-                            for value, label in SENSORS.get(language, DEFAULT_LANGUAGE).items()
+                            for value, label in SENSORS.get(language, SENSORS[DEFAULT_LANGUAGE]).items()
                         ],
                         multiple=True,
                         mode=SelectSelectorMode.DROPDOWN,
@@ -342,9 +342,9 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
         language: str = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
 
         signin_typ = [
-            SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_EMAIL)
+            SIGNIN.get(language, SIGNIN[DEFAULT_LANGUAGE]).get(CONF_EMAIL)
             if CONF_EMAIL in self.config_entry.data
-            else SIGNIN.get(language, DEFAULT_LANGUAGE).get(CONF_PHONENUMBER)
+            else SIGNIN.get(language, SIGNIN[DEFAULT_LANGUAGE]).get(CONF_PHONENUMBER)
         ]
 
         _home_zone = self.hass.states.get(HOME).attributes
