@@ -130,7 +130,7 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 
 ---
 
-## Disabel scan intervall (v2.13.0)
+## Disable scan interval (v2.13.0)
 
 - To deactivate the scan interval you can set the value to "0", the default value is 180.
 
