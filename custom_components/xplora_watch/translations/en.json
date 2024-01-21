@@ -64,7 +64,7 @@
           "message": "Number of Messages",
           "opencage_apikey": "OpenCage API KEY",
           "remove_message": "show deleted messages?",
-          "scan_interval": "Scan Intervall (s)",
+          "scan_interval": "Scan Intervall (s; 0=deactivated)",
           "types": "Sensortypes",
           "watches": "Watches"
         },

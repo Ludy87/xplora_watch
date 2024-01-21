@@ -99,12 +99,19 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             name += entry.data[CONF_PHONENUMBER][5:]
         elif CONF_EMAIL in entry.data:
             name += entry.data[CONF_EMAIL]
+
+        _scan_interval = entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+        if _scan_interval == 0 or _scan_interval is None:
+            _update_interval = None
+            _LOGGER.debug("Update interval disable")
+        else:
+            _update_interval = timedelta(seconds=_scan_interval)
         super().__init__(
             hass,
             _LOGGER,
             name=f'{DOMAIN}-{entry.data[CONF_PHONENUMBER][5:] if CONF_EMAIL not in entry.data else ""}',
             update_method=self.async_update_xplora_data,
-            update_interval=timedelta(seconds=entry.options.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)),
+            update_interval=_update_interval,
         )
 
     async def set_controller(self, session) -> None:
@@ -175,7 +182,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         self.async_set_updated_data(self.data)
         return self.data
 
-    async def data_loop(self, wuids, message_limit, remove_message):
+    async def data_loop(self, wuids: list[str], message_limit, remove_message):
         """Fetch and parse Xplora data."""
         data = {}
         for wuid in wuids:
@@ -204,7 +211,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             data.update(self.get_data(wuid, chats))
         return data
 
-    async def get_watch_functions(self, wuid, device):
+    async def get_watch_functions(self, wuid: str, device: dict[str, Any]):
         """Get functions that need to be called when a watch is created."""
         await self.init(aiohttp_client.async_get_clientsession(self.hass))
         self.alarm = await self.controller.getWatchAlarm(wuid=wuid)  # device.get("getWatchAlarm", [])

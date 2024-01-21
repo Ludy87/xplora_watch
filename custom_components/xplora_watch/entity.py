@@ -28,7 +28,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     def __init__(
         self,
         config_entry: ConfigEntry,
-        description: EntityDescription,
+        description: EntityDescription | None,
         coordinator: XploraDataUpdateCoordinator,
         wuid: str,
     ) -> None:

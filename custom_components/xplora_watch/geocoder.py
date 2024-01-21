@@ -1,17 +1,20 @@
 """Custom Version - Edit by Ludy87.
 
 Geocoder module.
+Original Author
+author: OpenCage GmbH
+email: support@opencagedata.com
 https://github.com/OpenCageData/python-opencage-geocoder/
-Version: 2.2.0
-https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt.
+Version: 2.4.0
+https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt
 """
 from __future__ import annotations
 
 import collections
 import os
+import sys
 from datetime import datetime
 from decimal import Decimal
-from random import randint
 
 import backoff
 import requests
@@ -25,6 +28,7 @@ except ImportError:
     AIOHTTP_AVAILABLE = False
 
 DEFAULT_TIMEOUT = 60
+DEFAULT_DOMAIN = "api.opencagedata.com"
 
 
 def backoff_max_time():
@@ -43,10 +47,12 @@ class InvalidInputError(OpenCageGeocodeError):
     """
 
     def __init__(self, bad_value):
+        """Constructor."""
         super().__init__()
         self.bad_value = bad_value
 
     def __unicode__(self):
+        """Convert exception to a string."""
         return "Input must be a unicode string, not " + repr(self.bad_value)[:100]
 
     __str__ = __unicode__
@@ -63,16 +69,16 @@ class RateLimitExceededError(OpenCageGeocodeError):
     :var int reset_to: What your account will be reset to.
     """
 
-    def __init__(self, reset_time, reset_to):
+    def __init__(self, reset_time: datetime, reset_to):
         """Constructor."""
         super().__init__()
-        self.reset_time = reset_time
+        self.reset_time: datetime = reset_time
         self.reset_to = reset_to
 
     def __unicode__(self):
         """Convert exception to a string."""
 
-        return "Your rate limit has expired. " f"It will reset to {self.reset_to} on {self.reset_time.isoformat()}"
+        return f"Your rate limit has expired. It will reset to {self.reset_to} on {self.reset_time.isoformat()}"
 
     __str__ = __unicode__
 
@@ -101,6 +107,19 @@ class AioHttpError(OpenCageGeocodeError):
     """Exceptions related to async HTTP calls with aiohttp."""
 
 
+class SSLError(OpenCageGeocodeError):
+    """Exception raised when SSL connection to OpenCage server fails."""
+
+    def __unicode__(self):
+        """Convert exception to a string."""
+        return (
+            "SSL Certificate error connecting to OpenCage API. This is usually due to "
+            "outdated CA root certificates of the operating system. "
+        )
+
+    __str__ = __unicode__
+
+
 class OpenCageGeocodeUA:
     """Geocoder object.
 
@@ -118,26 +137,40 @@ class OpenCageGeocodeUA:
 
     """
 
-    url = "https://api.opencagedata.com/geocode/v1/json"
     key = ""
     session = None
 
-    def __init__(self, key, protocol="https"):
-        """Constructor."""
+    def __init__(self, key, protocol="https", domain=DEFAULT_DOMAIN, sslcontext=None):
+        """Initialize the geocoder.
+
+        Args:
+            key (str): Your API key for OpenCage Geocoder.
+            protocol (str, optional): The protocol to use for requests ('http' or 'https'). Defaults to 'https'.
+            domain (str, optional): The domain for the OpenCage API. Defaults to DEFAULT_DOMAIN.
+            sslcontext: The SSL context to use for secure requests. Defaults to None.
+        """
         self.key = key
-        if protocol and protocol == "http":
-            self.url = self.url.replace("https://", "http://")
+
+        if protocol and protocol not in ("http", "https"):
+            protocol = "https"
+        self.url = protocol + "://" + domain + "/geocode/v1/json"
+
+        # https://docs.aiohttp.org/en/stable/client_advanced.html#ssl-control-for-tcp-sockets
+        self.sslcontext = sslcontext
 
     def __enter__(self):
+        """Enters a runtime context, initializing a new requests session."""
         self.session = requests.Session()
         return self
 
     def __exit__(self, *args):
+        """Exits the runtime context, closing the requests session."""
         self.session.close()
         self.session = None
         return False
 
     async def __aenter__(self):
+        """Asynchronously enters a runtime context, initializing a new aiohttp session."""
         if not AIOHTTP_AVAILABLE:
             raise AioHttpError("You must install `aiohttp` to use async methods")
 
@@ -145,6 +178,7 @@ class OpenCageGeocodeUA:
         return self
 
     async def __aexit__(self, *args):
+        """Asynchronously exits the runtime context, closing the aiohttp session."""
         await self.session.close()
         self.session = None
         return False
@@ -163,7 +197,7 @@ class OpenCageGeocodeUA:
         """
 
         if self.session and isinstance(self.session, aiohttp.client.ClientSession):
-            raise AioHttpError("Cannot use `geocode` in an async context, use `gecode_async`.")
+            raise AioHttpError("Cannot use `geocode` in an async context, use `geocode_async`.")
 
         request = self._parse_request(query, kwargs)
         response = self._opencage_request(request)
@@ -180,8 +214,6 @@ class OpenCageGeocodeUA:
         :returns: Dict results
         :raises InvalidInputError: if the query string is not a unicode string
         :raises RateLimitExceededError: if exceeded number of queries you can make. You can try again
-
-
         :raises UnknownError: if something goes wrong with the OpenCage API
         """
 
@@ -237,12 +269,12 @@ class OpenCageGeocodeUA:
         :return: Results from OpenCageData
         :rtype: dict
         :raises RateLimitExceededError: if exceeded number of queries you can make. You can try again
-
         :raises UnknownError: if something goes wrong with the OpenCage API
         """
         return await self.geocode_async(_query_for_reverse_geocoding(lat, lng), **kwargs)
 
     async def licenses_async(self, lat, lng, **kwargs):
+        """Get licenses."""
         return await self._licenses_async(_query_for_reverse_geocoding(lat, lng), **kwargs)
 
     @backoff.on_exception(
@@ -250,9 +282,11 @@ class OpenCageGeocodeUA:
     )
     def _opencage_request(self, params):
         if self.session:
-            response = self.session.get(self.url, params=params)
+            response = self.session.get(self.url, params=params, headers=self._opencage_headers("aiohttp"))
         else:
-            response = requests.get(self.url, params=params, timeout=DEFAULT_TIMEOUT)
+            response = requests.get(
+                self.url, params=params, headers=self._opencage_headers("requests"), timeout=DEFAULT_TIMEOUT
+            )
 
         try:
             response_json = response.json()
@@ -279,35 +313,52 @@ class OpenCageGeocodeUA:
 
         return response_json
 
+    def _opencage_headers(self, client):
+        if client == "requests":
+            client_version = requests.__version__
+        elif client == "aiohttp":
+            client_version = aiohttp.__version__
+
+        return {
+            "User-Agent": (
+                f"opencage-python/2.4.0 Python/"
+                f"{'.'.join(str(x) for x in sys.version_info[0:3])} "
+                f"{client}/{client_version}"
+            )
+        }
+
     async def _opencage_async_request(self, params):
-        headers = {"User-Agent": await self.get_user_agent()}
+        try:
+            async with self.session.get(self.url, params=params, ssl=self.sslcontext) as response:
+                try:
+                    response_json = await response.json()
+                except ValueError as excinfo:
+                    raise UnknownError("Non-JSON result from server") from excinfo
 
-        async with self.session.get(self.url, params=params, headers=headers) as response:
-            try:
-                response_json = await response.json()
-            except ValueError as excinfo:
-                raise UnknownError("Non-JSON result from server") from excinfo
+                if response.status == 401:
+                    raise NotAuthorizedError()
 
-            if response.status == 401:
-                raise NotAuthorizedError()
+                if response.status == 403:
+                    raise ForbiddenError()
 
-            if response.status == 403:
-                raise ForbiddenError()
+                if response.status in (402, 429):
+                    # Rate limit exceeded
 
-            if response.status in (402, 429):
-                # Rate limit exceeded
+                    reset_time = datetime.utcfromtimestamp(response_json["rate"]["reset"])
 
-                reset_time = datetime.utcfromtimestamp(response_json["rate"]["reset"])
+                    raise RateLimitExceededError(reset_to=int(response_json["rate"]["limit"]), reset_time=reset_time)
 
-                raise RateLimitExceededError(reset_to=int(response_json["rate"]["limit"]), reset_time=reset_time)
+                if response.status == 500:
+                    raise UnknownError("500 status code from API")
 
-            if response.status == 500:
-                raise UnknownError("500 status code from API")
+                if "results" not in response_json:
+                    raise UnknownError("JSON from API doesn't have a 'results' key")
 
-            if "results" not in response_json:
-                raise UnknownError("JSON from API doesn't have a 'results' key")
-
-            return response_json
+                return response_json
+        except aiohttp.ClientSSLError as exp:
+            raise SSLError() from exp
+        except aiohttp.ClientConnectorCertificateError as exp:
+            raise SSLError() from exp
 
     def _parse_request(self, query, params):
         if not isinstance(query, str):
@@ -316,21 +367,6 @@ class OpenCageGeocodeUA:
         data = {"q": query, "key": self.key}
         data.update(params)  # Add user parameters
         return data
-
-    async def get_user_agent(self) -> str:
-        url = "https://raw.githubusercontent.com/Ludy87/xplora_watch/main/custom_components/xplora_watch/ua.json"
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.3"
-        }
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session, session.get(
-            url, headers=headers
-        ) as response:
-            data: list[dict[str, str]] = await response.json(content_type=None)
-            i = randint(0, len(data) - 1)
-            return data[i].get(
-                "useragent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.3",
-            )
 
 
 def _query_for_reverse_geocoding(lat, lng):

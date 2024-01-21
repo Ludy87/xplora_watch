@@ -26,7 +26,7 @@
           "language": "Idioma",
           "password": "Contraseña",
           "timezone": "Zona horaria",
-          "userlang": "Idioma del reloj (en)"
+          "userlang": "Idioma del reloj (es)"
         },
         "description": "Autenticación de cuenta",
         "title": "Configurar Xplora® Watch"
@@ -38,7 +38,7 @@
           "password": "Contraseña",
           "phonenumber": "número de teléfono sin código de país",
           "timezone": "Zona horaria",
-          "userlang": "Idioma del reloj (en)"
+          "userlang": "Idioma del reloj (es)"
         },
         "description": "Autenticación de cuenta",
         "title": "Configurar Xplora® Watch"
@@ -64,7 +64,7 @@
           "message": "Número de mensajes",
           "opencage_apikey": "Clave API de OpenCage",
           "remove_message": "¿mostrar mensajes eliminados?",
-          "scan_interval": "Intervalo de escaneo (s)",
+          "scan_interval": "Intervalo de escaneo (s; 0=desactivado)",
           "types": "Tipos de sensores",
           "watches": "Relojes"
         },
