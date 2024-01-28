@@ -18,5 +18,5 @@
     "pydub",
     "marshmallow-enum"
   ],
-  "version": "v2.13.3.beta"
+  "version": "v2.13.3-beta"
 }
