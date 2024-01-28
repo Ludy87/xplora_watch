@@ -1,4 +1,5 @@
 """Entity for Xplora® Watch Version 2 tracking."""
+
 from __future__ import annotations
 
 import logging

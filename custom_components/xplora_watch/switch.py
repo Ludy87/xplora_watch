@@ -1,4 +1,5 @@
 """Reads watch status from Xplora® Watch Version 2."""
+
 from __future__ import annotations
 
 import logging
@@ -204,9 +205,11 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
         self._silent = silent
 
-        self._attr_name: str = f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent["start"]}-{silent["end"]} ({coordinator.username})'.replace(  # noqa: E501
-            "_", " "
-        ).title()
+        self._attr_name: str = (
+            f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent["start"]}-{silent["end"]} ({coordinator.username})'.replace(  # noqa: E501
+                "_", " "
+            ).title()
+        )
 
         self._attr_unique_id = (
             f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{silent["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(

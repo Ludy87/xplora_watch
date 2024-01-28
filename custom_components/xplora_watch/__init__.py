@@ -1,4 +1,5 @@
 """Support for Xplora® Watch Version 2."""
+
 from __future__ import annotations
 
 import logging
