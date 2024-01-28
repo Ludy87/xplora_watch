@@ -1,4 +1,5 @@
 """Config flow for Xplora® Watch Version 2."""
+
 from __future__ import annotations
 
 import logging
@@ -342,9 +343,11 @@ class XploraOptionsFlowHandler(OptionsFlowWithConfigEntry):
         language: str = _options.get(CONF_LANGUAGE, self.config_entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
 
         signin_typ = [
-            SIGNIN.get(language, SIGNIN[DEFAULT_LANGUAGE]).get(CONF_EMAIL)
-            if CONF_EMAIL in self.config_entry.data
-            else SIGNIN.get(language, SIGNIN[DEFAULT_LANGUAGE]).get(CONF_PHONENUMBER)
+            (
+                SIGNIN.get(language, SIGNIN[DEFAULT_LANGUAGE]).get(CONF_EMAIL)
+                if CONF_EMAIL in self.config_entry.data
+                else SIGNIN.get(language, SIGNIN[DEFAULT_LANGUAGE]).get(CONF_PHONENUMBER)
+            )
         ]
 
         _home_zone = self.hass.states.get(HOME).attributes

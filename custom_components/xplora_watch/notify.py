@@ -1,4 +1,5 @@
 """Send Message to watch from Xplora® Watch Version 2."""
+
 from __future__ import annotations
 
 import logging

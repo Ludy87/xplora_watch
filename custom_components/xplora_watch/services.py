@@ -1,4 +1,5 @@
 """Support for Xplora® Watch Version 2 send/read message, manually refresh and shutdown."""
+
 from __future__ import annotations
 
 import logging
