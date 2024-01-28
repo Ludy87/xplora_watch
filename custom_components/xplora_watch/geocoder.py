@@ -8,6 +8,7 @@ https://github.com/OpenCageData/python-opencage-geocoder/
 Version: 2.4.0
 https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt
 """
+
 from __future__ import annotations
 
 import collections
