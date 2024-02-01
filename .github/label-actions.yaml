@@ -65,6 +65,11 @@ wontfix:
     close: true
     lock: true
 
+outdated:
+  issues:
+    label:
+      - "New Version"
+
 "New Version":
   issues:
     unlabel:
