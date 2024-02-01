@@ -12,7 +12,7 @@ ci:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.14
+    rev: v0.1.15
     hooks:
       - id: ruff
         args:
@@ -66,8 +66,8 @@ repos:
       - id: forbid-new-submodules
       - id: mixed-line-ending
         args: [--fix=lf]
-        exclude_types: [png,yaml]
-        exclude: (\.md|\.yml)$
+        exclude_types: [png,yaml,zip]
+        exclude: \.(md|yml)$
       - id: trailing-whitespace
         exclude_types: [json]
       - id: pretty-format-json
@@ -87,6 +87,8 @@ repos:
           - --force
           - --keep-updates
         files: ^(custom_components|tests|script)/.+\.py$
+        additional_dependencies:
+          - black==24.1.1
   - repo: https://github.com/asottile/pyupgrade
     rev: v3.15.0
     hooks:
