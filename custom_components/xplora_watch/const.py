@@ -39,7 +39,6 @@ ATTR_TRACKER_RAD: Final = "rad"
 
 ATTR_WATCH: Final = "watch"
 
-CONF_COUNTRY_CODE: Final = "country_code"
 CONF_HOME_SAFEZONE: Final = "home_is_safezone"
 CONF_HOME_LATITUDE: Final = "home_latitude"
 CONF_HOME_LONGITUDE: Final = "home_longitude"
