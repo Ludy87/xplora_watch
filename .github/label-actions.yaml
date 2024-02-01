@@ -77,6 +77,8 @@ outdated:
       - 'in progress'
       - 'help wanted'
       - 'check for Bug'
+    label:
+      - 'outdated'
     comment: >
       :wave: @{issue-author}, the bug will not be further investigated.
       A new integration version has been released, check if the bug persists.
