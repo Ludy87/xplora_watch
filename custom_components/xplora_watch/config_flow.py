@@ -22,6 +22,7 @@ from homeassistant.config_entries import (
 from homeassistant.const import (
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
+    CONF_COUNTRY_CODE,
     CONF_EMAIL,
     CONF_LANGUAGE,
     CONF_PASSWORD,
@@ -47,7 +48,6 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
-    CONF_COUNTRY_CODE,
     CONF_HOME_LATITUDE,
     CONF_HOME_LONGITUDE,
     CONF_HOME_RADIUS,

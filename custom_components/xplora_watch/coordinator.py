@@ -18,6 +18,7 @@ from homeassistant.components.device_tracker.const import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
+    CONF_COUNTRY_CODE,
     CONF_EMAIL,
     CONF_LANGUAGE,
     CONF_PASSWORD,
@@ -36,7 +37,6 @@ from .const import (
     ATTR_TRACKER_LNG,
     ATTR_TRACKER_POI,
     ATTR_TRACKER_RAD,
-    CONF_COUNTRY_CODE,
     CONF_MAPS,
     CONF_MESSAGE,
     CONF_OPENCAGE_APIKEY,

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import voluptuous as vol
 
-from homeassistant.const import CONF_EMAIL, CONF_LANGUAGE, CONF_PASSWORD
+from homeassistant.const import CONF_COUNTRY_CODE, CONF_EMAIL, CONF_LANGUAGE, CONF_PASSWORD
 from homeassistant.helpers.selector import (
     SelectOptionDict,
     SelectSelector,
@@ -16,7 +16,6 @@ from homeassistant.helpers.selector import (
 )
 
 from .const import (
-    CONF_COUNTRY_CODE,
     CONF_PHONENUMBER,
     CONF_TIMEZONE,
     CONF_USERLANG,
