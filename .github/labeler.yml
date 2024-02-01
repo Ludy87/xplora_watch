@@ -11,12 +11,12 @@ comments:
     Thanks for opening this issue!
     I have applied any labels matching special text in your title and description.
 
-    Please review the labels and make any necessary changes.
+    @Ludy87: Please review the labels and make any necessary changes.
   prs: |
     Thanks for the contribution!
     I have applied any labels matching special text in your title and description.
 
-    Please review the labels and make any necessary changes.
+    @Ludy87: Please review the labels and make any necessary changes.
 
 # Labels is an object where:
 # - keys are labels
