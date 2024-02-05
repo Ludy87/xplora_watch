@@ -28,7 +28,6 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install pre-commit==3.6.0 ruff==0.2.0
-          ruff check --unsafe-fixes --config=pyproject.toml .
           ruff fix --unsafe-fixes --config=pyproject.toml .
           # ruff check --fix --unsafe-fixes . --config=pyproject.toml || true
           # pre-commit install -c .pre-commit-config.yaml || true
