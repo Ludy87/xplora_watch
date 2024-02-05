@@ -5,11 +5,10 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-import voluptuous as vol
-from pyxplora_api.exception_classes import NoAdminError
-
 import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
 from homeassistant.core import HomeAssistant, ServiceCall, callback
+from pyxplora_api.exception_classes import NoAdminError
 
 from .const import (
     ATTR_SERVICE_DELETE_MSG,
@@ -82,7 +81,7 @@ async def async_setup_services(hass: HomeAssistant, entry_id: str) -> None:
 
     async def async_see(service: ServiceCall) -> None:
         kwargs = dict(service.data)
-        await see_service.async_see(kwargs[ATTR_SERVICE_TARGET] if ATTR_SERVICE_TARGET in kwargs else ["all"], kwargs=kwargs)
+        await see_service.async_see(kwargs.get(ATTR_SERVICE_TARGET, ["all"]), kwargs=kwargs)
 
     async def async_delete_message_from_app(service: ServiceCall) -> None:
         kwargs = dict(service.data)

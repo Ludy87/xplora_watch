@@ -7,11 +7,6 @@ from datetime import datetime, timedelta
 from typing import Any
 
 import aiohttp
-from pyxplora_api.const import DEFAULT_TIMEOUT
-from pyxplora_api.model import ChatsNew
-from pyxplora_api.pyxplora_api_async import PyXploraApi
-from pyxplora_api.status import LocationType, WatchOnlineStatus
-
 from homeassistant.components.device_tracker.const import (
     ATTR_BATTERY,
     ATTR_LOCATION_NAME,
@@ -27,6 +22,10 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from pyxplora_api.const import DEFAULT_TIMEOUT
+from pyxplora_api.model import ChatsNew
+from pyxplora_api.pyxplora_api_async import PyXploraApi
+from pyxplora_api.status import LocationType, WatchOnlineStatus
 
 from .const import (
     API_KEY_MAPBOX,
