@@ -26,16 +26,16 @@ comments:
 #    - 'include' patterns will associate a label if any of these patterns match
 #    - 'exclude' patterns will ignore this label if any of these patterns match
 labels:
-  'check for Bug':
+  "check for Bug":
     include:
       - '\bbug[s]?\b'
     exclude: []
-  'help wanted':
+  "help wanted":
     include:
       - '\bhelp( me)?\b'
     exclude:
       - '\b\[test(ing)?\]\b'
-  'feature request':
+  "feature request":
     include:
       - '\bfeat\b'
     exclude: []
