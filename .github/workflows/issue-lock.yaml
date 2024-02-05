@@ -2,7 +2,7 @@ name: Lock Inactive Threads
 
 on:
   schedule:
-    - cron: '0 5 * * *'
+    - cron: "0 5 * * *"
   workflow_dispatch:
 
 permissions:
@@ -19,14 +19,14 @@ jobs:
       - uses: dessant/lock-threads@v5.0.1
         with:
           github-token: ${{ secrets.TOKEN }}
-          add-issue-labels: 'outdated'
-          issue-inactive-days: '3'
-          include-any-issue-labels: 'wontfix, invalid, wait, Configuration incorrect, Bug: False Alarm, Bug: Xplora® wontfix'
+          add-issue-labels: "outdated"
+          issue-inactive-days: "3"
+          include-any-issue-labels: "wontfix, invalid, wait, Configuration incorrect, Bug: False Alarm, Bug: Xplora® wontfix"
           issue-comment: >
             This issue has been automatically locked since there
             has not been any recent activity after it was closed.
             Please open a new issue for related bugs.
-          pr-inactive-days: '30'
+          pr-inactive-days: "30"
           pr-comment: >
             This pull request has been automatically locked since there
             has not been any recent activity after it was closed.
