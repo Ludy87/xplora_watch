@@ -3,9 +3,9 @@
 Bug:
   issues:
     label:
-      - 'check for Bug'
-      - 'wait'
-      - 'Version 2'
+      - "check for Bug"
+      - "wait"
+      - "Version 2"
     comment: >
       :wave: @{issue-author}, it is checked whether there is a bug.
       Please have some patience.
@@ -15,11 +15,11 @@ Bug:
 "Bug: Confirmed!":
   issues:
     label:
-      - 'in progress'
-      - 'wait'
-      - 'Version 2'
+      - "in progress"
+      - "wait"
+      - "Version 2"
     unlabel:
-      - 'check for Bug'
+      - "check for Bug"
     comment: >
       :wave: @{issue-author}, we found the bug, it will be fixed shortly.
 
@@ -28,8 +28,8 @@ Bug:
 "feature request":
   issues:
     label:
-      - 'wait'
-      - 'Version 2'
+      - "wait"
+      - "Version 2"
     comment: >
       :wave: @{issue-author}, your proposal will be considered.
       Please have some patience.
@@ -39,12 +39,12 @@ Bug:
 "Bug: Xplora® wontfix":
   issues:
     unlabel:
-      - 'wait'
-      - 'in progress'
-      - 'help wanted'
-      - 'check for Bug'
-      - 'Bug'
-      - 'Bug: Confirmed!'
+      - "wait"
+      - "in progress"
+      - "help wanted"
+      - "check for Bug"
+      - "Bug"
+      - "Bug: Confirmed!"
     comment: >
       :bug: The problem is with Xplora®, please contact support.
 
@@ -54,10 +54,10 @@ Bug:
 wontfix:
   issues:
     unlabel:
-      - 'wait'
-      - 'in progress'
-      - 'help wanted'
-      - 'check for Bug'
+      - "wait"
+      - "in progress"
+      - "help wanted"
+      - "check for Bug"
     comment: >
       :wave: @{issue-author}, the bug will not be further investigated.
 
@@ -73,12 +73,12 @@ outdated:
 "New Version":
   issues:
     unlabel:
-      - 'wait'
-      - 'in progress'
-      - 'help wanted'
-      - 'check for Bug'
+      - "wait"
+      - "in progress"
+      - "help wanted"
+      - "check for Bug"
     label:
-      - 'outdated'
+      - "outdated"
     comment: >
       :wave: @{issue-author}, the bug will not be further investigated.
       A new integration version has been released, check if the bug persists.
@@ -91,8 +91,8 @@ outdated:
 "PR: released":
   prs:
     unlabel:
-      - 'wait'
-      - 'in progress'
+      - "wait"
+      - "in progress"
 
 "PR: rejected":
   prs:
