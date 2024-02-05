@@ -31,6 +31,7 @@ repos:
           - "--remove-duplicate-keys"
           - "--remove-unused-variables"
           - "--remove-all-unused-imports"
+        exclude: custom_components/xplora_watch/geocoder.py
   - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 24.1.1
     hooks:
@@ -39,6 +40,7 @@ repos:
           - --line-length=127
           - --quiet
         files: ^((custom_components|pylint|script|tests)/.+)?[^/]+\.py$
+        exclude: custom_components/xplora_watch/geocoder.py
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.6
     hooks:
@@ -48,12 +50,14 @@ repos:
           - --skip="./.*,*.csv,*.json,*.ambr"
           - --quiet-level=2
         exclude_types: [csv, json]
+        exclude: custom_components/xplora_watch/geocoder.py
         additional_dependencies:
           - tomli
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
       - id: check-ast
+        exclude: custom_components/xplora_watch/geocoder.py
       - id: check-yaml
       - id: check-toml
       - id: check-json
