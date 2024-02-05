@@ -35,7 +35,7 @@ jobs:
           git config --global user.name "GitHub Action <action@github.com>"
           pre-commit autoupdate
           pre-commit install -c .pre-commit-config.yaml || true
-          pre-commit run -c .pre-commit-config.yaml || true
+          # pre-commit run -c .pre-commit-config.yaml || true
           git add -A
           git diff --staged --quiet || git commit -m ":rainbow: pre-commit
           > Made via .github/workflows/a_pre_commit.yml" || echo "pre-commit: no changes"
