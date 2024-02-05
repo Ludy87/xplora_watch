@@ -51,6 +51,7 @@ jobs:
           author: GitHub Action <action@github.com>
           signoff: true
           branch: pre-commit
+          base: pre-commit
           # base: main
           title: "🔨 Update files by <github-actions[bot]>"
           body: |
