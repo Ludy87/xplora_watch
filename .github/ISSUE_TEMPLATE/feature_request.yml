@@ -1,6 +1,6 @@
 name: Request a feature
 description: Request a new Xplora® Watch feature
-labels: 'feature request'
+labels: "feature request"
 body:
   - type: textarea
     attributes:
