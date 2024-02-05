@@ -29,6 +29,9 @@ jobs:
         run: |
           pip install pre-commit==3.6.0 ruff==0.2.0
           ruff check --fix --unsafe-fixes --config=pyproject.toml .
+      - name: Run pre-commit autoupdate
+        run: |
+          pre-commit autoupdate
           pre-commit install -c .pre-commit-config.yaml || true
       # - name: Pre-commit and auto commit
       #   run: |
