@@ -92,7 +92,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
 
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         """Initialize Xplora® data updater."""
-        self._entry = entry
+        self._entry: ConfigEntry = entry
         self._opencage_apikey = entry.options.get(CONF_OPENCAGE_APIKEY, "")
         self._maps = entry.options.get(CONF_MAPS, MAPS[0])
         name = f"{DOMAIN}-"

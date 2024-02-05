@@ -82,7 +82,7 @@ async def async_setup_services(hass: HomeAssistant, entry_id: str) -> None:
 
     async def async_see(service: ServiceCall) -> None:
         kwargs = dict(service.data)
-        await see_service.async_see(kwargs[ATTR_SERVICE_TARGET] if ATTR_SERVICE_TARGET in kwargs else ["all"], kwargs=kwargs)
+        await see_service.async_see(kwargs.get(ATTR_SERVICE_TARGET, ["all"]), kwargs=kwargs)
 
     async def async_delete_message_from_app(service: ServiceCall) -> None:
         kwargs = dict(service.data)
@@ -228,17 +228,17 @@ class XploraMessageSensorUpdateService(XploraService):
         await self.coordinator.async_update_xplora_data(new_data=old_state)
 
     async def _fetch_chat_voice(self, watch_id: str, msg_id: str) -> None:
-        voice: dict[str, Any] = await self.coordinator.controller.get_chat_voice(watch_id, msg_id)
+        voice = await self.coordinator.controller.get_chat_voice(watch_id, msg_id)
         if voice:
             encoded_base64_string_to_mp3_file(self._hass, voice, msg_id)
 
     async def _fetch_chat_short_video(self, watch_id: str, msg_id: str) -> None:
-        video: dict[str, Any] = await self.coordinator.controller.get_short_video(watch_id, msg_id)
+        video = await self.coordinator.controller.get_short_video(watch_id, msg_id)
         if video:
             encoded_base64_string_to_file(self._hass, video, msg_id, "mp4", "video")
-        thumb: dict[str, Any] = await self.coordinator.controller.get_short_video_cover(watch_id, msg_id)
+        thumb = await self.coordinator.controller.get_short_video_cover(watch_id, msg_id)
         if thumb:
-            encoded_base64_string_to_file(self._hass, thumb.get("fetchChatShortVideoCover"), msg_id, "jpeg", "video/thumb")
+            encoded_base64_string_to_file(self._hass, thumb, msg_id, "jpeg", "video/thumb")
 
     async def _fetch_chat_image(self, watch, msg_id):
         image = await self.coordinator.controller.get_chat_image(watch, msg_id)
