@@ -1,4 +1,4 @@
-name: 'Label Actions PR'
+name: "Label Actions PR"
 
 on:
   pull_request:
