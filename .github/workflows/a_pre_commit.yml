@@ -38,9 +38,6 @@ jobs:
       #     pre-commit run --all-files || true
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6.0.0
-        env:
-          # Disable pre-commit hooks
-          HUSKY: '0'
         with:
           token: ${{ secrets.TOKEN }}
           commit-message: Update files
@@ -48,6 +45,7 @@ jobs:
           author: GitHub Action <action@github.com>
           signoff: true
           branch: pre-commit
+          base: ${{github.ref}}
           # base: main
           title: "🔨 Update files by <github-actions[bot]>"
           body: |
