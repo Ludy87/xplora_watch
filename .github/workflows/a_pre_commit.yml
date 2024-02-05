@@ -31,6 +31,8 @@ jobs:
           ruff check --fix --unsafe-fixes --config=pyproject.toml .
       - name: Run pre-commit autoupdate
         run: |
+          git config --global user.email "GitHub Action <action@github.com>"
+          git config --global user.name "GitHub Action <action@github.com>"
           pre-commit autoupdate
           pre-commit install -c .pre-commit-config.yaml || true
           pre-commit run -c .pre-commit-config.yaml || true
