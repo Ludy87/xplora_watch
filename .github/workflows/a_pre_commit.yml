@@ -27,16 +27,19 @@ jobs:
             3.11
       - name: Install Dependencies
         run: |
-          pip install pre-commit==3.6.0 ruff==0.2.0
-          ruff check --fix --unsafe-fixes --config=pyproject.toml .
-      - name: Run pre-commit autoupdate
-        run: |
           git config --global user.email "GitHub Action <action@github.com>"
           git config --global user.name "GitHub Action <action@github.com>"
+          pip install pre-commit==3.6.0 ruff==0.2.0
+          ruff check --fix --unsafe-fixes --config=pyproject.toml .
+          git add .
+          git diff --staged --quiet || git commit -m ":rainbow: pre-commit
+          > Made via .github/workflows/a_pre_commit.yml" || echo "pre-commit: no changes"
+      - name: Run pre-commit autoupdate
+        run: |
           pre-commit autoupdate
           pre-commit install -c .pre-commit-config.yaml || true
           # pre-commit run -c .pre-commit-config.yaml || true
-          git add -A
+          git add .
           git diff --staged --quiet || git commit -m ":rainbow: pre-commit
           > Made via .github/workflows/a_pre_commit.yml" || echo "pre-commit: no changes"
       # - name: Pre-commit and auto commit
