@@ -2,11 +2,11 @@ name: Dynamic Template
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     # paths-ignore:
     #   - '.github/**'
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -54,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           file_pattern: README.md
-          commit_options: '--signoff'
+          commit_options: "--signoff"
           commit_message: 📝 Update generated README
           branch: main
           commit_user_name: readme-scribe 🤖
