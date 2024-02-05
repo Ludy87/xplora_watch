@@ -37,7 +37,7 @@ jobs:
           pre-commit install -c .pre-commit-config.yaml || true
           pre-commit run -c .pre-commit-config.yaml || true
           git add -A
-          git commit -m ":rainbow: pre-commit
+          git diff --staged --quiet || git commit -m ":rainbow: pre-commit
           > Made via .github/workflows/a_pre_commit.yml" || echo "pre-commit: no changes"
       # - name: Pre-commit and auto commit
       #   run: |
@@ -51,7 +51,6 @@ jobs:
           author: GitHub Action <action@github.com>
           signoff: true
           branch: pre-commit
-          base: pre-commit
           # base: main
           title: "🔨 Update files by <github-actions[bot]>"
           body: |
