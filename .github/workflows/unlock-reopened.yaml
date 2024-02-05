@@ -2,7 +2,7 @@ name: Unlock reopened issue
 
 on:
   issues:
-    types: [ reopened ]
+    types: [reopened]
 
 jobs:
   unlock:
@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: OSDKDev/unlock-issues@v1.1
-      with:
-        repo-token: "${{ secrets.TOKEN }}"
+      - uses: OSDKDev/unlock-issues@v1.1
+        with:
+          repo-token: "${{ secrets.TOKEN }}"
