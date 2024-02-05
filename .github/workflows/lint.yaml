@@ -32,8 +32,8 @@ jobs:
       - name: Bandit Check (Python security linter)
         uses: jpetrucciani/bandit-check@1.7.7
         with:
-          bandit_flags: '-s B105,B311'
-          path: './custom_components/xplora_watch/'
+          bandit_flags: "-s B105,B311"
+          path: "./custom_components/xplora_watch/"
       - name: black check
         run: black --line-length=127 --check .
       - name: Check for fatal errors
