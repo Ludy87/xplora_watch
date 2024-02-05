@@ -25,26 +25,26 @@ jobs:
         with:
           python-version: |
             3.11
-      - name: Install Dependencies
+      - name: Set up git config
         run: |
           git config --global user.email "GitHub Action <action@github.com>"
           git config --global user.name "GitHub Action <action@github.com>"
+      - name: Install Dependencies
+        run: |
           pip install pre-commit==3.6.0 ruff==0.2.0
+      - name: run ruff and git add 
+        run: |
           ruff check --fix --unsafe-fixes --config=pyproject.toml .
           git add .
-          git diff --staged --quiet || git commit -m ":rainbow: pre-commit
-          > Made via .github/workflows/a_pre_commit.yml" || echo "pre-commit: no changes"
-      - name: Run pre-commit autoupdate
+          git diff --staged --quiet || git commit -m ":file_folder: ruff
+          > Made via .github/workflows/a_pre_commit.yml" || echo "ruff: no changes"
+      - name: Run pre-commit autoupdate; install and git add
         run: |
           pre-commit autoupdate
           pre-commit install -c .pre-commit-config.yaml || true
-          # pre-commit run -c .pre-commit-config.yaml || true
           git add .
           git diff --staged --quiet || git commit -m ":rainbow: pre-commit
           > Made via .github/workflows/a_pre_commit.yml" || echo "pre-commit: no changes"
-      # - name: Pre-commit and auto commit
-      #   run: |
-      #     pre-commit run --all-files || true
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6.0.0
         with:
