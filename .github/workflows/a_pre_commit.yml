@@ -24,9 +24,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5.0.0
         with:
-          python-version: |
-            - 3.11
-            - 3.12
+          python-version: 3.12
       - name: Set up git config
         run: |
           git config --global user.email "GitHub Action <action@github.com>"
