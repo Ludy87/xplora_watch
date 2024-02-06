@@ -7,11 +7,6 @@ import logging
 from types import MappingProxyType
 from typing import Any
 
-from pyxplora_api.exception_classes import Error, LoginError, PhoneOrEmailFail
-from pyxplora_api.pyxplora_api_async import PyXploraApi
-from pyxplora_api.status import UserContactType
-import voluptuous as vol
-
 from homeassistant import config_entries, core
 from homeassistant.config_entries import ConfigEntry, OptionsFlow, OptionsFlowWithConfigEntry
 from homeassistant.const import (
@@ -42,6 +37,10 @@ from homeassistant.helpers.selector import (
     TextSelectorConfig,
     TextSelectorType,
 )
+from pyxplora_api.exception_classes import Error, LoginError, PhoneOrEmailFail
+from pyxplora_api.pyxplora_api_async import PyXploraApi
+from pyxplora_api.status import UserContactType
+import voluptuous as vol
 
 from .const import (
     CONF_HOME_LATITUDE,
