@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import datetime, timedelta
+import logging
 from typing import Any
 
 import aiohttp
@@ -12,18 +12,9 @@ from pyxplora_api.model import ChatsNew
 from pyxplora_api.pyxplora_api_async import PyXploraApi
 from pyxplora_api.status import LocationType, WatchOnlineStatus
 
-from homeassistant.components.device_tracker.const import (
-    ATTR_BATTERY,
-    ATTR_LOCATION_NAME,
-)
+from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    CONF_COUNTRY_CODE,
-    CONF_EMAIL,
-    CONF_LANGUAGE,
-    CONF_PASSWORD,
-    CONF_SCAN_INTERVAL,
-)
+from homeassistant.const import CONF_COUNTRY_CODE, CONF_EMAIL, CONF_LANGUAGE, CONF_PASSWORD, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import aiohttp_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator

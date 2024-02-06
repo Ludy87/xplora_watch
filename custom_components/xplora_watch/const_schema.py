@@ -15,14 +15,7 @@ from homeassistant.helpers.selector import (
     TextSelectorType,
 )
 
-from .const import (
-    CONF_PHONENUMBER,
-    CONF_TIMEZONE,
-    CONF_USERLANG,
-    DEFAULT_LANGUAGE,
-    SUPPORTED_LANGUAGES,
-    XPLORA_USER_LANGS,
-)
+from .const import CONF_PHONENUMBER, CONF_TIMEZONE, CONF_USERLANG, DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES, XPLORA_USER_LANGS
 
 DEFAULT_DATA_SCHEMA = {
     vol.Required(CONF_PASSWORD): TextSelector(TextSelectorConfig(type=TextSelectorType.PASSWORD)),

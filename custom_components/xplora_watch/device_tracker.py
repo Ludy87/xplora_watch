@@ -7,10 +7,7 @@ from typing import Any
 
 from homeassistant.components.device_tracker import SourceType
 from homeassistant.components.device_tracker.config_entry import TrackerEntity
-from homeassistant.components.device_tracker.const import (
-    ATTR_BATTERY,
-    ATTR_LOCATION_NAME,
-)
+from homeassistant.components.device_tracker.const import ATTR_BATTERY, ATTR_LOCATION_NAME
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, CONF_NAME
 from homeassistant.core import HomeAssistant

@@ -7,11 +7,7 @@ from typing import Any
 
 from pyxplora_api.pyxplora_api_async import PyXploraApi
 
-from homeassistant.components.switch import (
-    SwitchDeviceClass,
-    SwitchEntity,
-    SwitchEntityDescription,
-)
+from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity, SwitchEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, CONF_LANGUAGE, CONF_NAME
 from homeassistant.core import HomeAssistant, callback
@@ -205,11 +201,9 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
         self._silent = silent
 
-        self._attr_name: str = (
-            f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent["start"]}-{silent["end"]} ({coordinator.username})'.replace(  # noqa: E501
-                "_", " "
-            ).title()
-        )
+        self._attr_name: str = f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent["start"]}-{silent["end"]} ({coordinator.username})'.replace(  # noqa: E501
+            "_", " "
+        ).title()
 
         self._attr_unique_id = (
             f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{silent["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(
