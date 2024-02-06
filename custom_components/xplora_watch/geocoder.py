@@ -9,7 +9,7 @@ Version: 2.4.0
 https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/LICENSE.txt
 """
 
-from __future__ import annotations
+from __future__ import annotations  # noqa: I001
 
 import collections
 import os
