@@ -5,13 +5,12 @@ from __future__ import annotations
 import logging
 from typing import Any
 
-from pyxplora_api.pyxplora_api_async import PyXploraApi
-
 from homeassistant.components.switch import SwitchDeviceClass, SwitchEntity, SwitchEntityDescription
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ID, CONF_LANGUAGE, CONF_NAME
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from pyxplora_api.pyxplora_api_async import PyXploraApi
 
 from .const import (
     ATTR_SERVICE_USER,

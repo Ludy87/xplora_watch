@@ -10,14 +10,13 @@ import shutil
 from typing import Any
 
 from geopy import distance
-from pydub import AudioSegment
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, CONF_LANGUAGE
 from homeassistant.core import HomeAssistant
 from homeassistant.loader import DATA_CUSTOM_COMPONENTS
 from homeassistant.util.yaml import save_yaml
 from homeassistant.util.yaml.loader import load_yaml
+from pydub import AudioSegment
 
 from .const import (
     ATTR_SERVICE_DELETE_MSG,
