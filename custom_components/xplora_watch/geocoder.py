@@ -12,10 +12,10 @@ https://raw.githubusercontent.com/OpenCageData/python-opencage-geocoder/master/L
 from __future__ import annotations
 
 import collections
-import os
-import sys
 from datetime import datetime
 from decimal import Decimal
+import os
+import sys
 
 import backoff
 import requests
