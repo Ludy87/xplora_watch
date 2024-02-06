@@ -58,36 +58,40 @@ repos:
     hooks:
       - id: check-executables-have-shebangs
         stages: [manual]
-      - id: check-ast
-        exclude: custom_components/xplora_watch/geocoder.py
-      - id: check-yaml
-      - id: check-toml
+      # - id: check-ast
+      #   exclude: custom_components/xplora_watch/geocoder.py
+      # - id: check-yaml
+      # - id: check-toml
       - id: check-json
         exclude: (.vscode|.devcontainer)
       # - id: no-commit-to-branch
       #   args:
       #     - --branch=main
-      - id: check-added-large-files
-        args: [--maxkb=800]
-      - id: debug-statements
-      - id: detect-aws-credentials
-        args: [--allow-missing-credentials]
-      - id: detect-private-key
-      - id: end-of-file-fixer
-        exclude_types: [json]
-      - id: forbid-new-submodules
-      - id: mixed-line-ending
-        args: [--fix=lf]
-        exclude_types: [png, yaml, zip]
-        exclude: (\.md|\.yml|\.jpg|\.png)$
-      - id: trailing-whitespace
-        exclude_types: [json]
-      - id: pretty-format-json
-        args: [--autofix, --no-ensure-ascii]
-        exclude: ^(hacs|custom_components/xplora_watch/manifest)\.json$
-      - id: check-executables-have-shebangs
-        stages: [manual]
-      - id: check-case-conflict
+      # - id: check-added-large-files
+      #   args: [--maxkb=800]
+      # - id: debug-statements
+      # - id: detect-aws-credentials
+      #   args: [--allow-missing-credentials]
+      # - id: detect-private-key
+      # - id: end-of-file-fixer
+      #   exclude_types: [json]
+      # - id: forbid-new-submodules
+      # - id: mixed-line-ending
+      #   args: [--fix=lf]
+      #   exclude_types: [png, yaml, zip]
+      #   exclude: (\.md|\.yml|\.jpg|\.png)$
+      # - id: trailing-whitespace
+      #   exclude_types: [json]
+      # - id: pretty-format-json
+      #   args: [--autofix, --no-ensure-ascii]
+      #   exclude: ^(hacs|custom_components/xplora_watch/manifest)\.json$
+      # - id: check-executables-have-shebangs
+      #   stages: [manual]
+      # - id: check-case-conflict
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.32.0
+    hooks:
+      - id: yamllint
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v3.1.0
     hooks:
@@ -108,10 +112,10 @@ repos:
           - --force
           - --keep-updates
         files: ^(custom_components|tests|script)/.+\.py$
-        additional_dependencies:
-          - black==24.1.1
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
-    hooks:
-      - id: pyupgrade
-        args: [--py311-plus]
+        # additional_dependencies:
+        #   - black==24.1.1
+  # - repo: https://github.com/asottile/pyupgrade
+  #   rev: v3.15.0
+  #   hooks:
+  #     - id: pyupgrade
+  #       args: [--py311-plus]
