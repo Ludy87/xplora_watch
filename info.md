@@ -43,13 +43,13 @@ Xplora® Watch Version 2 integration for Home Assistant
 
 ### Names layout changed (v2.10.0)
 
-_binary\_sensor:_
+_binary_sensor:_
 
 - `"Watch Name" "Watch" "Charging" "Watch ID"` to `"Watch Name" "Watch" "Charging" "(Username)"`
 - `"Watch Name" "Watch" "Safezone" "Watch ID"` to `"Watch Name" "Watch" "Safezone" "(Username)"`
 - `"Watch Name" "Watch" "State" "Watch ID"` to `"Watch Name" "Watch" "State" "(Username)"`
 
-_device\_tracker:_
+_device_tracker:_
 
 - `"Watch Name" "Watch" "Tracker" "Watch ID"` to `"Watch Name" "Watch" "Tracker" "(Username)"`
 - `"Safzone" "Safzone Name" "Watch ID"` to `"Watch Name" "Watch" "Safzone" "Safzone Name" "(Username)"`
@@ -87,6 +87,7 @@ _switch:_
 | Turn off Watch             | Service        |
 | Watch Tracking             | Device Tracker |
 | Watch Show Safezone(s)     | Device Tracker |
+
 ---
 
 ## Basis Configuration
