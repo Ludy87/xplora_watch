@@ -5,9 +5,6 @@ on:
   push:
     branches: [main]
 
-# pull_request:
-#   types: [opened, reopened]
-
 permissions:
   contents: write
   pull-requests: write
@@ -32,12 +29,6 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install pre-commit==3.6.0
-      # - name: run ruff and git add
-      #   run: |
-      #     ruff check --fix --unsafe-fixes --config=pyproject.toml .
-      #     git add .
-      #     git diff --staged --quiet || git commit -m ":file_folder: ruff
-      #     > Made via .github/workflows/a_pre_commit.yml" || echo "ruff: no changes"
       - name: Run pre-commit and git add
         run: |
           pre-commit run -c .pre-commit-config.yaml || true
