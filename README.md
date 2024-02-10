@@ -18,6 +18,7 @@ Xplora® Watch Version 2 integration for Home Assistant
 [![✨ Wishlist from Amazon ✨](https://www.astra-g.org/wp-content/uploads/2022/09/amazon_wish.png)](https://smile.amazon.de/registry/wishlist/2MX8QK8VE9MV1)
 
 ---
+
 ![Xplora® Watch Version 2](https://github.com/home-assistant/brands/blob/master/custom_integrations/xplora_watch/logo@2x.png?raw=true)
 
 ## 🚨 Important: Upgrading from version 2.8.3 or earlier to version 2.10.\* 🚨
@@ -46,13 +47,13 @@ Xplora® Watch Version 2 integration for Home Assistant
 
 ### Names layout changed (v2.10.0)
 
-_binary\_sensor:_
+_binary_sensor:_
 
 - `"Watch Name" "Watch" "Charging" "Watch ID"` to `"Watch Name" "Watch" "Charging" "(Username)"`
 - `"Watch Name" "Watch" "Safezone" "Watch ID"` to `"Watch Name" "Watch" "Safezone" "(Username)"`
 - `"Watch Name" "Watch" "State" "Watch ID"` to `"Watch Name" "Watch" "State" "(Username)"`
 
-_device\_tracker:_
+_device_tracker:_
 
 - `"Watch Name" "Watch" "Tracker" "Watch ID"` to `"Watch Name" "Watch" "Tracker" "(Username)"`
 - `"Safzone" "Safzone Name" "Watch ID"` to `"Watch Name" "Watch" "Safzone" "Safzone Name" "(Username)"`
@@ -98,6 +99,7 @@ _switch:_
 | Turn off Watch                                                                                       | Service        |
 | Watch Tracking                                                                                       | Device Tracker |
 | Watch Show Safezone(s)                                                                               | Device Tracker |
+
 ---
 
 ## Installation
@@ -149,7 +151,7 @@ Xplora® should now appear as a card under the HA Integrations page with "Config
 ## Delete Messages from App (v2.6.0)
 
 - new service added - delete only app message
-- chats: add ```delete_flag```  `1` = message is deleted
+- chats: add `delete_flag` `1` = message is deleted
 - updated [Markdown Card Sample](https://raw.githubusercontent.com/Ludy87/xplora_watch/main/samples/markdown-card-read-messages.md)
 - add Emoji
   - M1001 = "😄"
@@ -211,7 +213,7 @@ Manually update all information from your watch
 Set Friendly Name
 Please note that this can also change the entry_id!
 
-Rule format: ```watchID=New Name``` Notice the equals sign
+Rule format: `watchID=New Name` Notice the equals sign
 
 ![friendly_name image](images/friendly_name.png)
 
@@ -266,6 +268,7 @@ logger:
 ---
 
 <!-- START ./CHANGELOG.md -->
+
 ## Changelog
 
 ### [v2] - 2022-09-18
