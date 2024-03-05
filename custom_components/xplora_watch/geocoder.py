@@ -19,6 +19,7 @@ from decimal import Decimal
 
 import backoff
 import requests
+from security import safe_requests
 
 try:
     import aiohttp
@@ -285,8 +286,7 @@ class OpenCageGeocodeUA:
         if self.session:
             response = self.session.get(self.url, params=params, headers=self._opencage_headers("aiohttp"))
         else:
-            response = requests.get(
-                self.url, params=params, headers=self._opencage_headers("requests"), timeout=DEFAULT_TIMEOUT
+            response = safe_requests.get(self.url, params=params, headers=self._opencage_headers("requests"), timeout=DEFAULT_TIMEOUT
             )
 
         try:
