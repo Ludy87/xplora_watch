@@ -19,7 +19,7 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
       - name: Set up Python
-        uses: actions/setup-python@v5.0.0
+        uses: actions/setup-python@v5.1.0
         with:
           python-version: 3.12
       - name: Set up git config
