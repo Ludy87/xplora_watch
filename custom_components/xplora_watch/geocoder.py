@@ -322,7 +322,7 @@ class OpenCageGeocodeUA:
 
         return {
             "User-Agent": (
-                f"opencage-python/2.4.0 Python/"
+                "opencage-python/2.4.0 Python/"
                 f"{'.'.join(str(x) for x in sys.version_info[0:3])} "
                 f"{client}/{client_version}"
             )
