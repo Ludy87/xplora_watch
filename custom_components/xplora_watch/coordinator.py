@@ -265,9 +265,10 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
         """Get OpenStreetMap.org information for the location.."""
         try:
             language = self._entry.options.get(CONF_LANGUAGE, self._entry.data.get(CONF_LANGUAGE, DEFAULT_LANGUAGE))
-            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session, session.get(
-                URL_OPENSTREETMAP.format(self.lat, self.lng, language)
-            ) as response:
+            async with (
+                aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(DEFAULT_TIMEOUT)) as session,
+                session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response,
+            ):
                 res: dict[str, Any] = await response.json()
                 self.licence = res.get(ATTR_TRACKER_LICENCE, None)
                 address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
