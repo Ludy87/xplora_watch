@@ -4,7 +4,7 @@ import sys
 
 
 def main():
-    """main."""
+    """Main."""
     with open("./custom_components/xplora_watch/manifest.json", encoding="utf8") as json_file:
         data = json.load(json_file)
         print(data["version"])  # noqa: T201
