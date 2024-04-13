@@ -20,7 +20,7 @@ repos:
           - --line-length=127
         exclude: custom_components/xplora_watch/geocoder.py
       - id: ruff-format
-        files: ^((custom_components|script|tests)/.+)?[^/]+\.py$
+        files: ^((custom_components|scripts|tests)/.+)?[^/]+\.py$
         exclude: custom_components/xplora_watch/geocoder.py
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.6
@@ -60,4 +60,4 @@ repos:
           - --py311-plus
           - --force
           - --keep-updates
-        files: ^(custom_components|tests|script)/.+\.py$
+        files: ^(custom_components|tests|scripts)/.+\.py$
