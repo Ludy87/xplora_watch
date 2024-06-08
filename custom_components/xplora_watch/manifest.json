@@ -9,15 +9,15 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "requirements": [
-    "pyxplora_api==2.12.8",
-    "backoff==2.2.1",
-    "requests==2.31.0",
-    "aiohttp==3.9.5",
-    "geopy==2.4.1",
-    "dataclasses-json==0.6.4",
+    "pyxplora_api==2.12.9",
+    "backoff>=2",
+    "requests>=2",
+    "aiohttp>=3.9",
+    "geopy>=2.4",
+    "dataclasses-json>=0.6",
     "pydub",
     "marshmallow-enum",
-    "security==1.2.1"
+    "security>=1.2"
   ],
-  "version": "v2.13.9"
+  "version": "v2.13.10"
 }
