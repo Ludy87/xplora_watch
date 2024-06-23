@@ -14,8 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.6
-      - uses: actions/labeler@v5.0.0
+        uses: actions/checkout@v4
+      - uses: actions/labeler@v5
         with:
           configuration-path: .github/workflows/config/labeler.yml
           sync-labels: false
