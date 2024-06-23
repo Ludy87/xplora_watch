@@ -9,6 +9,7 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/Ludy87/xplora_watch/issues",
   "requirements": [
+    "aiofiles>=23",
     "pyxplora_api==2.12.9",
     "backoff>=2",
     "requests>=2",
@@ -19,5 +20,5 @@
     "marshmallow-enum",
     "security>=1.2"
   ],
-  "version": "v2.13.10"
+  "version": "v2.13.11"
 }

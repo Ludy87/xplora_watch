@@ -9,15 +9,17 @@ import os
 import shutil
 from typing import Any
 
+import aiofiles
 from geopy import distance
 from pydub import AudioSegment
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, CONF_LANGUAGE
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.loader import DATA_CUSTOM_COMPONENTS
-from homeassistant.util.yaml import save_yaml
-from homeassistant.util.yaml.loader import load_yaml
+from homeassistant.util.yaml.dumper import dump
+from homeassistant.util.yaml.loader import JSON_TYPE, Secrets, parse_yaml
 
 from .const import (
     ATTR_SERVICE_DELETE_MSG,
@@ -109,6 +111,25 @@ def move_emojis_directory(hass: HomeAssistant):
         shutil.move(src_path, dst_path)
 
 
+async def load_yaml(fname: str | os.PathLike[str], secrets: Secrets | None = None) -> JSON_TYPE | None:
+    """Load a YAML file."""
+    try:
+        async with aiofiles.open(fname, encoding="utf-8") as conf_file:
+            contents = await conf_file.read()
+            return parse_yaml(contents, secrets)
+    except UnicodeDecodeError as exc:
+        _LOGGER.error("Unable to read file %s: %s", fname, exc)
+        raise HomeAssistantError(exc) from exc
+
+
+async def save_yaml(path: str, data: dict) -> None:
+    """Save YAML to a file."""
+    # Dump before writing to not truncate the file if dumping fails
+    str_data = dump(data)
+    async with aiofiles.open(path, "w", encoding="utf-8") as outfile:
+        await outfile.write(str_data)
+
+
 async def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watches: list[str]) -> None:
     """Create a service.yaml file."""
 
@@ -119,10 +140,11 @@ async def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watc
     path_json = hass.config.path(f"{DATA_CUSTOM_COMPONENTS}/{DOMAIN}/jsons/service_{language}.json")
     _LOGGER.debug("services_%s.json path: %s", language, path_json)
     try:
-        with open(path_json, encoding="utf8") as json_file:
-            configuration: dict[str, str] = json.load(json_file)
+        async with aiofiles.open(path_json, encoding="utf8") as json_file:
+            contents = await json_file.read()
+            configuration: dict[str, str] = json.loads(contents)
 
-        yaml_service = load_yaml(path)
+        yaml_service = await load_yaml(path)
         if (
             isinstance(yaml_service, dict)
             and yaml_service.get("see", {})
@@ -157,7 +179,7 @@ async def create_service_yaml_file(hass: HomeAssistant, entry: ConfigEntry, watc
             watches,
         )
 
-        save_yaml(path, configuration)
+        await save_yaml(path, configuration)
 
     except OSError:
         _LOGGER.exception("Error writing service definition to path '%s'", path)
