@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.6
+        uses: actions/checkout@v4
         with:
           ref: main
       - name: Set up Python 3
-        uses: actions/setup-python@v5.1.0
+        uses: actions/setup-python@v5
         with:
           python-version: |
             3.11
@@ -35,7 +35,7 @@ jobs:
           version="$(python3 ./.github/actions/get_version.py)"
           echo "version=$version" >> $GITHUB_OUTPUT
       - name: Is Tag exists
-        uses: mukunku/tag-exists-action@v1.6.0
+        uses: mukunku/tag-exists-action@v1
         id: checkTag
         with:
           tag: ${{ steps.version.outputs.version }}
@@ -48,7 +48,7 @@ jobs:
           zip -r xplora_watch.zip ./
       - name: Upload zip to release
         if: steps.checkTag.outputs.exists == 'false'
-        uses: svenstaro/upload-release-action@2.9.0
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip
