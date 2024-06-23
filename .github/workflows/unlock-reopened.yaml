@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: OSDKDev/unlock-issues@v1.1
+      - uses: OSDKDev/unlock-issues@v1
         with:
           repo-token: "${{ secrets.TOKEN }}"
