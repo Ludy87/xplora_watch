@@ -15,11 +15,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.6
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.TOKEN }}
       - name: Set up Python
-        uses: actions/setup-python@v5.1.0
+        uses: actions/setup-python@v5
         with:
           python-version: 3.12
       - name: Set up git config
@@ -28,7 +28,7 @@ jobs:
           git config --global user.name "GitHub Action <action@github.com>"
       - name: Install Dependencies
         run: |
-          pip install pre-commit==3.6.0
+          pip install pre-commit==3.7.1
       - name: Run pre-commit and git add
         run: |
           pre-commit run -c .pre-commit-config.yaml || true
@@ -36,7 +36,7 @@ jobs:
           git diff --staged --quiet || git commit -m ":file_folder: pre-commit
           > Made via .github/workflows/a_pre_commit.yml" || echo "pre-commit: no changes"
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6.0.4
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.TOKEN }}
           commit-message: Update files
