@@ -4,13 +4,23 @@ on:
   issues:
     types: [opened]
 
+permissions:
+  contents: read
+
 jobs:
   titlePrefixCheck:
+    permissions:
+      issues: write  # for peter-evans/close-issue to close issues
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
       - if: contains(github.event.issue.title, 'Logout') || contains(github.event.issue.title, 'app')
         name: Close Issue
-        uses: peter-evans/close-issue@v3
+        uses: peter-evans/close-issue@276d7966e389d888f011539a86c8920025ea0626 # v3.0.1
         with:
           comment: |
             [# Workaround for logout in the Xplora® App](https://github.com/Ludy87/xplora_watch/issues/24)

@@ -37,6 +37,8 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
       - id: check-executables-have-shebangs
         stages: [manual]
       - id: check-json
@@ -61,3 +63,11 @@ repos:
           - --force
           - --keep-updates
         files: ^(custom_components|tests|scripts)/.+\.py$
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.16.3
+    hooks:
+      - id: gitleaks
+  - repo: https://github.com/pylint-dev/pylint
+    rev: v2.17.2
+    hooks:
+      - id: pylint
