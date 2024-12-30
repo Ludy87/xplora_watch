@@ -12,6 +12,11 @@ jobs:
     name: Unlock Reopened
     runs-on: ubuntu-latest
     steps:
-      - uses: OSDKDev/unlock-issues@v1
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
+      - uses: OSDKDev/unlock-issues@b06b7f7e5c3f2eaa1c6d5d89f40930e4d6d9699e # v1
         with:
           repo-token: "${{ secrets.TOKEN }}"

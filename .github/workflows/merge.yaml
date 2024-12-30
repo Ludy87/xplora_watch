@@ -16,10 +16,15 @@ jobs:
       pull-requests: write
       contents: write
     steps:
-      - uses: actions/checkout@v4.1.6
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
       - name: Check if Pull Request
         id: check_pr
         run: echo "is_pull_request=${{ github.event_name == 'pull_request' }}" >> $GITHUB_ENV
       - if: env.is_pull_request == 'true'
         name: Merge
-        uses: Ludy87/action/merge@v1.0.7
+        uses: Ludy87/action/merge@d5cd9da51b4f77739b9b399d5a855b26905c3143 # v1.0.7
