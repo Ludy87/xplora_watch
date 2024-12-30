@@ -11,8 +11,6 @@ from typing import Any
 
 import aiofiles
 from geopy import distance
-from pydub import AudioSegment
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, CONF_LANGUAGE
 from homeassistant.core import HomeAssistant
@@ -20,6 +18,7 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.loader import DATA_CUSTOM_COMPONENTS
 from homeassistant.util.yaml.dumper import dump
 from homeassistant.util.yaml.loader import JSON_TYPE, Secrets, parse_yaml
+from pydub import AudioSegment
 
 from .const import (
     ATTR_SERVICE_DELETE_MSG,
