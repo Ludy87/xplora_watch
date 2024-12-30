@@ -13,12 +13,12 @@
     "pyxplora_api==2.12.9",
     "backoff>=2",
     "requests>=2",
-    "aiohttp>=3.9",
+    "aiohttp>=3.11",
     "geopy>=2.4",
     "dataclasses-json>=0.6",
     "pydub",
     "marshmallow-enum",
     "security>=1.2"
   ],
-  "version": "v2.13.11"
+  "version": "v2.14.0"
 }
