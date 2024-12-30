@@ -61,3 +61,7 @@ repos:
           - --force
           - --keep-updates
         files: ^(custom_components|tests|scripts)/.+\.py$
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.22.0
+    hooks:
+      - id: gitleaks
