@@ -6,9 +6,15 @@ on:
       - closed
       - reopened
 
+permissions:
+  contents: read
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
       - uses: actions/checkout@v4.1.6
       - name: Check if Pull Request
