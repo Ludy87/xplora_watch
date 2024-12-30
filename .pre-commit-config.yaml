@@ -12,7 +12,7 @@ ci:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.7
+    rev: v0.8.4
     hooks:
       - id: ruff
         args:
@@ -23,11 +23,11 @@ repos:
         files: ^((custom_components|scripts|tests)/.+)?[^/]+\.py$
         exclude: custom_components/xplora_watch/geocoder.py
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.2.6
+    rev: v2.3.0
     hooks:
       - id: codespell
         args:
-          - --ignore-words-list=additionals,alle,alot,bund,currenty,datas,deine,farenheit,falsy,fo,haa,hass,iif,incomfort,ines,ist,manuell,nam,nd,pres,pullrequests,resset,rime,ser,serie,te,technik,ue,unsecure,withing,zar
+          - --ignore-words-list=additionals,alle,alot,bund,currenty,datas,deine,farenheit,falsy,fo,haa,hass,iif,incomfort,ines,intoto,ist,manuell,nam,nd,pres,pullrequests,resset,rime,ser,serie,te,technik,ue,unsecure,withing,zar
           - --skip="./.*,*.csv,*.json,*.ambr"
           - --quiet-level=2
         exclude_types: [csv, json]
@@ -35,7 +35,7 @@ repos:
         additional_dependencies:
           - tomli
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v5.0.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -50,7 +50,7 @@ repos:
         exclude_types: [json]
         exclude: (markdown-card-read-messages\.md)
   - repo: https://github.com/cdce8p/python-typing-update
-    rev: v0.6.0
+    rev: v0.7.0
     hooks:
       # Run `python-typing-update` hook manually from time to time
       # to update python typing syntax.
@@ -59,12 +59,12 @@ repos:
       - id: python-typing-update
         stages: [manual]
         args:
-          - --py311-plus
+          - --py312-plus
           - --force
           - --keep-updates
         files: ^(custom_components|tests|scripts)/.+\.py$
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.16.3
+    rev: v8.22.0
     hooks:
       - id: gitleaks
   - repo: https://github.com/pylint-dev/pylint
