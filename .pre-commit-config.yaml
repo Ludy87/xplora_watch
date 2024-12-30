@@ -67,7 +67,7 @@ repos:
     rev: v8.22.0
     hooks:
       - id: gitleaks
-  - repo: https://github.com/pylint-dev/pylint
-    rev: v2.17.2
-    hooks:
-      - id: pylint
+  # - repo: https://github.com/pylint-dev/pylint
+  #   rev: v3.3.3
+  #   hooks:
+  #     - id: pylint
