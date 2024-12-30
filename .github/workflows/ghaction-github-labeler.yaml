@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      issues: write  # for crazy-max/ghaction-github-labeler to create, rename, update and delete label
+      issues: write # for crazy-max/ghaction-github-labeler to create, rename, update and delete label
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
