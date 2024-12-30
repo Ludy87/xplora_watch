@@ -23,8 +23,8 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          token: ${{ secrets.TOKEN }}
+        # with:
+        #   token: ${{ secrets.TOKEN }}
       - name: Set up Python
         uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
         with:
@@ -35,7 +35,7 @@ jobs:
           git config --global user.name "GitHub Action <action@github.com>"
       - name: Install Dependencies
         run: |
-          pip install pre-commit==3.7.1
+          pip install pre-commit==4.0.1
       - name: Run pre-commit and git add
         run: |
           pre-commit run --all-files -c .pre-commit-config.yaml || true
@@ -45,7 +45,8 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f # v7.0.6
         with:
-          token: ${{ secrets.TOKEN }}
+          # token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update files
           committer: GitHub Action <action@github.com>
           author: GitHub Action <action@github.com>
