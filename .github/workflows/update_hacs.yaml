@@ -8,9 +8,14 @@ on:
   schedule:
     - cron: "0 0 * * *"
 
+permissions:
+  contents: read
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4.1.6
       - uses: Ludy87/action/update_hacs_hassio@v1.0.7
