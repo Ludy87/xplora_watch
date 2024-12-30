@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      contents: write
     steps:
       - uses: actions/checkout@v4.1.6
       - uses: Ludy87/action/update_hacs_hassio@v1.0.7
