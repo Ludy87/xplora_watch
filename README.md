@@ -11,7 +11,8 @@ Xplora® Watch Version 2 integration for Home Assistant
 [![GitHub issues](https://img.shields.io/github/issues/Ludy87/xplora_watch?style=for-the-badge&logo=github)](https://github.com/Ludy87/xplora_watch/issues)\
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=for-the-badge&logo=code%20style-black)](https://github.com/psf/black)\
 ![Github All Releases](https://img.shields.io/github/downloads/Ludy87/xplora_watch/total.svg?style=for-the-badge&logo=GitHub)\
-[![Validate with hassfest and HACS](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml)
+[![Validate with hassfest and HACS](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml/badge.svg)](https://github.com/Ludy87/xplora_watch/actions/workflows/hassfest.yaml)\
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9873/badge)](https://www.bestpractices.dev/projects/9873)
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ludy87)
 
