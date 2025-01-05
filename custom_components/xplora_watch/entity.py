@@ -54,7 +54,6 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
             model=coordinator.data[self.watch_uid].get("model", DEVICE_NAME),
             name=f"{coordinator.username}{self.is_admin}{self.watch_name} ({self.watch_uid})",
             sw_version=coordinator.os_version,
-            # via_device=(DOMAIN, f"{self._config_entry.unique_id}_{coordinator.username}"),
             configuration_url="https://github.com/Ludy87/xplora_watch/blob/main/README.md",
         )
 
