@@ -59,7 +59,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     watches = await coordinator.controller.setDevices()
 
     await create_www_directory(hass)
-    move_emojis_directory(hass)
+    await move_emojis_directory(hass)
     await create_service_yaml_file(hass, entry, watches)
 
     # Create a copy and remove Platform.NOTIFY

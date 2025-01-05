@@ -3,6 +3,6 @@
     "zip_release": true,
     "render_readme": true,
     "homeassistant": "2025.1.0",
-    "hacs": "2.0.1",
+    "hacs": "2.0.2",
     "filename": "xplora_watch.zip"
 }
