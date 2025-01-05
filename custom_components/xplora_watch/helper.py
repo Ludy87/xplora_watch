@@ -101,14 +101,19 @@ async def create_www_directory(hass: HomeAssistant):
     await hass.async_add_executor_job(mkdir)
 
 
-def move_emojis_directory(hass: HomeAssistant):
+async def move_emojis_directory(hass: HomeAssistant):
     """Move emojis directory to www directory."""
     src_path = hass.config.path(f"{DATA_CUSTOM_COMPONENTS}/{DOMAIN}/emojis")
     dst_path = hass.config.path(f"www/{DOMAIN}")
-    if os.path.exists(src_path):
-        if os.path.exists(f"{dst_path}/emojis"):
-            shutil.rmtree(f"{dst_path}/emojis")
-        shutil.move(src_path, dst_path)
+
+    def move_directories():
+        if os.path.exists(src_path):
+            if os.path.exists(f"{dst_path}/emojis"):
+                shutil.rmtree(f"{dst_path}/emojis")
+            shutil.move(src_path, dst_path)
+
+    # Use executor to run blocking operations
+    await hass.async_add_executor_job(move_directories)
 
 
 async def load_yaml(fname: str | os.PathLike[str], secrets: Secrets | None = None) -> JSON_TYPE | None:

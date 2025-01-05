@@ -37,23 +37,24 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         super().__init__(coordinator)
         if description is not None:
             self.entity_description = description
+        self._config_entry = config_entry
         self._data = config_entry.data
         self._options = config_entry.options
 
         self.watch_uid = wuid
         self._unsub_dispatchers: list[Callable[[], None]] = []
 
-        is_admin = " (Admin)-" if coordinator.is_admin.get(coordinator.user_id + config_entry.entry_id, None) else "-"
+        self.is_admin = " (Admin)-" if coordinator.is_admin.get(coordinator.user_id + config_entry.entry_id, None) else "-"
 
-        watch_name = self.coordinator.controller.getWatchUserNames(wuid=wuid)
+        self.watch_name = self.coordinator.controller.getWatchUserNames(wuid=self.watch_uid)
 
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, f"{config_entry.unique_id}_{wuid}")},
+            identifiers={(DOMAIN, f"{self._config_entry.unique_id}_{self.watch_uid}")},
             manufacturer=MANUFACTURER,
-            model=coordinator.data[wuid].get("model", DEVICE_NAME),
-            name=f"{coordinator.username}{is_admin}{watch_name} ({wuid})",
+            model=coordinator.data[self.watch_uid].get("model", DEVICE_NAME),
+            name=f"{coordinator.username}{self.is_admin}{self.watch_name} ({self.watch_uid})",
             sw_version=coordinator.os_version,
-            via_device=(DOMAIN, f"{config_entry.unique_id}_{coordinator.username}"),
+            # via_device=(DOMAIN, f"{self._config_entry.unique_id}_{coordinator.username}"),
             configuration_url="https://github.com/Ludy87/xplora_watch/blob/main/README.md",
         )
 
@@ -65,6 +66,8 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
     async def async_added_to_hass(self) -> None:
         """When entity is added to hass."""
         await super().async_added_to_hass()
+
+        # Restore state if available
         if state := await self.async_get_last_state():
             self._state = state.state
         self._unsub_dispatchers.append(async_dispatcher_connect(self.hass, TRACKER_UPDATE_STR, self._async_receive_data))
@@ -74,7 +77,7 @@ class XploraBaseEntity(CoordinatorEntity[XploraDataUpdateCoordinator], RestoreEn
         await super().async_will_remove_from_hass()
         for unsub in self._unsub_dispatchers:
             unsub()
-        _LOGGER.debug("When entity is remove on hass")
+        _LOGGER.debug("When entity is removed from hass")
         self._unsub_dispatchers = []
 
     @callback
