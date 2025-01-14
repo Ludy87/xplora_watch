@@ -14,7 +14,7 @@ from __future__ import annotations  # noqa: I001
 import collections
 import os
 import sys
-from datetime import datetime
+from datetime import timezone, datetime
 from decimal import Decimal
 
 import backoff
@@ -303,7 +303,7 @@ class OpenCageGeocodeUA:
 
         if response.status_code in (402, 429):
             # Rate limit exceeded
-            reset_time = datetime.utcfromtimestamp(response.json()["rate"]["reset"])
+            reset_time = datetime.fromtimestamp(response.json()["rate"]["reset"], tz=timezone.utc)
 
             raise RateLimitExceededError(reset_to=int(response.json()["rate"]["limit"]), reset_time=reset_time)
 
@@ -346,7 +346,7 @@ class OpenCageGeocodeUA:
                 if response.status in (402, 429):
                     # Rate limit exceeded
 
-                    reset_time = datetime.utcfromtimestamp(response_json["rate"]["reset"])
+                    reset_time = datetime.fromtimestamp(response_json["rate"]["reset"], tz=timezone.utc)
 
                     raise RateLimitExceededError(reset_to=int(response_json["rate"]["limit"]), reset_time=reset_time)
 
