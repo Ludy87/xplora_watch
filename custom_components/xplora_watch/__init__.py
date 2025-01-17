@@ -62,10 +62,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await move_emojis_directory(hass)
     await create_service_yaml_file(hass, entry, watches)
 
-    # Create a copy and remove Platform.NOTIFY
-    PLATFORMS_COPY = [platform for platform in PLATFORMS if platform != Platform.NOTIFY]
-
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS_COPY)
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     hass.async_create_task(
         discovery.async_load_platform(

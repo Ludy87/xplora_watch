@@ -20,5 +20,5 @@
     "marshmallow-enum",
     "security>=1.2"
   ],
-  "version": "v2.14.1"
+  "version": "v2.14.2"
 }
