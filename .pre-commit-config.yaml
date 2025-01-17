@@ -12,7 +12,7 @@ ci:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+    rev: v0.9.2
     hooks:
       - id: ruff
         args:
@@ -64,7 +64,7 @@ repos:
           - --keep-updates
         files: ^(custom_components|tests|scripts)/.+\.py$
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.22.0
+    rev: v8.23.1
     hooks:
       - id: gitleaks
   # - repo: https://github.com/pylint-dev/pylint
