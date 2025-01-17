@@ -69,9 +69,9 @@ jobs:
       - name: ZIP Component Dir
         if: steps.checkTag.outputs.exists == 'false'
         run: |
+          mkdir ./binaries
           cd ${{ github.workspace }}/custom_components/xplora_watch
           zip -r xplora_watch.zip ./
-          mkdir ./binaries
           mv ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip ./binaries/xplora_watch.zip
 
       - name: Upload build artifacts
