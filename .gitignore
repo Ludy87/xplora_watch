@@ -138,4 +138,4 @@ codiga.*
 /homeassistant
 *.diff
 
-!.github/workflows/config/requirements.txt
+!.github/workflows/config/requirements*
