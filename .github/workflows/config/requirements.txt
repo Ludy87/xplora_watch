@@ -85,7 +85,9 @@ aiohttp==3.11.11 \
     --hash=sha256:f047569d655f81cb70ea5be942ee5d4421b6219c3f05d131f64088c73bb0917f \
     --hash=sha256:ffa336210cf9cd8ed117011085817d00abe4c08f99968deef0013ea283547204 \
     --hash=sha256:ffb3dc385f6bb1568aa974fe65da84723210e5d9707e360e9ecb51f59406cd2e
-    # via python-graphql-client
+    # via
+    #   python-graphql-client
+    #   pyxplora-api
 aiosignal==1.3.2 \
     --hash=sha256:45cde58e409a301715980c2b01d0c28bdde3770d8290b5eb2173759d9acb31a5 \
     --hash=sha256:a8c255c66fafb1e499c9351d0bf32ff2d8a0321595ebac3b93713656d2436f54
@@ -196,6 +198,10 @@ charset-normalizer==3.4.1 \
     --hash=sha256:fd4ec41f914fa74ad1b8304bbc634b3de73d2a0889bd32076342a573e0779e00 \
     --hash=sha256:ffc9202a29ab3920fa812879e95a9e78b2465fd10be7fcbd042899695d75e616
     # via requests
+dataclasses-json==0.6.7 \
+    --hash=sha256:0dbf33f26c8d5305befd61b39d2b3414e8a407bedc2834dea9b8d642666fb40a \
+    --hash=sha256:b6b3e528266ea45b9535223bc53ca645f5208833c29229e847b3f26a1cc55fc0
+    # via pyxplora-api
 frozenlist==1.5.0 \
     --hash=sha256:000a77d6034fbad9b6bb880f7ec073027908f1b40254b5d6f26210d2dab1240e \
     --hash=sha256:03d33c2ddbc1816237a67f66336616416e2bbb6beb306e5f890f2eb22b959cdf \
@@ -292,12 +298,24 @@ frozenlist==1.5.0 \
     # via
     #   aiohttp
     #   aiosignal
+geographiclib==2.0 \
+    --hash=sha256:6b7225248e45ff7edcee32becc4e0a1504c606ac5ee163a5656d482e0cd38734 \
+    --hash=sha256:f7f41c85dc3e1c2d3d935ec86660dc3b2c848c83e17f9a9e51ba9d5146a15859
+    # via geopy
+geopy==2.4.1 \
+    --hash=sha256:50283d8e7ad07d89be5cb027338c6365a32044df3ae2556ad3f52f4840b3d0d1 \
+    --hash=sha256:ae8b4bc5c1131820f4d75fce9d4aaaca0c85189b3aa5d64c3dcaf5e3b7b882a7
+    # via pyxplora-api
 idna==3.10 \
     --hash=sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9 \
     --hash=sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3
     # via
     #   requests
     #   yarl
+marshmallow==3.25.1 \
+    --hash=sha256:ec5d00d873ce473b7f2ffcb7104286a376c354cab0c2fa12f5573dab03e87210 \
+    --hash=sha256:f4debda3bb11153d81ac34b0d582bf23053055ee11e791b54b4b35493468040a
+    # via dataclasses-json
 multidict==6.1.0 \
     --hash=sha256:052e10d2d37810b99cc170b785945421141bf7bb7d2f8799d431e7db229c385f \
     --hash=sha256:06809f4f0f7ab7ea2cabf9caca7d79c22c0758b58a71f9d32943ae13c7ace056 \
@@ -394,6 +412,14 @@ multidict==6.1.0 \
     # via
     #   aiohttp
     #   yarl
+mypy-extensions==1.0.0 \
+    --hash=sha256:4392f6c0eb8a5668a69e23d168ffa70f0be9ccfd32b5cc2d26a34ae5b844552d \
+    --hash=sha256:75dbf8955dc00442a438fc4d0666508a9a97b6bd41aa2f0ffe9d2f2725af0782
+    # via typing-inspect
+packaging==24.2 \
+    --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759 \
+    --hash=sha256:c228a6dc5e932d346bc5739379109d49e8853dd8223571c7c5b55260edc0b97f
+    # via marshmallow
 propcache==0.2.1 \
     --hash=sha256:03ff9d3f665769b2a85e6157ac8b439644f2d7fd17615a82fa55739bc97863f4 \
     --hash=sha256:049324ee97bb67285b49632132db351b41e77833678432be52bdd0289c0e05e4 \
@@ -484,18 +510,26 @@ python-graphql-client==0.4.3 \
     --hash=sha256:c5eb996702acf46110b352f61819c46065ea4f4f106158535cd471e66490b25e \
     --hash=sha256:fdbd03115dde8776db02e60414b83b018d7d95e5752d6d5fabf21c99265f5b9d
     # via pyxplora-api
-pyxplora-api==1.0.24 \
-    --hash=sha256:952d3d2eed588d8d66fe619c065d7212a8e4be0a192ba04d3a2fe29c2b5e6d21 \
-    --hash=sha256:ca038a4a032a0d5cfdbf97457a35c3df8249acde42f7e495a328bd957f3c456a
-    # via -r .github/workflows/config/requirements.in
+pyxplora-api==2.12.9 \
+    --hash=sha256:496885fd6029db280d23b3233d915517c8a2120bcbbfd9ddaf4ec5884f1bf86d \
+    --hash=sha256:6ac7508446de94dd5c8d0958caf82819d7d7f8e238a9502c8f09e07144be1654
+    # via -r requirements.in
 requests==2.32.3 \
     --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
     --hash=sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6
-    # via python-graphql-client
+    # via
+    #   python-graphql-client
+    #   pyxplora-api
 typing-extensions==4.12.2 \
     --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
     --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
-    # via multidict
+    # via
+    #   multidict
+    #   typing-inspect
+typing-inspect==0.9.0 \
+    --hash=sha256:9ee6fc59062311ef8547596ab6b955e1b8aa46242d854bfc78f4f6b0eff35f9f \
+    --hash=sha256:b23fc42ff6f6ef6954e4852c1fb512cdd18dbea03134f91f856a95ccc9461f78
+    # via dataclasses-json
 urllib3==2.3.0 \
     --hash=sha256:1cee9ad369867bfdbbb48b7dd50374c0967a0bb7710050facf0dd6911440e3df \
     --hash=sha256:f8c5449b3cf0861679ce7e0503c7b44b5ec981bec0d1d3795a07f1ba96f0204d
