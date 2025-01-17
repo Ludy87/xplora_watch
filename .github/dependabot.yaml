@@ -10,3 +10,14 @@ updates:
     labels:
       - "in progress"
       - "dependencies"
+
+  - package-ecosystem: pip
+    directory: /.github/workflows/config
+    schedule:
+      interval: daily
+      time: "21:15"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 1000
+    labels:
+      - "in progress"
+      - "dependencies"
