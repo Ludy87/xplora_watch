@@ -37,7 +37,7 @@ jobs:
           PHONENUMBER: ${{ secrets.PHONENUMBER }}
           PASSWORD: ${{ secrets.PASSWORD }}
         run: |
-          pip install pyxplora_api==1.0.24 -U
+          pip install --require-hashes -r ./.github/workflows/config/requirements.txt
           python ./.github/actions/update_readme.py
 
       - name: Get Version

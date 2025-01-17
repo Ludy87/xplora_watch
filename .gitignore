@@ -137,3 +137,5 @@ codiga.*
 # Home Assistant Core
 /homeassistant
 *.diff
+
+!.github/workflows/config/requirements.txt
