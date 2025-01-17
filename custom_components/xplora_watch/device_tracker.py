@@ -109,7 +109,7 @@ class XploraSafezoneTracker(XploraBaseEntity, TrackerEntity, RestoreEntity):
         )
 
         self._attr_unique_id = (
-            f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_safezone_{safezone["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(
+            f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_safezone_{safezone['vendorId']}_{wuid}_{coordinator.user_id}".replace(
                 " ", "_"
             )
             .replace("-", "_")

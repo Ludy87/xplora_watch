@@ -105,13 +105,13 @@ class XploraAlarmSwitch(XploraBaseEntity, SwitchEntity):
         self._alarm = alarm
 
         self._attr_name: str = (
-            f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {alarm["start"]} ({coordinator.username})'.replace(
+            f"{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {alarm['start']} ({coordinator.username})".replace(
                 "_", " "
             ).title()
         )
 
         self._attr_unique_id = (
-            f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{alarm["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(
+            f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{alarm['vendorId']}_{wuid}_{coordinator.user_id}".replace(
                 " ", "_"
             )
             .replace("-", "_")
@@ -201,12 +201,12 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
         self._silent = silent
 
-        self._attr_name: str = f'{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent["start"]}-{silent["end"]} ({coordinator.username})'.replace(  # noqa: E501
+        self._attr_name: str = f"{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent['start']}-{silent['end']} ({coordinator.username})".replace(  # noqa: E501
             "_", " "
         ).title()
 
         self._attr_unique_id = (
-            f'{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{silent["vendorId"]}_{wuid}_{coordinator.user_id}'.replace(
+            f"{ward.get(CONF_NAME)}_{ATTR_WATCH}_{description.key}_{silent['vendorId']}_{wuid}_{coordinator.user_id}".replace(
                 " ", "_"
             )
             .replace("-", "_")
