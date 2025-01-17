@@ -71,6 +71,8 @@ jobs:
         run: |
           cd ${{ github.workspace }}/custom_components/xplora_watch
           zip -r xplora_watch.zip ./
+          mkdir ./binaries
+          mv ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip ./binaries/xplora_watch.zip
 
       - name: Upload build artifacts
         if: steps.checkTag.outputs.exists == 'false'
@@ -80,7 +82,7 @@ jobs:
           if-no-files-found: error
           name: xplora_watch-binaries
           path: |
-            ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip
+            ./binaries/*
 
       - name: Download build artifacts
         if: steps.checkTag.outputs.exists == 'false'
@@ -134,88 +136,6 @@ jobs:
             xplora_watch.zip
             xplora_watch.zip.*
             !cosign.*
-
-      # - name: Generate artifact attestation
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   id: attestation
-      #   uses: actions/attest-build-provenance@7668571508540a607bdfd90a87a560489fe372eb # v2.1.0
-      #   with:
-      #     subject-path: ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip
-
-      # - name: Debug attestation output
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   run: |
-      #     echo "Bundle path: ${{ steps.attestation.outputs.bundle-path }}"
-      #     ls -l "${{ steps.attestation.outputs.bundle-path }}"
-
-      # - name: Copy attestation
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   run: |
-      #     cp "${{ steps.attestation.outputs.bundle-path }}" ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip.intoto.jsonl
-
-      # - name: Import GPG key
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   env:
-      #     GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      #     PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      #   run: |
-      #     mkdir -p ~/.gnupg
-      #     chmod 700 ~/.gnupg
-      #     echo "$GPG_PRIVATE_KEY" | gpg --batch --import
-      #     echo "use-agent" > ~/.gnupg/gpg.conf
-      #     echo "allow-loopback-pinentry" >> ~/.gnupg/gpg.conf
-      #     gpg --list-keys
-
-      # - name: Debug Passphrase
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   run: |
-      #     if [ -z "$PASSPHRASE" ]; then
-      #       echo "Passphrase is empty!"
-      #       exit 1
-      #     else
-      #       echo "Passphrase is set."
-      #     fi
-      #   env:
-      #     PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      # - name: Sign ZIP file
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   env:
-      #     PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-      #   run: |
-      #     gpg --detach-sign --batch --yes --pinentry-mode loopback --passphrase "$PASSPHRASE" \
-      #       -o ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip.asc \
-      #           ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip
-
-      # - name: Upload zip to release
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # v2
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip
-      #     asset_name: xplora_watch.zip
-      #     tag: ${{ steps.version.outputs.version }}
-      #     overwrite: true
-
-      # - name: Upload zip to release
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # v2
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip.asc
-      #     asset_name: xplora_watch.zip.asc
-      #     tag: ${{ steps.version.outputs.version }}
-      #     overwrite: true
-
-      # - name: Upload zip to release
-      #   if: steps.checkTag.outputs.exists == 'false'
-      #   uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # v2
-      #   with:
-      #     repo_token: ${{ secrets.GITHUB_TOKEN }}
-      #     file: ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip.intoto.jsonl
-      #     asset_name: xplora_watch.zip.intoto.jsonl
-      #     tag: ${{ steps.version.outputs.version }}
-      #     overwrite: true
 
       - name: Create Release
         if: steps.checkTag.outputs.exists == 'false'
