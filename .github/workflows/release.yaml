@@ -32,6 +32,8 @@ jobs:
           python-version: |
             3.12
           check-latest: true
+          cache: "pip" # caching pip dependencies
+
       - name: Install dependencies
         env:
           PHONENUMBER: ${{ secrets.PHONENUMBER }}
@@ -40,12 +42,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install pyxplora_api==1.0.24 -U
           python ./.github/actions/update_readme.py
+
       - name: Get Version
         id: version
         shell: bash
         run: |
           version="$(python3 ./.github/actions/get_version.py)"
           echo "version=$version" >> $GITHUB_OUTPUT
+
       - name: Is Tag exists
         uses: mukunku/tag-exists-action@bdad1eaa119ce71b150b952c97351c75025c06a9
         id: checkTag
@@ -53,6 +57,7 @@ jobs:
           tag: ${{ steps.version.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - if: steps.checkTag.outputs.exists == 'false'
         name: Check Tag
         id: check-tag
@@ -60,6 +65,7 @@ jobs:
           if [[ "${{ steps.version.outputs.version }}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
               echo "match=true" >> $GITHUB_OUTPUT
           fi
+
       - name: ZIP Component Dir
         if: steps.checkTag.outputs.exists == 'false'
         run: |
