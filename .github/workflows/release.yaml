@@ -13,9 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: write
-      attestations: write
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@c95a14d0e5bab51a9f56296a4eb0e416910cd350 # v2.10.3
@@ -71,7 +69,7 @@ jobs:
         run: |
           mkdir ./binaries
           cd ${{ github.workspace }}/custom_components/xplora_watch
-          zip -r xplora_watch.zip ./
+          zip -r xplora_watch.zip ./binaries
           mv ${{ github.workspace }}/custom_components/xplora_watch/xplora_watch.zip ./binaries/xplora_watch.zip
 
       - name: Upload build artifacts
