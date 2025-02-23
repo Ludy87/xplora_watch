@@ -2,7 +2,7 @@
     "name": "Xplora\u00ae Watch",
     "zip_release": true,
     "render_readme": true,
-    "homeassistant": "2025.1.0",
-    "hacs": "2.0.2",
+    "homeassistant": "2025.2.5",
+    "hacs": "2.0.5",
     "filename": "xplora_watch.zip"
 }
