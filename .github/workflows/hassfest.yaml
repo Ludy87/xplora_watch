@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: HACS Action
-        uses: hacs/action@70694a570839431b5c69ff0eba599a213dc7a43b # main
+        uses: hacs/action@83dfb84b7a5aa11ce18ba20049f3a7a8b99c24b3 # main
         with:
           category: "integration"
   validate_hassfest:
