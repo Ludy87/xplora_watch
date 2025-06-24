@@ -487,10 +487,10 @@ python-graphql-client==0.4.3 \
 pyxplora-api==1.0.24 \
     --hash=sha256:952d3d2eed588d8d66fe619c065d7212a8e4be0a192ba04d3a2fe29c2b5e6d21 \
     --hash=sha256:ca038a4a032a0d5cfdbf97457a35c3df8249acde42f7e495a328bd957f3c456a
-    # via -r .github/workflows/config/requirements.in
-requests==2.32.3 \
-    --hash=sha256:55365417734eb18255590a9ff9eb97e9e1da868d4ccd6402399eaf68af20a760 \
-    --hash=sha256:70761cfe03c773ceb22aa2f671b4757976145175cdfca038c02654d061d6dcc6
+    # via -r requirements.in
+requests==2.32.4 \
+    --hash=sha256:27babd3cda2a6d50b30443204ee89830707d396671944c998b5975b031ac2b2c \
+    --hash=sha256:27d0316682c8a29834d3264820024b62a36942083d52caf2f14c0591336d3422
     # via python-graphql-client
 typing-extensions==4.12.2 \
     --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
