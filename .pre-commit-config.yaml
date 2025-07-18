@@ -12,7 +12,7 @@ ci:
 
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.2
+    rev: v0.12.4
     hooks:
       - id: ruff
         args:
@@ -23,7 +23,7 @@ repos:
         files: ^((custom_components|scripts|tests)/.+)?[^/]+\.py$
         exclude: custom_components/xplora_watch/geocoder.py
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         args:
@@ -50,7 +50,7 @@ repos:
         exclude_types: [json]
         exclude: (markdown-card-read-messages\.md)
   - repo: https://github.com/cdce8p/python-typing-update
-    rev: v0.7.0
+    rev: v0.7.2
     hooks:
       # Run `python-typing-update` hook manually from time to time
       # to update python typing syntax.
@@ -64,7 +64,7 @@ repos:
           - --keep-updates
         files: ^(custom_components|tests|scripts)/.+\.py$
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.23.1
+    rev: v8.27.2
     hooks:
       - id: gitleaks
   # - repo: https://github.com/pylint-dev/pylint
