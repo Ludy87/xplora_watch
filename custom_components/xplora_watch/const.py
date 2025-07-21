@@ -337,5 +337,5 @@ delete_message_from_app:
         select:
           options:
             - all
-""",  # noqa: E501
+""",
 }

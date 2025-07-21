@@ -51,8 +51,7 @@ def is_distance_in_radius(home_lat_lng: tuple[float, float], lat_lng: tuple[floa
     """Checks if distance is within radius of home."""
     if radius >= int(distance.distance(home_lat_lng, lat_lng).m):
         return True
-    else:
-        return False
+    return False
 
 
 def encoded_base64_string_to_file(hass: HomeAssistant, base64_string: str, file_name: str, file_type: str, file_dir: str):

@@ -147,7 +147,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
             else:
                 self.data = new_data
             self.async_set_updated_data(self.data)
-            return
+            return None
         watch_entry = {}
         if self.data:
             watch_entry.update(self.data)
@@ -270,7 +270,7 @@ class XploraDataUpdateCoordinator(DataUpdateCoordinator):
                 session.get(URL_OPENSTREETMAP.format(self.lat, self.lng, language)) as response,
             ):
                 res: dict[str, Any] = await response.json()
-                self.licence = res.get(ATTR_TRACKER_LICENCE, None)
+                self.licence = res.get(ATTR_TRACKER_LICENCE)
                 address: dict[str, str] = res.get(ATTR_TRACKER_ADDR, {})
                 if address:
                     self.location_name = res.get("display_name", "")

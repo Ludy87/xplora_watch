@@ -110,6 +110,11 @@ lint.ignore = [
     "D407",     # Section name underlining
     "E501",     # line too long
 
+    "F821",
+
+    "INP001", # Do not use PEP 420 implicit namespace packages
+
+    "PERF401", # Use `asyncio.create_task` instead of `asyncio.ensure_future`
     "PLC1901", # {existing} can be simplified to {replacement} as an empty string is falsey; too many false positives
     "PLR0911", # Too many return statements ({returns} > {max_returns})
     "PLR0912", # Too many branches ({branches} > {max_branches})
@@ -120,6 +125,12 @@ lint.ignore = [
     "PLW2901", # Outer {outer_kind} variable {name} overwritten by inner {inner_kind} target
     "PT011",   # pytest.raises({exception}) is too broad, set the `match` parameter or use a more specific exception
     "PT018",   # Assertion should be broken down into multiple parts
+    "PTH103",
+    "PTH107",
+    "PTH109",
+    "PTH110",
+    "PTH123",
+    "RSE102",  # Use `raise ... from None` to avoid implicit exception chaining
     "RUF001",  # String contains ambiguous unicode character.
     "RUF002",  # Docstring contains ambiguous unicode character.
     "RUF003",  # Comment contains ambiguous unicode character.
@@ -128,6 +139,8 @@ lint.ignore = [
     "SIM103",  # Return the condition {condition} directly
     "SIM108",  # Use ternary operator {contents} instead of if-else-block
     "SIM115",  # Use context handler for opening files
+    "SIM210",  # Use `if x in y` instead of `if x in y and y`
+    "SIM211",  # Use `if x not in y` instead of `if x not in y and y`
 
     # Moving imports into type-checking blocks can mess with pytest.patch()
     "TC001", # Move application import {} into a type-checking block
@@ -138,6 +151,7 @@ lint.ignore = [
 
     "TRY003", # Avoid specifying long messages outside the exception class
     "TRY400", # Use `logging.exception` instead of `logging.error`
+    "TRY401", # Use `logging.exception` instead of `logging.error` in an exception handler
     # Ignored due to performance: https://github.com/charliermarsh/ruff/issues/2923
     "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
     "UP046", # Non PEP 695 generic class

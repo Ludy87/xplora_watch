@@ -3,9 +3,9 @@
 Xplora® Watch Version 2 integration for Home Assistant
 
 > Warum geht es nicht weiter?
+>
 > > Aufgrund der Sperrung seitens Xplora®, durch IP-Ban, wird die Applikation nicht weiter entwickelt, danke an @tom-winkler der eine offizelle Nachricht gepostet hat.
-> >  ![428483653-4a335517-3759-45d5-8ce9-04e263ff0a37](https://github.com/user-attachments/assets/6bfa564d-81e1-48aa-92b8-b77a4eee6caf)
-
+> > ![428483653-4a335517-3759-45d5-8ce9-04e263ff0a37](https://github.com/user-attachments/assets/6bfa564d-81e1-48aa-92b8-b77a4eee6caf)
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Ludy87&repository=xplora_watch&category=integration)\
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge&logo=home-assistant)](https://github.com/hacs/integration)
