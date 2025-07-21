@@ -81,7 +81,7 @@ async def async_setup_entry(
             if ward is None:
                 continue
 
-            wuid = ward.get(ATTR_ID, None)
+            wuid = ward.get(ATTR_ID)
             if wuid is None:
                 continue
 

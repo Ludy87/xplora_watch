@@ -110,7 +110,7 @@ async def _async_migrate_entries(hass: HomeAssistant, config_entry: ConfigEntry,
             and " " not in str(entry.unique_id)
         ):
             return None
-        elif new_uid in str(entry.unique_id) and "-" in str(entry.unique_id):
+        if new_uid in str(entry.unique_id) and "-" in str(entry.unique_id):
             new_unique_id = f"{entry.unique_id}".replace("-", "_").replace(" ", "_").lower()
         else:
             # "{ward.get(CONF_NAME)}-{ATTR_WATCH}-{description.key}-{wuid}"                            old

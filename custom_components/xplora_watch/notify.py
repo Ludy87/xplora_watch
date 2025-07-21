@@ -35,18 +35,18 @@ class XploraNotifyService(BaseNotificationService):
         targets = kwargs.get(ATTR_TARGET, {})
         if not targets:
             _LOGGER.warning("No watch id!")
-            return None
+            return
         data = kwargs.get(ATTR_DATA, {})
         if not data:
             _LOGGER.warning("No data!")
-            return None
+            return
         user_id = data.get("No user_id")
         coordinator: XploraDataUpdateCoordinator = self._hass.data[DOMAIN][user_id]
         controller = coordinator.controller
         msg = message.strip()
         if not msg:
             _LOGGER.warning("Message is empty!")
-            return None
+            return
         for watch_id in targets:
             if not await controller.sendText(text=msg, wuid=watch_id):
                 _LOGGER.error("Failed to send message '%s' to %s", msg, watch_id)

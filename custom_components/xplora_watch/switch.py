@@ -60,7 +60,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             if ward is None:
                 continue
 
-            wuid = ward.get(ATTR_ID, None)
+            wuid = ward.get(ATTR_ID)
             if wuid is None:
                 continue
 
@@ -201,7 +201,7 @@ class XploraSilentSwitch(XploraBaseEntity, SwitchEntity):
 
         self._silent = silent
 
-        self._attr_name: str = f"{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent['start']}-{silent['end']} ({coordinator.username})".replace(  # noqa: E501
+        self._attr_name: str = f"{ward.get(CONF_NAME)} {ATTR_WATCH} {description.key} {silent['start']}-{silent['end']} ({coordinator.username})".replace(
             "_", " "
         ).title()
 

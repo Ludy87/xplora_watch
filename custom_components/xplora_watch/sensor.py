@@ -81,7 +81,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
             if ward is None:
                 continue
 
-            wuid = ward.get(ATTR_ID, None)
+            wuid = ward.get(ATTR_ID)
             if wuid is None:
                 continue
 
@@ -155,4 +155,4 @@ class XploraSensor(XploraBaseEntity, SensorEntity):
             and self.coordinator.data[self.watch_uid].get(SENSOR_MESSAGE, None)
         ):
             return dict(data, **self.coordinator.data[self.watch_uid].get(SENSOR_MESSAGE))
-        return dict(data, **{"user": self.coordinator.controller.getUserName()})
+        return dict(data, user=self.coordinator.controller.getUserName())

@@ -99,10 +99,10 @@ async def validate_input(hass: core.HomeAssistant, data: dict[str, Any]) -> dict
     account = PyXploraApi(session=aiohttp_client.async_create_clientsession(hass))
     await account.init(signup=False)
     if not await account.checkEmailOrPhoneExist(
-        UserContactType.EMAIL if data.get(CONF_EMAIL, None) else UserContactType.PHONE,
-        email=data.get(CONF_EMAIL, None),
-        countryCode=data.get(CONF_COUNTRY_CODE, None),
-        phoneNumber=data.get(CONF_PHONENUMBER, None),
+        UserContactType.EMAIL if data.get(CONF_EMAIL) else UserContactType.PHONE,
+        email=data.get(CONF_EMAIL),
+        countryCode=data.get(CONF_COUNTRY_CODE),
+        phoneNumber=data.get(CONF_PHONENUMBER),
     ):
         raise PhoneOrEmailFail()
 
