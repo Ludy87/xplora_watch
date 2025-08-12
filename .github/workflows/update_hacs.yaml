@@ -23,5 +23,5 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - uses: Ludy87/action/update_hacs_hassio@d5cd9da51b4f77739b9b399d5a855b26905c3143 # v1.0.7
